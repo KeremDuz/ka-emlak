@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { AdminListing, Listing, Photo } from '../types';
-import { isSourceListing, isSourcePhoto, mapSource, sameSource, smallerPhoto, sourcePhotos, type SourceListing } from '../source-mapper';
+import { isSourceListing, isSourcePhoto, mapSource, sameSource, smallerPhoto, sourcePhotos, sourceUpdatable as updatable, type SourceListing } from '../source-mapper';
 import { HttpError } from './http';
 import { Repository } from './repository';
 import { storePhoto } from './uploads';
@@ -18,7 +18,6 @@ export const sourceSchema = z.object({
   description: z.string().max(20000),
   photos: z.array(z.string().max(800)).max(60),
 });
-const updatable = ['transaction', 'propertyType', 'price', 'currency', 'period', 'grossArea', 'netArea', 'rooms', 'bathrooms', 'floor', 'buildingAge'] as const;
 const current = (record: AdminListing): Listing => { const { draft, ...listing } = record; return { ...(draft ?? listing), version: record.version }; };
 
 async function locate(listing: Pick<Listing, 'neighborhood' | 'district' | 'city'>) {

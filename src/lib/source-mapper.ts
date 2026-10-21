@@ -18,6 +18,8 @@ export interface SourceListing {
 export type MappedListing = Pick<Listing, 'title' | 'transaction' | 'propertyType' | 'price' | 'currency' | 'period' | 'city' | 'district' | 'neighborhood' | 'grossArea' | 'netArea' | 'rooms' | 'bathrooms' | 'floor' | 'buildingAge' | 'description' | 'features' | 'sourceUrl'>;
 
 export const sourceLabels: Record<SourceName, string> = { hepsiemlak: 'hepsiemlak', sahibinden: 'sahibinden' };
+/** Portaldan güncellenen alanlar; başlık, açıklama ve fotoğraflar sitede düzenlenmiş olabileceği için korunur. */
+export const sourceUpdatable = ['transaction', 'propertyType', 'price', 'currency', 'period', 'grossArea', 'netArea', 'rooms', 'bathrooms', 'floor', 'buildingAge'] as const;
 const origins: Record<SourceName, string> = { hepsiemlak: 'https://www.hepsiemlak.com/', sahibinden: 'https://www.sahibinden.com/' };
 const idPatterns: Record<SourceName, RegExp> = { hepsiemlak: /^\d{1,10}-\d{1,10}$/, sahibinden: /^\d{6,12}$/ };
 

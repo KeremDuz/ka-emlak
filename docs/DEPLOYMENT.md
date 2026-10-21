@@ -33,6 +33,18 @@ Aynı mülk iki portalda farklı numarayla yayında olabilir. Numara tutmasa da 
 - Yer imi bilgisayar tarayıcısında rahat çalışır; telefonda yer imini adres çubuğundan adıyla seçmek gerekir. Kendi Chrome’unuzda her iki portalda bir kez denenmelidir: bazı siteler yer imi betiklerini engelleyebilir. hepsiemlak’ta betik ilan sayfasında tarayıcı geliştirici araçlarıyla çalıştırılarak denendi; sahibinden’in tarayıcı denetimi otomatik gezinmeyi durdurduğu için sahibinden kaydedilmiş bir ilan sayfasıyla denendi, canlı sayfada denenmedi.
 - Portallar sayfa yapısını değiştirirse yer imi “ilanın kendi sayfasını açın” uyarısı verir ya da eksik bilgi getirir; seçiciler `src/lib/bookmarklet.ts` içindedir.
 
+### Bütün ilanları tek tıkla eşitleme (hepsiemlak)
+
+Aynı yer imine hepsiemlak’taki **ofis sayfasındayken** (`/emlak-ofisi/ka-emlak-29750`) tıklanırsa ofisin bütün ilanları okunur. Okuma kullanıcının kendi tarayıcı oturumunda, ilanlar arasında kısa beklemelerle sırayla yapılır (27 ilan için yaklaşık yarım dakika); sağ üstte ilerleme görünür. Bitince çıkan “KA Emlak panelinde aç” düğmesi paneli açar. Panel sitedeki ilanlarla karşılaştırıp bir özet gösterir:
+
+- **Yeni ilanlar** fotoğraflarıyla eklenip yayınlanır; eksik bilgi varsa taslakta kalır.
+- **Değişen ilanlar**: yalnız işlem türü, fiyat, para birimi, fiyat dönemi, brüt/net m², oda ve banyo karşılaştırılır; her değişiklik eski → yeni olarak gösterilir. Başlık, açıklama, fotoğraflar, kat ve bina yaşı korunur. hepsiemlak’ta boş bırakılmış alan sitedeki bilgiyi silmez. Yayındaki ilan güncellenince yeniden yayınlanır.
+- **hepsiemlak’tan kalkanlar**: yalnız bu ofisin hepsiemlak numaralı ve yayındaki ilanları yayından kaldırılır (arşiv; “Yeniden yayınla” ile geri gelir). Taslaklar, satıldı/kiralandı işaretlileri ve sahibinden’den eklenenler dokunulmaz. Ofis sayfasında görülüp detayı okunamayan ilan kaldırılmaz.
+- Yayındaki hepsiemlak ilanlarının yarısından fazlası kalkacak görünürse sayfa eksik okunmuş sayılır ve kaldırma işaretleri kapalı gelir.
+- Her satır ayrı ayrı işaretlenip çıkarılabilir; hiçbir şey ofis “Seçilenleri uygula” demeden değişmez.
+- Veri gzip’lenip `#esitle=` ile taşınır. Panel yalnız aynı ofis numarasıyla başlayan hepsiemlak ilanlarını kabul eder. Portföy yüklenmeden ya da yüklenirken hata varken eşitleme penceresi açılmaz.
+- Daha önce sürüklenen eski yer imi bu özelliği içermez; düğme yeniden sürüklenmelidir. Eşitleme canlı hepsiemlak ofis sayfasında henüz denenmedi; panel tarafı yerel önizlemede örnek veriyle denendi.
+
 ## Veri davranışı
 
 Yayımdaki ilanın düzenlemesi ayrı `draft` snapshot'ına otomatik kaydedilir. Ziyaretçi son yayımlanmış snapshot'ı görür. Yayınla doğrulaması başarılı olduğunda taslak atomik olarak yayına alınır. İlan kaldırma arşiv/çöp kutusu durumudur; kalıcı silme yalnız çöp kutusundan yapılır. Her ilan güncellemesi `version` ile denetlenir; eski sürüm **409** döndürür ve mevcut veriyi ezmez.
