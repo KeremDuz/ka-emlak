@@ -1,0 +1,7 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import {getPublicData} from '../lib/server/data';
+import {ArrowUpRight} from 'lucide-react';
+const {settings,mode}=await getPublicData(Astro.locals);
+---
+<SiteLayout title="Hakkımızda" settings={settings} mode={mode}><section class="page-intro page-intro-compact"><div class="container"><h1>Hakkımızda</h1></div></section><section class="container about-home"><div class="about-visual"><img src="/images/advisor.jpg" alt="KA EMLAK gayrimenkul danışmanı İshak Kahraman" width="600" height="600" style="object-position:center top"/><div class="about-caption"><strong>{settings.advisor}</strong><span>GAYRİMENKUL DANIŞMANI</span></div></div><div class="about-copy"><h2>KA EMLAK</h2>{settings.about&&<p>{settings.about}</p>}<p style="margin-top:18px">Konyaaltı’ndaki ofisimizden Antalya genelinde konut, iş yeri ve arsa alım, satım ve kiralama işlerine bakıyoruz.</p>{settings.licenseNumber&&<p style="margin-top:20px">Taşınmaz Ticareti Yetki Belgesi: <strong>{settings.licenseNumber}</strong></p>}<a class="button" style="margin-top:27px" href="/iletisim">İletişim<ArrowUpRight size={17}/></a></div></section></SiteLayout>

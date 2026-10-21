@@ -1,0 +1,66 @@
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { LayoutGrid, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react';
+import type { Listing, ListingFilters } from '../../lib/types';
+import { listingUrl, periodLabels, priceLabel, propertyLabels, transactionLabels } from '../../lib/format';
+import { formatPriceInput, parsePrice } from '../../lib/listing-helpers';
+import PropertyCard from './PropertyCard';
+const ListingMap = lazy(() => import('./ListingMap'));
+export interface CatalogOptions { districts: string[]; rooms: string[]; }
+interface Props { initialListings: Listing[]; initialTotal?: number; initialFilters?: ListingFilters; options?: CatalogOptions; available?: boolean; }
+type Key = keyof ListingFilters;
+const query = (filters: ListingFilters, page: number) => new URLSearchParams([...Object.entries(filters).filter(([key, v]) => v !== '' && v !== undefined && key !== 'page') as [string, string][], ...(page > 1 ? [['page', String(page)] as [string, string]] : [])]);
+const panelKeys: Key[] = ['rooms', 'minPrice', 'maxPrice', 'minArea', 'maxArea', 'q', 'period'];
+const chipLabels: Partial<Record<Key, string>> = { q: 'Arama', propertyType: 'Tür', district: 'Bölge', rooms: 'Oda', minPrice: 'En az', maxPrice: 'En çok', minArea: 'En az m²', maxArea: 'En çok m²', period: 'Dönem' };
+const periods: Record<string, string> = { day: 'Günlük', week: 'Haftalık', month: 'Aylık', year: 'Yıllık' };
+
+export default function Catalog({ initialListings, initialTotal, initialFilters = {}, options = { districts: [], rooms: [] }, available = true }: Props) {
+  const [listings, setListings] = useState(initialListings), [total, setTotal] = useState(initialTotal ?? initialListings.length), [page, setPage] = useState(1);
+  const [filters, setFilters] = useState<ListingFilters>(() => { const { gorunum: _, ...rest } = initialFilters as Record<string, string>; return rest; }), [open, setOpen] = useState(false), [loading, setLoading] = useState(false), [error, setError] = useState(!available);
+  // ?gorunum=harita ilan listesini doğrudan harita görünümünde açar; filtre sayılmaz.
+  const [view, setView] = useState<'list' | 'map'>((initialFilters as Record<string, string>).gorunum === 'harita' ? 'map' : 'list');
+  const initial = useRef(true), abort = useRef<AbortController | null>(null);
+  useEffect(() => { const back = () => { const params = new URLSearchParams(location.search); setView(params.get('gorunum') === 'harita' ? 'map' : 'list'); params.delete('gorunum'); setFilters(Object.fromEntries(params)); }; window.addEventListener('popstate', back); return () => window.removeEventListener('popstate', back); }, []);
+  async function fetchPage(target: number, signal?: AbortSignal) { const response = await fetch(`/api/listings?${query(filters, target)}`, { signal }); if (!response.ok) throw new Error('load'); const result = await response.json(); return { items: (Array.isArray(result) ? result : result.listings) as Listing[], total: Array.isArray(result) ? result.length : Number(result.total) }; }
+  useEffect(() => { if (initial.current) { initial.current = false; return; } const timer = setTimeout(async () => { abort.current?.abort(); const controller = new AbortController(); abort.current = controller; const search = query(filters, 1); if (view === 'map') search.set('gorunum', 'harita'); history.replaceState({}, '', `${location.pathname}${search.size ? '?' + search : ''}`); setLoading(true); setError(false); try { const result = await fetchPage(1, controller.signal); setListings(result.items); setTotal(result.total); setPage(1); } catch { if (!controller.signal.aborted) setError(true); } finally { if (!controller.signal.aborted) setLoading(false); } }, 250); return () => clearTimeout(timer); }, [filters]);
+  async function loadMore(all = false) { if (loading) return; setLoading(true); try { let next = page, items = listings, count = total; do { next++; const result = await fetchPage(next); items = [...items, ...result.items.filter(item => !items.some(existing => existing.id === item.id))]; count = result.total; if (!result.items.length) break; } while (all && items.length < count); setListings(items); setTotal(count); setPage(next); } catch { setError(true); } finally { setLoading(false); } }
+  // Harita tüm sonuçları göstermeli; kalan sayfalar haritaya geçince yüklenir.
+  useEffect(() => { if (view === 'map' && listings.length < total) void loadMore(true); }, [view]); // eslint-disable-line react-hooks/exhaustive-deps
+  const changeView = (next: 'list' | 'map') => { setView(next); const url = new URL(location.href); if (next === 'map') url.searchParams.set('gorunum', 'harita'); else url.searchParams.delete('gorunum'); history.replaceState({}, '', url); };
+  const update = (key: Key, value: string) => setFilters(f => ({ ...f, [key]: value, page: '1' }));
+  const toggle = (key: Key, value: string) => update(key, filters[key] === value ? '' : value);
+  const clear = () => setFilters(f => ({ sort: f.sort }));
+
+  const shown = listings;
+  const points = useMemo(() => shown.filter(l => l.latitude !== undefined && l.longitude !== undefined).map(l => ({ id: l.id, lat: l.latitude!, lng: l.longitude!, title: l.title, price: priceLabel(l), url: listingUrl(l), photo: l.photos[0]?.thumbnail || l.photos[0]?.url })), [shown]);
+  const hasMap = points.length > 0 || initialListings.some(l => l.latitude !== undefined);
+  const active = Object.entries(filters).filter(([k, v]) => v && !['sort', 'page', 'transaction', 'currency'].includes(k)) as [Key, string][];
+  const panelCount = active.filter(([k]) => panelKeys.includes(k)).length;
+  const chipValue = (k: Key, v: string) => k === 'propertyType' ? propertyLabels[v as keyof typeof propertyLabels] : k === 'period' ? periods[v] : k.endsWith('Price') ? `${formatPriceInput(Number(v))} TL` : k.endsWith('Area') ? `${v} m²` : v;
+  const select = (label: string, key: Key, choices: Record<string, string>, id: string) => <label className="filter-select"><span className="sr-only">{label}</span><select id={id} value={filters[key] || ''} onChange={e => update(key, e.target.value)}><option value="">{label}</option>{Object.entries(choices).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></label>;
+  const typeSelect = (id: string) => select('Tüm türler', 'propertyType', propertyLabels, id);
+  const districtSelect = (id: string) => options.districts.length > 0 && select('Tüm bölgeler', 'district', Object.fromEntries([...new Set([...options.districts, ...(filters.district ? [filters.district] : [])])].map(d => [d, d])), id);
+  const range = (label: string, min: Key, max: Key, price: boolean) => <div className="filter-group"><span className="filter-label">{label}</span><div className="field-pair">{[[min, 'En az'], [max, 'En çok']].map(([key, text]) => <input key={key} aria-label={`${label}, ${text.toLocaleLowerCase('tr-TR')}`} inputMode="numeric" placeholder={text} value={price ? formatPriceInput(Number(filters[key as Key]) || null) : filters[key as Key] || ''} onChange={e => update(key as Key, price ? String(parsePrice(e.target.value) ?? '') : e.target.value.replace(/\D/g, ''))} />)}</div></div>;
+
+  return <div className="container catalog">
+    <div className="filter-bar">
+      <div className="segmented" role="group" aria-label="İlan türü">{([['', 'Tümü'], ['sale', 'Satılık'], ['rent', 'Kiralık'], ['exchange', 'Kat karşılığı']] as const).map(([value, label]) => <button key={label} aria-pressed={(filters.transaction || '') === value} className={(filters.transaction || '') === value ? 'active' : ''} onClick={() => setFilters(f => ({ ...f, transaction: value, period: value === 'rent' ? f.period : '', page: '1' }))}>{label}</button>)}</div>
+      <div className="filter-bar-selects">{typeSelect('filter-type')}{districtSelect('filter-district')}</div>
+      <button className={`filter-more ${open ? 'open' : ''}`} aria-expanded={open} aria-controls="filter-panel" onClick={() => setOpen(!open)}><SlidersHorizontal size={15} />Filtreler{panelCount > 0 && <span className="filter-count">{panelCount}</span>}</button>
+      <div className="filter-bar-end"><select aria-label="Sıralama" value={filters.sort || 'newest'} onChange={e => update('sort', e.target.value)}><option value="newest">En yeni</option><option value="price-asc">Fiyat artan</option><option value="price-desc">Fiyat azalan</option><option value="area-desc">En geniş</option></select>{hasMap && <div className="view-toggle" role="group" aria-label="Görünüm"><button aria-pressed={view === 'list'} className={view === 'list' ? 'active' : ''} onClick={() => changeView('list')}><LayoutGrid size={14} /><span>Liste</span></button><button aria-pressed={view === 'map'} className={view === 'map' ? 'active' : ''} onClick={() => changeView('map')}><MapIcon size={14} /><span>Harita</span></button></div>}</div>
+    </div>
+    {open && <div className="filter-panel" id="filter-panel">
+      <div className="filter-panel-mobile">{typeSelect('filter-type-mobile')}{districtSelect('filter-district-mobile')}</div>
+      {options.rooms.length > 0 && <div className="filter-group"><span className="filter-label">Oda</span><div className="filter-chips-choice">{options.rooms.map(room => <button key={room} aria-pressed={filters.rooms === room} className={filters.rooms === room ? 'active' : ''} onClick={() => toggle('rooms', room)}>{room === '1+0' ? 'Stüdyo' : room}</button>)}</div></div>}
+      {filters.transaction === 'rent' && <div className="filter-group"><span className="filter-label">Kiralama</span><div className="filter-chips-choice">{Object.entries(periods).map(([value, label]) => <button key={value} aria-pressed={filters.period === value} className={filters.period === value ? 'active' : ''} onClick={() => toggle('period', value)}>{label}</button>)}</div></div>}
+      {range('Fiyat (TL)', 'minPrice', 'maxPrice', true)}
+      {range('Alan (m²)', 'minArea', 'maxArea', false)}
+      <div className="filter-group"><span className="filter-label">Kelime</span><input type="search" aria-label="İlanlarda ara" placeholder="Mahalle, site adı…" value={filters.q || ''} onChange={e => update('q', e.target.value)} /></div>
+      <div className="filter-panel-actions"><button className="text-button" onClick={clear}>Temizle</button><button className="button sm" onClick={() => setOpen(false)}>{total} ilanı göster</button></div>
+    </div>}
+    <div className="results-head" aria-live="polite"><span><strong>{total}</strong> ilan</span>{active.length > 0 && <div className="filter-chips">{active.map(([k, v]) => <button className="filter-chip" key={k} onClick={() => update(k, '')} aria-label={`${chipLabels[k] ?? k} filtresini kaldır`}>{chipLabels[k] ? `${chipLabels[k]}: ` : ''}{chipValue(k, v)}<X size={11} /></button>)}<button className="filter-chip-clear" onClick={clear}>Tümünü temizle</button></div>}</div>
+    {error ? <div className="empty-state"><Search size={26} /><h2>İlanlar şu an yüklenemedi.</h2><p>Biraz sonra tekrar deneyin ya da bizi arayın.</p><a className="button" href="/iletisim">İletişim</a></div>
+      : shown.length === 0 ? <div className="empty-state"><Search size={26} /><h2>Bu filtrelere uygun ilan yok.</h2><p>Filtreleri azaltabilir ya da aradığınızı bize yazabilirsiniz.</p><div className="empty-actions"><button className="button" onClick={clear}>Filtreleri temizle</button><a className="button outline" href="/iletisim">Bize yazın</a></div></div>
+      : view === 'map' && hasMap ? <div className="map-split"><div className="map-split-map"><Suspense fallback={<div className="listing-map listing-map-loading">Harita yükleniyor…</div>}><ListingMap points={points} label="İlanların haritası" /></Suspense><p className="map-note">Konumlar yaklaşıktır.{shown.length > points.length && ` ${shown.length - points.length} ilanın konumu henüz eklenmedi.`}</p></div><ul className="map-split-list">{shown.map(l => <li key={l.id}><a href={listingUrl(l)} className="map-item">{l.photos[0] ? <img src={l.photos[0].thumbnail || l.photos[0].url} alt="" width="96" height="72" loading="lazy" /> : <span className="map-item-placeholder" aria-hidden="true" />}<span><strong>{l.title}</strong><small>{l.neighborhood}, {l.district}{l.latitude === undefined ? ' · konum yok' : ''}</small><b>{priceLabel(l)}{l.price !== null && l.transaction === 'rent' && <small> {periodLabels[l.period]}</small>}</b></span></a></li>)}</ul></div>
+      : <><div className={`listing-grid ${loading ? 'results-loading' : ''}`} aria-busy={loading}>{shown.map(l => <PropertyCard listing={l} key={l.id} />)}</div>{listings.length < total && <div className="load-more"><button className="button outline" disabled={loading} onClick={() => void loadMore()}>{loading ? 'Yükleniyor…' : `Daha fazla göster (${total - listings.length})`}</button></div>}</>}
+  </div>;
+}

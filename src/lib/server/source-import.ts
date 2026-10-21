@@ -1,0 +1,93 @@
+import { z } from 'zod';
+import type { AdminListing, Listing, Photo } from '../types';
+import { isSourceListing, isSourcePhoto, mapSource, sameSource, smallerPhoto, sourcePhotos, type SourceListing } from '../source-mapper';
+import { HttpError } from './http';
+import { Repository } from './repository';
+import { storePhoto } from './uploads';
+import { editable } from './validation';
+
+// "KA Emlak'a ekle" yer imi, ofisin kendi hepsiemlak veya sahibinden ilan sayfasından okuduğu veriyi gönderir.
+export const sourceSchema = z.object({
+  source: z.enum(['hepsiemlak', 'sahibinden']),
+  url: z.string().max(500).regex(/^https:\/\/www\.(hepsiemlak|sahibinden)\.com\/[^\s?#]+$/),
+  id: z.string().regex(/^\d{1,12}(-\d{1,10})?$/),
+  title: z.string().max(300),
+  price: z.string().max(80),
+  breadcrumb: z.array(z.string().max(160)).max(12),
+  specs: z.record(z.string().max(160), z.string().max(400)).refine(value => Object.keys(value).length <= 80),
+  description: z.string().max(20000),
+  photos: z.array(z.string().max(800)).max(60),
+});
+const updatable = ['transaction', 'propertyType', 'price', 'currency', 'period', 'grossArea', 'netArea', 'rooms', 'bathrooms', 'floor', 'buildingAge'] as const;
+const current = (record: AdminListing): Listing => { const { draft, ...listing } = record; return { ...(draft ?? listing), version: record.version }; };
+
+async function locate(listing: Pick<Listing, 'neighborhood' | 'district' | 'city'>) {
+  // Mahalle merkezi yaklaşık konum olarak kullanılır; ziyaretçiye zaten yuvarlanmış daire gösterilir.
+  try {
+    const query = encodeURIComponent(`${listing.neighborhood} Mahallesi, ${listing.district}, ${listing.city}`);
+    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=tr&q=${query}`, { headers: { 'User-Agent': 'KA-Emlak-site/1.0 (ilan aktarma)' }, signal: AbortSignal.timeout(5000) });
+    const [hit] = response.ok ? await response.json() as { lat: string; lon: string }[] : [];
+    return hit ? { latitude: Math.round(Number(hit.lat) * 1e5) / 1e5, longitude: Math.round(Number(hit.lon) * 1e5) / 1e5 } : {};
+  } catch { return {}; }
+}
+
+/**
+ * İlanı oluşturur ya da sitede zaten varsa yapısal bilgilerini günceller: aynı portal numarası kendiliğinden eşleşir,
+ * öteki portaldan gelmiş aynı mülk için panel targetId gönderir. Fotoğraflar ayrı isteklerle eklenir.
+ */
+export async function prepareSourceListing(repo: Repository, value: unknown, targetId?: string) {
+  const source = sourceSchema.parse(value) as SourceListing;
+  if (!isSourceListing(source)) throw new HttpError(422, 'İlan numarası sayfa adresiyle uyuşmuyor.', 'SOURCE_MISMATCH');
+  const mapped = mapSource(source);
+  const photos = sourcePhotos(source);
+  const listings = await repo.listings();
+  const target = targetId ? listings.find(item => item.id === targetId) : undefined;
+  if (targetId && (!target || target.status === 'trash')) throw new HttpError(404, 'Güncellenecek ilan bulunamadı.', 'NOT_FOUND');
+  const existing = target ?? listings.find(item => item.status !== 'trash' && [item.sourceUrl, item.draft?.sourceUrl].some(url => sameSource(url, source.id)));
+  if (existing) {
+    // Başlık, açıklama ve fotoğraflar sitede düzenlenmiş olabilir; yalnız fiyat ve ölçüler güncellenir.
+    // Öteki portaldan eşleştirilen ilanın kaynak adresi korunur; böylece kendi portalındaki numarasıyla eşleşmeye devam eder.
+    const data = current(existing);
+    const next: Listing = { ...data, needsReview: false, sourceUrl: target ? data.sourceUrl ?? source.url : source.url };
+    for (const key of updatable) Object.assign(next, { [key]: mapped[key] });
+    const saved = await repo.save(existing.id, editable(next), existing.version);
+    return { listing: saved, created: false, photos: data.photos.length ? [] : photos };
+  }
+  const created = await repo.create();
+  const coordinates = mapped.transaction === 'exchange' || !mapped.neighborhood ? {} : await locate(mapped);
+  const saved = await repo.save(created.id, editable({ ...current(created), ...mapped, ...coordinates, photos: [], needsReview: false }), created.version);
+  return { listing: saved, created: true, photos };
+}
+
+async function download(url: string): Promise<Uint8Array<ArrayBuffer>> {
+  const response = await fetch(url, { redirect: 'error', headers: { Accept: 'image/jpeg,image/png,image/webp' }, signal: AbortSignal.timeout(20000) });
+  if (!response.ok || !response.body) throw new HttpError(502, 'Fotoğraf portaldan alınamadı.', 'SOURCE_PHOTO');
+  const declared = Number(response.headers.get('Content-Length') || 0);
+  if (declared > 3_000_000) throw new HttpError(413, 'Fotoğraf çok büyük.', 'TOO_LARGE');
+  const reader = response.body.getReader(); const chunks: Uint8Array[] = []; let size = 0;
+  while (true) {
+    const { done, value } = await reader.read(); if (done) break;
+    size += value.byteLength;
+    if (size > 3_000_000) { await reader.cancel(); throw new HttpError(413, 'Fotoğraf çok büyük.', 'TOO_LARGE'); }
+    chunks.push(value);
+  }
+  const output = new Uint8Array(size); let offset = 0;
+  for (const chunk of chunks) { output.set(chunk, offset); offset += chunk.length; }
+  return output;
+}
+
+/**
+ * Yalnız portalların fotoğraf sunucusundaki ilan galerisinden indirir. Büyük boy 3 MB'yi aşarsa ya da portalda
+ * bulunmuyorsa (sahibinden afiş gibi küçük yüklenen görsellerin büyük boyunu üretmez) bir küçük boyu dener.
+ */
+export async function importSourcePhoto(repo: Repository, listingId: string, url: string): Promise<Photo> {
+  if (!isSourcePhoto(url)) throw new HttpError(422, 'Yalnız hepsiemlak ve sahibinden ilan fotoğrafları aktarılabilir.', 'SOURCE_PHOTO');
+  let data: Uint8Array<ArrayBuffer>;
+  try { data = await download(url); }
+  catch (error) {
+    const smaller = smallerPhoto(url);
+    if (smaller === url || !(error instanceof HttpError && (error.code === 'TOO_LARGE' || error.code === 'SOURCE_PHOTO'))) throw error;
+    data = await download(smaller);
+  }
+  return storePhoto(repo, listingId, data);
+}

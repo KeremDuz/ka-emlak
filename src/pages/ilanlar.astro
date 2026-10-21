@@ -1,0 +1,12 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Catalog from '../components/public/Catalog';
+import { getPublicData, publicPageSize } from '../lib/server/data';
+import { filterListings } from '../lib/server/filters';
+import { catalogOptions } from '../lib/listing-helpers';
+const data=await getPublicData(Astro.locals);
+const filters=Object.fromEntries(Astro.url.searchParams);
+const filtered=filterListings(data.listings,filters);
+const options=catalogOptions(filterListings(data.listings));
+---
+<SiteLayout title="Antalya satılık ve kiralık ilanlar" settings={data.settings} mode={data.mode}><section class="page-intro page-intro-compact"><div class="container"><h1>İlanlar</h1></div></section><Catalog initialListings={filtered.slice(0,publicPageSize)} initialTotal={filtered.length} initialFilters={filters} options={options} available={data.available} client:load/></SiteLayout>

@@ -1,0 +1,1643 @@
+{
+  "format": "ka-emlak-backup",
+  "schemaVersion": 1,
+  "exportedAt": "2026-10-21T08:26:51.047Z",
+  "mode": "source-import",
+  "listings": [
+    {
+      "city": "Antalya",
+      "currency": "TRY",
+      "status": "draft",
+      "createdAt": "2026-10-19T00:00:00.000Z",
+      "updatedAt": "2026-10-21T08:26:51.047Z",
+      "version": 1,
+      "needsReview": true,
+      "id": "29750-166",
+      "slug": "29750-166",
+      "title": "Altınkale’de bahçeli, özel havuzlu 4+1 villa",
+      "transaction": "sale",
+      "propertyType": "villa",
+      "price": 32000000,
+      "period": "total",
+      "district": "Döşemealtı",
+      "neighborhood": "Altınkale",
+      "grossArea": 466,
+      "netArea": 350,
+      "rooms": "4+1",
+      "bathrooms": 6,
+      "floor": "Dubleks",
+      "buildingAge": "Sıfır bina",
+      "description": "Altınkale’de 466 m² brüt, 350 m² net kullanım alanına sahip 4+1 villa. Özel havuz ve bahçeyi; VRF klima sistemi, yerden ısıtma, sauna ve hamam tamamlıyor. Bahçe kullanımı, arsa payı ve güncel satış koşulları hakkında bilgi almak veya yerinde sunum planlamak için İshak Kahraman ile görüşebilirsiniz.",
+      "features": [
+        "Özel havuz",
+        "Bahçe",
+        "Yerden ısıtma",
+        "VRF klima",
+        "Sauna",
+        "Hamam",
+        "Açık otopark"
+      ],
+      "photos": [
+        {
+          "id": "29750-166-photo-1",
+          "url": "/images/29750-166-01.webp",
+          "thumbnail": "/images/29750-166-01-sm.webp",
+          "alt": "Altınkale’de bahçeli, özel havuzlu 4+1 villa"
+        },
+        {
+          "id": "29750-166-photo-2",
+          "url": "/images/29750-166-02.webp",
+          "thumbnail": "/images/29750-166-02-sm.webp",
+          "alt": "Altınkale’de bahçeli, özel havuzlu 4+1 villa, fotoğraf 2"
+        },
+        {
+          "id": "29750-166-photo-3",
+          "url": "/images/29750-166-03.webp",
+          "thumbnail": "/images/29750-166-03-sm.webp",
+          "alt": "Altınkale’de bahçeli, özel havuzlu 4+1 villa, fotoğraf 3"
+        },
+        {
+          "id": "29750-166-photo-4",
+          "url": "/images/29750-166-04.webp",
+          "thumbnail": "/images/29750-166-04-sm.webp",
+          "alt": "Altınkale’de bahçeli, özel havuzlu 4+1 villa, fotoğraf 4"
+        },
+        {
+          "id": "29750-166-photo-5",
+          "url": "/images/29750-166-05.webp",
+          "thumbnail": "/images/29750-166-05-sm.webp",
+          "alt": "Altınkale’de bahçeli, özel havuzlu 4+1 villa, fotoğraf 5"
+        },
+        {
+          "id": "29750-166-photo-6",
+          "url": "/images/29750-166-06.webp",
+          "thumbnail": "/images/29750-166-06-sm.webp",
+          "alt": "Altınkale’de bahçeli, özel havuzlu 4+1 villa, fotoğraf 6"
+        }
+      ],
+      "featured": true,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-dosemealti-altinkale-satilik/villa/29750-166",
+      "latitude": 36.99433,
+      "longitude": 30.59894
+    },
+    {
+      "id": "29750-172",
+      "slug": "29750-172",
+      "title": "Arapsuyu’nda ferah yaşam alanları sunan 4+1",
+      "transaction": "sale",
+      "propertyType": "apartment",
+      "price": 14500000,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Arapsuyu",
+      "grossArea": 250,
+      "netArea": 240,
+      "rooms": "4+1",
+      "bathrooms": 3,
+      "floor": "2. kat",
+      "buildingAge": "16 yaşında",
+      "description": "Arapsuyu Mahallesi’nde, iki katlı binanın ikinci katında 4+1 daire. 250 m² brüt, 240 m² net alan; üç banyo, balkon, kombi ve açık otopark ile geniş bir yaşam düzeni sunuyor. Kullanım durumu kiracılıdır. Güncel satış bedeli ve kira koşulları için danışmanımızla görüşebilirsiniz.",
+      "features": [
+        "Balkon",
+        "Kombi",
+        "Açık otopark",
+        "Üç cephe",
+        "Kiracılı"
+      ],
+      "photos": [
+        {
+          "id": "29750-172-photo-1",
+          "url": "/images/29750-172-01.webp",
+          "thumbnail": "/images/29750-172-01-sm.webp",
+          "alt": "Arapsuyu’nda ferah yaşam alanları sunan 4+1"
+        },
+        {
+          "id": "29750-172-photo-2",
+          "url": "/images/29750-172-02.webp",
+          "thumbnail": "/images/29750-172-02-sm.webp",
+          "alt": "Arapsuyu’nda ferah yaşam alanları sunan 4+1, fotoğraf 2"
+        },
+        {
+          "id": "29750-172-photo-3",
+          "url": "/images/29750-172-03.webp",
+          "thumbnail": "/images/29750-172-03-sm.webp",
+          "alt": "Arapsuyu’nda ferah yaşam alanları sunan 4+1, fotoğraf 3"
+        },
+        {
+          "id": "29750-172-photo-4",
+          "url": "/images/29750-172-04.webp",
+          "thumbnail": "/images/29750-172-04-sm.webp",
+          "alt": "Arapsuyu’nda ferah yaşam alanları sunan 4+1, fotoğraf 4"
+        },
+        {
+          "id": "29750-172-photo-5",
+          "url": "/images/29750-172-05.webp",
+          "thumbnail": "/images/29750-172-05-sm.webp",
+          "alt": "Arapsuyu’nda ferah yaşam alanları sunan 4+1, fotoğraf 5"
+        },
+        {
+          "id": "29750-172-photo-6",
+          "url": "/images/29750-172-06.webp",
+          "thumbnail": "/images/29750-172-06-sm.webp",
+          "alt": "Arapsuyu’nda ferah yaşam alanları sunan 4+1, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": true,
+      "createdAt": "2026-10-19T00:00:00.000Z",
+      "updatedAt": "2026-10-21T08:26:51.047Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-arapsuyu-satilik/daire/29750-172",
+      "needsReview": true,
+      "latitude": 36.87535,
+      "longitude": 30.6494
+    },
+    {
+      "city": "Antalya",
+      "currency": "TRY",
+      "status": "draft",
+      "createdAt": "2026-10-19T00:00:00.000Z",
+      "updatedAt": "2026-10-21T08:26:51.047Z",
+      "version": 1,
+      "needsReview": true,
+      "id": "29750-112",
+      "slug": "29750-112",
+      "title": "Çamyuva’da özel havuzlu ve bahçeli 3+1 villa",
+      "transaction": "rent",
+      "propertyType": "villa",
+      "price": 95000,
+      "period": "month",
+      "district": "Kemer",
+      "neighborhood": "Çamyuva",
+      "grossArea": 350,
+      "netArea": 300,
+      "rooms": "3+1",
+      "bathrooms": 3,
+      "floor": "Dubleks",
+      "buildingAge": "Sıfır bina",
+      "description": "Çamyuva’da eşyalı, bahçeli ve özel havuzlu 3+1 villa. Aylık 95.000 TL tutarı yıllık peşin kiralama koşuluyla sunulan uzun dönem seçeneğidir. Kısa dönem konaklama, günlük veya haftalık fiyat ve müsaitlik hakkında bilgi almak için danışmanımızla iletişime geçebilirsiniz.",
+      "features": [
+        "Özel havuz",
+        "Müstakil bahçe",
+        "Eşyalı",
+        "Klima",
+        "Açık otopark",
+        "Yıllık peşin kiralama koşulu"
+      ],
+      "photos": [
+        {
+          "id": "29750-112-photo-1",
+          "url": "/images/29750-112-01.webp",
+          "thumbnail": "/images/29750-112-01-sm.webp",
+          "alt": "Çamyuva’da özel havuzlu ve bahçeli 3+1 villa"
+        },
+        {
+          "id": "29750-112-photo-2",
+          "url": "/images/29750-112-02.webp",
+          "thumbnail": "/images/29750-112-02-sm.webp",
+          "alt": "Çamyuva’da özel havuzlu ve bahçeli 3+1 villa, fotoğraf 2"
+        },
+        {
+          "id": "29750-112-photo-3",
+          "url": "/images/29750-112-03.webp",
+          "thumbnail": "/images/29750-112-03-sm.webp",
+          "alt": "Çamyuva’da özel havuzlu ve bahçeli 3+1 villa, fotoğraf 3"
+        },
+        {
+          "id": "29750-112-photo-4",
+          "url": "/images/29750-112-04.webp",
+          "thumbnail": "/images/29750-112-04-sm.webp",
+          "alt": "Çamyuva’da özel havuzlu ve bahçeli 3+1 villa, fotoğraf 4"
+        },
+        {
+          "id": "29750-112-photo-5",
+          "url": "/images/29750-112-05.webp",
+          "thumbnail": "/images/29750-112-05-sm.webp",
+          "alt": "Çamyuva’da özel havuzlu ve bahçeli 3+1 villa, fotoğraf 5"
+        },
+        {
+          "id": "29750-112-photo-6",
+          "url": "/images/29750-112-06.webp",
+          "thumbnail": "/images/29750-112-06-sm.webp",
+          "alt": "Çamyuva’da özel havuzlu ve bahçeli 3+1 villa, fotoğraf 6"
+        }
+      ],
+      "featured": true,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-kemer-camyuva-kiralik/villa/29750-112",
+      "latitude": 36.55591,
+      "longitude": 30.56232
+    },
+    {
+      "city": "Antalya",
+      "currency": "TRY",
+      "status": "draft",
+      "createdAt": "2026-10-19T00:00:00.000Z",
+      "updatedAt": "2026-10-21T08:26:51.047Z",
+      "version": 1,
+      "needsReview": true,
+      "id": "29750-181",
+      "slug": "29750-181",
+      "title": "Yeni Emek’te ferah ve geniş 3+2 dubleks",
+      "transaction": "sale",
+      "propertyType": "apartment",
+      "price": 5990000,
+      "period": "total",
+      "district": "Kepez",
+      "neighborhood": "Yeni Emek",
+      "grossArea": 200,
+      "netArea": 190,
+      "rooms": "3+2",
+      "bathrooms": 3,
+      "floor": "2. kat",
+      "buildingAge": "11 yaşında",
+      "description": "Yeni Emek Mahallesi’nde iki katlı binanın üst katında 3+2 dubleks daire. 200 m² brüt, 190 m² net kullanım alanı, üç banyo ve balkon ile aile yaşamına uygun geniş bir düzen sunuyor. Kombili, üç cepheli dairenin güncel satış koşulları ve yerinde sunumu için danışmanımızla görüşebilirsiniz.",
+      "features": [
+        "Dubleks",
+        "Balkon",
+        "Kombi",
+        "Üç cephe",
+        "Boş"
+      ],
+      "photos": [
+        {
+          "id": "29750-181-photo-1",
+          "url": "/images/29750-181-03.webp",
+          "thumbnail": "/images/29750-181-03-sm.webp",
+          "alt": "Yeni Emek’te ferah ve geniş 3+2 dubleks"
+        },
+        {
+          "id": "29750-181-photo-2",
+          "url": "/images/29750-181-01.webp",
+          "thumbnail": "/images/29750-181-01-sm.webp",
+          "alt": "Yeni Emek’te ferah ve geniş 3+2 dubleks, fotoğraf 2"
+        },
+        {
+          "id": "29750-181-photo-3",
+          "url": "/images/29750-181-02.webp",
+          "thumbnail": "/images/29750-181-02-sm.webp",
+          "alt": "Yeni Emek’te ferah ve geniş 3+2 dubleks, fotoğraf 3"
+        },
+        {
+          "id": "29750-181-photo-4",
+          "url": "/images/29750-181-04.webp",
+          "thumbnail": "/images/29750-181-04-sm.webp",
+          "alt": "Yeni Emek’te ferah ve geniş 3+2 dubleks, fotoğraf 4"
+        },
+        {
+          "id": "29750-181-photo-5",
+          "url": "/images/29750-181-05.webp",
+          "thumbnail": "/images/29750-181-05-sm.webp",
+          "alt": "Yeni Emek’te ferah ve geniş 3+2 dubleks, fotoğraf 5"
+        },
+        {
+          "id": "29750-181-photo-6",
+          "url": "/images/29750-181-06.webp",
+          "thumbnail": "/images/29750-181-06-sm.webp",
+          "alt": "Yeni Emek’te ferah ve geniş 3+2 dubleks, fotoğraf 6"
+        }
+      ],
+      "featured": true,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-kepez-yeni-emek-satilik/daire/29750-181",
+      "latitude": 36.92211,
+      "longitude": 30.69508
+    },
+    {
+      "city": "Antalya",
+      "currency": "TRY",
+      "status": "draft",
+      "createdAt": "2026-10-19T00:00:00.000Z",
+      "updatedAt": "2026-10-21T08:26:51.047Z",
+      "version": 1,
+      "needsReview": true,
+      "id": "29750-193",
+      "slug": "29750-193",
+      "title": "Atatürk Bulvarı’nda plaza içinde kiralık ofis",
+      "transaction": "rent",
+      "propertyType": "office",
+      "price": 35000,
+      "period": "month",
+      "district": "Konyaaltı",
+      "neighborhood": "Öğretmenevleri",
+      "grossArea": 60,
+      "netArea": 55,
+      "rooms": "1+1",
+      "bathrooms": null,
+      "floor": "2. kat",
+      "buildingAge": "4 yaşında",
+      "description": "Öğretmenevleri Mahallesi Atatürk Bulvarı üzerinde plaza içerisinde 1+1 kullanım planına sahip ofis. 60 m² brüt, 55 m² net alana sahip ikinci kattaki ofis klimalıdır. Aylık kira 35.000 TL’dir. Yerinde sunum, güncel müsaitlik ve kullanım koşulları için danışmanımızla görüşebilirsiniz.",
+      "features": [
+        "Plaza içinde",
+        "Klima",
+        "1+1 kullanım planı",
+        "Atatürk Bulvarı",
+        "Boş"
+      ],
+      "photos": [
+        {
+          "id": "29750-193-photo-1",
+          "url": "/images/29750-193-01.webp",
+          "thumbnail": "/images/29750-193-01-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık ofis"
+        },
+        {
+          "id": "29750-193-photo-2",
+          "url": "/images/29750-193-02.webp",
+          "thumbnail": "/images/29750-193-02-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık ofis, fotoğraf 2"
+        },
+        {
+          "id": "29750-193-photo-3",
+          "url": "/images/29750-193-03.webp",
+          "thumbnail": "/images/29750-193-03-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık ofis, fotoğraf 3"
+        },
+        {
+          "id": "29750-193-photo-4",
+          "url": "/images/29750-193-04.webp",
+          "thumbnail": "/images/29750-193-04-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık ofis, fotoğraf 4"
+        },
+        {
+          "id": "29750-193-photo-5",
+          "url": "/images/29750-193-05.webp",
+          "thumbnail": "/images/29750-193-05-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık ofis, fotoğraf 5"
+        },
+        {
+          "id": "29750-193-photo-6",
+          "url": "/images/29750-193-06.webp",
+          "thumbnail": "/images/29750-193-06-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık ofis, fotoğraf 6"
+        }
+      ],
+      "featured": false,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-ogretmenevleri-kiralik/ofis/29750-193",
+      "latitude": 36.87505,
+      "longitude": 30.64091
+    },
+    {
+      "city": "Antalya",
+      "currency": "TRY",
+      "status": "draft",
+      "createdAt": "2026-10-19T00:00:00.000Z",
+      "updatedAt": "2026-10-21T08:26:51.047Z",
+      "version": 1,
+      "needsReview": true,
+      "id": "29750-189",
+      "slug": "29750-189",
+      "title": "Altınova’da ofisli 2.000 m² kiralık depo",
+      "transaction": "rent",
+      "propertyType": "warehouse",
+      "price": 375000,
+      "period": "month",
+      "district": "Kepez",
+      "neighborhood": "Altınova Sinan",
+      "grossArea": 2000,
+      "netArea": 1999,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Altınova Sinan Mahallesi’nde 2.000 m² brüt alana sahip kiralık depo. Trafo, yangın algılama ve söndürme sistemi, ofis alanları ve yükleme-boşaltmaya uygun girişle iş ihtiyaçlarına yönelik bir çözüm sunuyor. Aylık kira 375.000 TL’dir. Teknik özellikleri ve kiralama koşullarını yerinde incelemek için iletişime geçebilirsiniz.",
+      "features": [
+        "Ofis alanları",
+        "Trafo",
+        "Yangın sistemi",
+        "Yükleme alanı",
+        "Araç girişine uygun"
+      ],
+      "photos": [
+        {
+          "id": "29750-189-photo-1",
+          "url": "/images/29750-189-01.webp",
+          "thumbnail": "/images/29750-189-01-sm.webp",
+          "alt": "Altınova’da ofisli 2.000 m² kiralık depo"
+        },
+        {
+          "id": "29750-189-photo-2",
+          "url": "/images/29750-189-02.webp",
+          "thumbnail": "/images/29750-189-02-sm.webp",
+          "alt": "Altınova’da ofisli 2.000 m² kiralık depo, fotoğraf 2"
+        }
+      ],
+      "featured": false,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-kepez-altinova-sinan-kiralik/depo/29750-189",
+      "latitude": 36.92783,
+      "longitude": 30.78289
+    },
+    {
+      "city": "Antalya",
+      "currency": "TRY",
+      "status": "draft",
+      "createdAt": "2026-10-19T00:00:00.000Z",
+      "updatedAt": "2026-10-21T08:26:51.047Z",
+      "version": 1,
+      "needsReview": true,
+      "id": "29750-179",
+      "slug": "29750-179",
+      "title": "Antalya’da kat karşılığı ve dönüşüm portföyleri",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "period": "total",
+      "district": "Konyaaltı",
+      "neighborhood": "Hurma",
+      "grossArea": 10000,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Konyaaltı, Muratpaşa, Döşemealtı ve Kepez bölgelerindeki kat karşılığı ve kentsel dönüşüm portföyleri hakkında görüşme çağrısıdır. Kaynaktaki 10.000 m² ve Hurma konumu tek bir kesin parsel olarak yorumlanmamalıdır. Sayısal satış fiyatı belirtilmemiştir. Kapalı portföyler ve iş birliği için danışmanla iletişime geçebilirsiniz.",
+      "features": [
+        "Kat karşılığı görüşmesi",
+        "Kentsel dönüşüm",
+        "Kapalı portföy",
+        "Fiyat görüşme ile"
+      ],
+      "photos": [
+        {
+          "id": "29750-179-photo-1",
+          "url": "/images/29750-179-01.webp",
+          "thumbnail": "/images/29750-179-01-sm.webp",
+          "alt": "Antalya’da kat karşılığı ve dönüşüm portföyleri"
+        }
+      ],
+      "featured": false,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-hurma-kat-karsiligi-satilik/imarli-konut/29750-179"
+    },
+    {
+      "id": "29750-200",
+      "slug": "29750-200",
+      "title": "Duacı’da günlük kiralık, bahçeli 4+1 müstakil villa",
+      "transaction": "rent",
+      "propertyType": "villa",
+      "price": 6000,
+      "currency": "TRY",
+      "period": "day",
+      "city": "Antalya",
+      "district": "Kepez",
+      "neighborhood": "Duacı",
+      "grossArea": 250,
+      "netArea": 240,
+      "rooms": "4+1",
+      "bathrooms": 4,
+      "floor": "",
+      "buildingAge": "4",
+      "description": "🌿 ANTALYA DUACI’DA 4+1 MÜSTAKİL VİLLA\n\nAileniz ve sevdiklerinizle huzurlu, konforlu ve doğayla iç içe bir tatil için ideal.\n\n📍 Antalya / Kepez / Duacı\n\n🏡 4+1 müstakil villa\n\n📐 200 m² net – 250 m² brüt\n\n🌿 300 m² açık alan\n\n👨‍👩‍👧‍👦 8-10 kişiye kadar konaklama\n\nVİLLA ÖZELLİKLERİ\n\n• Geniş ve ferah salon\n\n• Konforlu yatak odaları\n\n• Tam donanımlı mutfak\n\n• Ankastre set, buzdolabı ve bulaşık makinesi\n\n• Modern ve geniş banyolar\n\n• Tüm odalarda klima\n\n• Yüksek hızlı Wi-Fi\n\n• TV\n\n• Nevresim ve havlu hizmeti\n\n• Profesyonel temizlik\n\n🌿 DIŞ ALAN\n\n• Özel ve korunaklı bahçe\n\n• Geniş veranda\n\n• Barbekü / mangal alanı\n\n• Bahçe mobilyaları\n\n• Özel otopark\n\n• Doğayla iç içe sakin konum\n\n📍 KONUM AVANTAJI\n\nDuacı’nın doğayla iç içe, sakin atmosferinde yer alan villamız; Antalya şehir merkezine, alışveriş noktalarına ve plajlara ulaşım açısından avantajlı konumdadır.\n\n📋 KİRALAMA BİLGİLERİ\n\n🕑 Giriş: 14:00\n\n🕚 Çıkış: 11:00\n\n• Konaklayan tüm misafirler için KBS kimlik bildirimi yapılmaktadır.\n\n• Evcil hayvan kabul edilmemektedir.\n\n• Parti ve etkinlikler için uygun değildir.\n\n• Fiyatlar sezon, tatil dönemleri ve konaklama süresine göre değişiklik gösterebilir.\n\nTurizm Amaçlı Konut Kiralama İzin Belgesi mevcuttur.\n\n📞 Rezervasyon & Bilgi:\n\nİshak Kahraman – KA GLOBAL İNŞAAT EMLAK\n\n0532 224 76 58\n\nGüncel fiyat, müsaitlik ve rezervasyon için iletişime geçebilirsiniz.\n\nKA GLOBAL SHORT TERM RENTALS\n\n🏡 Günlük • Haftalık • Aylık Konaklama\n\n📍 Antalya / Türkiye\n\n🌍 Türkçe • English • فارسی\n\nAntalya’da güvenilir, konforlu ve seçkin kısa dönem konaklama seçenekleri için KA GLOBAL güvencesiyle hizmet veriyoruz.\n\n🏠 Villa • Daire • Residence\n\n🌊 Deniz yakınında seçenekler\n\n🏊 Havuzlu ve site içi alternatifler\n\n📅 Günlük • Haftalık • Aylık kiralama\n\n📞 Detaylı bilgi ve rezervasyon için bizimle iletişime geçebilirsiniz.\n\nKA GLOBAL Real Estate & Construction\n\nAntalya",
+      "features": [
+        "Eşyalı",
+        "Doğalgaz",
+        "Kombi"
+      ],
+      "photos": [
+        {
+          "id": "29750-200-photo-1",
+          "url": "/images/29750-200-01.webp",
+          "thumbnail": "/images/29750-200-01-sm.webp",
+          "alt": "Duacı’da günlük kiralık, bahçeli 4+1 müstakil villa"
+        },
+        {
+          "id": "29750-200-photo-2",
+          "url": "/images/29750-200-02.webp",
+          "thumbnail": "/images/29750-200-02-sm.webp",
+          "alt": "Duacı’da günlük kiralık, bahçeli 4+1 müstakil villa, fotoğraf 2"
+        },
+        {
+          "id": "29750-200-photo-3",
+          "url": "/images/29750-200-03.webp",
+          "thumbnail": "/images/29750-200-03-sm.webp",
+          "alt": "Duacı’da günlük kiralık, bahçeli 4+1 müstakil villa, fotoğraf 3"
+        },
+        {
+          "id": "29750-200-photo-4",
+          "url": "/images/29750-200-04.webp",
+          "thumbnail": "/images/29750-200-04-sm.webp",
+          "alt": "Duacı’da günlük kiralık, bahçeli 4+1 müstakil villa, fotoğraf 4"
+        },
+        {
+          "id": "29750-200-photo-5",
+          "url": "/images/29750-200-05.webp",
+          "thumbnail": "/images/29750-200-05-sm.webp",
+          "alt": "Duacı’da günlük kiralık, bahçeli 4+1 müstakil villa, fotoğraf 5"
+        },
+        {
+          "id": "29750-200-photo-6",
+          "url": "/images/29750-200-06.webp",
+          "thumbnail": "/images/29750-200-06-sm.webp",
+          "alt": "Duacı’da günlük kiralık, bahçeli 4+1 müstakil villa, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-kepez-duaci-kiralik/villa/29750-200",
+      "needsReview": true,
+      "latitude": 36.97608,
+      "longitude": 30.65309
+    },
+    {
+      "id": "29750-199",
+      "slug": "29750-199",
+      "title": "Hurma’da site içinde, havuzlu 2+1 satılık daire",
+      "transaction": "sale",
+      "propertyType": "apartment",
+      "price": 6500000,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Hurma",
+      "grossArea": 100,
+      "netArea": 90,
+      "rooms": "2+1",
+      "bathrooms": 2,
+      "floor": "Ara Kat",
+      "buildingAge": "15",
+      "description": "ANTALYA / KONYAALTI / HURMA MAHALLESİ\n\nHurma Mahallesi 252. Sokak üzerinde, ulaşım açısından avantajlı konumda bulunan site içerisindeki satılık dairemiz yeni sahibini bekliyor.\n\nDAİRE ÖZELLİKLERİ\n\n4 katlı binanın 2. katında\n\nAsansörlü\n\nSite içerisinde\n\nSite havuzlu\n\nDoğalgazlı\n\nBinanın hemen önünde otobüs durağı\n\nMerkezi ve ulaşımı kolay konum\n\nKONUM AVANTAJLARI\n\nDairenin hemen önünde otobüs durağı bulunması sayesinde toplu taşıma ulaşımı oldukça rahattır.\n\nHurma Mahallesi’nin tercih edilen bölgelerinden birinde bulunan taşınmaz, hem oturum hem de yatırım amacıyla değerlendirilebilir.\n\nEMLAK HİZMET BEDELİ\n\nEmlak hizmet bedeli: Satış bedelinin %2 + KDV’si alıcıdan tahsil edilecektir.\n\nDetaylı bilgi, fiyat ve yerinde gösterim için:\n\nKA EMLAK\n\n📞 0532 224 76 58",
+      "features": [
+        "Doğalgaz",
+        "Klima",
+        "Krediye uygun"
+      ],
+      "photos": [
+        {
+          "id": "29750-199-photo-1",
+          "url": "/images/29750-199-01.webp",
+          "thumbnail": "/images/29750-199-01-sm.webp",
+          "alt": "Hurma’da site içinde, havuzlu 2+1 satılık daire"
+        },
+        {
+          "id": "29750-199-photo-2",
+          "url": "/images/29750-199-02.webp",
+          "thumbnail": "/images/29750-199-02-sm.webp",
+          "alt": "Hurma’da site içinde, havuzlu 2+1 satılık daire, fotoğraf 2"
+        },
+        {
+          "id": "29750-199-photo-3",
+          "url": "/images/29750-199-03.webp",
+          "thumbnail": "/images/29750-199-03-sm.webp",
+          "alt": "Hurma’da site içinde, havuzlu 2+1 satılık daire, fotoğraf 3"
+        },
+        {
+          "id": "29750-199-photo-4",
+          "url": "/images/29750-199-04.webp",
+          "thumbnail": "/images/29750-199-04-sm.webp",
+          "alt": "Hurma’da site içinde, havuzlu 2+1 satılık daire, fotoğraf 4"
+        },
+        {
+          "id": "29750-199-photo-5",
+          "url": "/images/29750-199-05.webp",
+          "thumbnail": "/images/29750-199-05-sm.webp",
+          "alt": "Hurma’da site içinde, havuzlu 2+1 satılık daire, fotoğraf 5"
+        },
+        {
+          "id": "29750-199-photo-6",
+          "url": "/images/29750-199-06.webp",
+          "thumbnail": "/images/29750-199-06-sm.webp",
+          "alt": "Hurma’da site içinde, havuzlu 2+1 satılık daire, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-hurma-satilik/daire/29750-199",
+      "needsReview": true,
+      "latitude": 36.85745,
+      "longitude": 30.59993
+    },
+    {
+      "id": "29750-201",
+      "slug": "29750-201",
+      "title": "Liman’da doğalgazlı, iki klimalı kiralık 1+1 daire",
+      "transaction": "rent",
+      "propertyType": "apartment",
+      "price": 25000,
+      "currency": "TRY",
+      "period": "month",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Liman",
+      "grossArea": 60,
+      "netArea": 50,
+      "rooms": "1+1",
+      "bathrooms": 1,
+      "floor": "Yüksek Giriş",
+      "buildingAge": "3",
+      "description": "Antalya Konyaaltı Liman’da Doğalgazlı & 2 Klimalı Kiralık 1+1 Daire\n\nKonyaaltı’nın gözde bölgesi Liman Mahallesi’nde, konforlu ve masrafsız kiralık 1+1 daire!\n\nDaire Özellikleri:\n\nOda Sayısı: 1+1\n\nBrüt / Net: 60 m² / 50 m²\n\nIsıtma: Kombi (Doğalgaz)\n\nİklimlendirme: 2 adet Klima\n\nDonanım: Ankastre seti mevcut\n\nBina: Tek bloklu nezih apartman (Bina yaşı: 6-10 arası)\n\nKonum ve Ulaşım:\n\nLiman Mahallesi’nin merkezi konumunda yer alan dairemiz; zincir marketlere, toplu taşıma duraklarına, sosyal olanaklara ve sahile yürüyüş mesafesindedir.\n\nKira Koşulları:\n\nAylık Kira Bedeli: 25.000 TL\n\nDetaylı bilgi ve randevu için lütfen iletişime geçiniz.",
+      "features": [
+        "Doğalgaz",
+        "Kombi"
+      ],
+      "photos": [
+        {
+          "id": "29750-201-photo-1",
+          "url": "/images/29750-201-01.webp",
+          "thumbnail": "/images/29750-201-01-sm.webp",
+          "alt": "Liman’da doğalgazlı, iki klimalı kiralık 1+1 daire"
+        },
+        {
+          "id": "29750-201-photo-2",
+          "url": "/images/29750-201-02.webp",
+          "thumbnail": "/images/29750-201-02-sm.webp",
+          "alt": "Liman’da doğalgazlı, iki klimalı kiralık 1+1 daire, fotoğraf 2"
+        },
+        {
+          "id": "29750-201-photo-3",
+          "url": "/images/29750-201-03.webp",
+          "thumbnail": "/images/29750-201-03-sm.webp",
+          "alt": "Liman’da doğalgazlı, iki klimalı kiralık 1+1 daire, fotoğraf 3"
+        },
+        {
+          "id": "29750-201-photo-4",
+          "url": "/images/29750-201-04.webp",
+          "thumbnail": "/images/29750-201-04-sm.webp",
+          "alt": "Liman’da doğalgazlı, iki klimalı kiralık 1+1 daire, fotoğraf 4"
+        },
+        {
+          "id": "29750-201-photo-5",
+          "url": "/images/29750-201-05.webp",
+          "thumbnail": "/images/29750-201-05-sm.webp",
+          "alt": "Liman’da doğalgazlı, iki klimalı kiralık 1+1 daire, fotoğraf 5"
+        },
+        {
+          "id": "29750-201-photo-6",
+          "url": "/images/29750-201-06.webp",
+          "thumbnail": "/images/29750-201-06-sm.webp",
+          "alt": "Liman’da doğalgazlı, iki klimalı kiralık 1+1 daire, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-liman-kiralik/daire/29750-201",
+      "needsReview": true,
+      "latitude": 36.85153,
+      "longitude": 30.61631
+    },
+    {
+      "id": "29750-195",
+      "slug": "29750-195",
+      "title": "Kepez Baraj’da site içinde, havuz manzaralı 1+1 daire",
+      "transaction": "sale",
+      "propertyType": "apartment",
+      "price": 2890000,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Kepez",
+      "neighborhood": "Baraj",
+      "grossArea": 70,
+      "netArea": 50,
+      "rooms": "1+1",
+      "bathrooms": 1,
+      "floor": "Yüksek Giriş",
+      "buildingAge": "Sıfır bina",
+      "description": "Kepez Baraj Mahallesi’nde Satılık 1+1 Geniş Daire\nNet 50 m² | Brüt 70 m²\n2.900.000 TL\n\n(Eski fiyat: 4.000.000 TL)\n\nKepez Baraj Mahallesi’nde, site içinde, havuz manzaralı, geniş ve kapanmayan manzaraya sahip 1+1 daire.\n\nDaire Özellikleri\n\nNet 50 m², brüt 70 m²\n\n1+1 (kapalı ankastre mutfak)\n\nKat: zemin Daire\n\nCephe: Güney + Doğu + Kuzey\n\nManzara: Havuz + geniş şehir manzarası\n\nDoğalgaz (kombi) + tüm odalara klima tesisatı\n\nKalorifer tesisatı çekili\n\nHilton banyo + duşakabin\n\nEşyasız, hemen taşınmaya hazır\n\nSite İmkanları\n\n1.900 m² arsa, 2 blok, 24 daire\n\nAçık yüzme havuzu\n\nKamelya ve peyzaj\n\nAçık otopark\n\nEngelliye uygun asansör\n\nFiber internet altyapısı\n\nİnşaat %90 tamamlandı. Yaklaşık 2 ay içinde tüm imalatlar bitirilip iskan başvurusu yapılacak.\n\nKonum Avantajları\n\nOkul → 500 m\n\nMarket & AVM → 500 m\n\nKepez Devlet Hastanesi → 1,5 km\n\nHavalimanı → 8 km\n\nŞehir merkezi → 8 km\n\nTakas Seçeneği\nOrijinal ve az kilometreli Toyota veya Honda araçlarla takas yapılabilir. (1+1 dairemiz de mevcuttur)\n\nDetay ve yerinde inceleme için yazın.",
+      "features": [
+        "Klima"
+      ],
+      "photos": [
+        {
+          "id": "29750-195-photo-1",
+          "url": "/images/29750-195-01.webp",
+          "thumbnail": "/images/29750-195-01-sm.webp",
+          "alt": "Kepez Baraj’da site içinde, havuz manzaralı 1+1 daire"
+        },
+        {
+          "id": "29750-195-photo-2",
+          "url": "/images/29750-195-02.webp",
+          "thumbnail": "/images/29750-195-02-sm.webp",
+          "alt": "Kepez Baraj’da site içinde, havuz manzaralı 1+1 daire, fotoğraf 2"
+        },
+        {
+          "id": "29750-195-photo-3",
+          "url": "/images/29750-195-03.webp",
+          "thumbnail": "/images/29750-195-03-sm.webp",
+          "alt": "Kepez Baraj’da site içinde, havuz manzaralı 1+1 daire, fotoğraf 3"
+        },
+        {
+          "id": "29750-195-photo-4",
+          "url": "/images/29750-195-04.webp",
+          "thumbnail": "/images/29750-195-04-sm.webp",
+          "alt": "Kepez Baraj’da site içinde, havuz manzaralı 1+1 daire, fotoğraf 4"
+        },
+        {
+          "id": "29750-195-photo-5",
+          "url": "/images/29750-195-05.webp",
+          "thumbnail": "/images/29750-195-05-sm.webp",
+          "alt": "Kepez Baraj’da site içinde, havuz manzaralı 1+1 daire, fotoğraf 5"
+        },
+        {
+          "id": "29750-195-photo-6",
+          "url": "/images/29750-195-06.webp",
+          "thumbnail": "/images/29750-195-06-sm.webp",
+          "alt": "Kepez Baraj’da site içinde, havuz manzaralı 1+1 daire, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-kepez-baraj-satilik/daire/29750-195",
+      "needsReview": true,
+      "latitude": 36.93642,
+      "longitude": 30.7496
+    },
+    {
+      "id": "29750-203",
+      "slug": "29750-203",
+      "title": "Kuşkavağı’nda bahçeli, çift banyolu kiralık ofis",
+      "transaction": "rent",
+      "propertyType": "office",
+      "price": 42000,
+      "currency": "TRY",
+      "period": "month",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Kuşkavağı",
+      "grossArea": 80,
+      "netArea": 75,
+      "rooms": "1+1",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Konyaaltı Kuşkavağı Mahallesi’nin en nezih lokasyonunda, işiniz ve çalışma ortamınız için prestijli ve konforlu bir fırsat!\n\nİki katlı şık villanın giriş katında yer alan bu özel gayrimenkul, son derece geniş ve ferah mimarisiyle hem kurumsal ofis hem de konut / home-office kullanımı için mükemmel bir yapıya sahiptir.\n\nÖNE ÇIKAN ÖZELLİKLER:\n\nGeniş Kullanım Alanı: Net ~80 m² kullanım alanı\n\nOda Düzeni: 2 Büyük Bağımsız Oda + Ayrı Mutfak (1+1 Formatında Çok Geniş ve Kullanışlı)\n\nBanyo: 2 Adet Bağımsız Banyo & WC\n\nAçık Alanlar: 2 Adet Geniş Balkon + Keyifli Büyük Özel Bahçe Kullanımı\n\nGiriş Kat Avantajı: Müşteri ve personel erişimine son derece uygun, müstakil giriş hissi\n\nÇalışma Ortamı: Doğayla iç içe, sessiz, prestijli ve ferah atmosfer\n\nLOKASYON & ULAŞIM:\n\nKonyaaltı’nın gelişen ve değer kazanan bölgesinde; ana yollara, toplu taşımaya, kurumsal noktalara ve sosyal olanaklara çok yakın konumdadır.",
+      "features": [
+        "50 m² açık alan"
+      ],
+      "photos": [
+        {
+          "id": "29750-203-photo-1",
+          "url": "/images/29750-203-01.webp",
+          "thumbnail": "/images/29750-203-01-sm.webp",
+          "alt": "Kuşkavağı’nda bahçeli, çift banyolu kiralık ofis"
+        },
+        {
+          "id": "29750-203-photo-2",
+          "url": "/images/29750-203-02.webp",
+          "thumbnail": "/images/29750-203-02-sm.webp",
+          "alt": "Kuşkavağı’nda bahçeli, çift banyolu kiralık ofis, fotoğraf 2"
+        },
+        {
+          "id": "29750-203-photo-3",
+          "url": "/images/29750-203-03.webp",
+          "thumbnail": "/images/29750-203-03-sm.webp",
+          "alt": "Kuşkavağı’nda bahçeli, çift banyolu kiralık ofis, fotoğraf 3"
+        },
+        {
+          "id": "29750-203-photo-4",
+          "url": "/images/29750-203-04.webp",
+          "thumbnail": "/images/29750-203-04-sm.webp",
+          "alt": "Kuşkavağı’nda bahçeli, çift banyolu kiralık ofis, fotoğraf 4"
+        },
+        {
+          "id": "29750-203-photo-5",
+          "url": "/images/29750-203-05.webp",
+          "thumbnail": "/images/29750-203-05-sm.webp",
+          "alt": "Kuşkavağı’nda bahçeli, çift banyolu kiralık ofis, fotoğraf 5"
+        },
+        {
+          "id": "29750-203-photo-6",
+          "url": "/images/29750-203-06.webp",
+          "thumbnail": "/images/29750-203-06-sm.webp",
+          "alt": "Kuşkavağı’nda bahçeli, çift banyolu kiralık ofis, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-kuskavagi-kiralik/ofis/29750-203",
+      "needsReview": true,
+      "latitude": 36.87162,
+      "longitude": 30.64815
+    },
+    {
+      "id": "29750-198",
+      "slug": "29750-198",
+      "title": "Hurma’da 3+1 satılık çatı dubleks daire",
+      "transaction": "sale",
+      "propertyType": "apartment",
+      "price": 8995000,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Hurma",
+      "grossArea": 140,
+      "netArea": 135,
+      "rooms": "3+1",
+      "bathrooms": 3,
+      "floor": "4. Kat",
+      "buildingAge": "20",
+      "description": "Antalya Konyaaltı Hurma Mahallesi’nde Satılık Çatı Dubleks Daire!\n\nTapu beş yıldan büyük olduğu için kredi ve finansman şirketleri satışına uygun\n\nKonyaaltı’nın en çok tercih edilen ve hızla değer kazanan bölgelerinden Hurma Mahallesi’nde,\n\n1.581 m² arsa içerisinde yer alan sitemizde satılık dubleks mesken.\n\nÖne Çıkan Özellikler:\n\nLokasyon: Konyaaltı / Hurma Mahallesi  Kat Planı: 3. Kat + Çatı Dubleks\n\nMülkiyet Durumu: Kat İrtifaklı,\n\ntapuda tam hisseli  Bina/Site Alanı: Toplam 1.581 m² arsa alanına sahip geniş site yerleşimi  Gerek oturum gerek yatırım için son derece ideal bir konumdadır.\n\nDetaylı bilgi ve randevu için lütfen iletişime geçiniz.\n\nPegah ZARE\n\n0 538 214 73 35",
+      "features": [
+        "Kombi",
+        "Krediye uygun"
+      ],
+      "photos": [
+        {
+          "id": "29750-198-photo-1",
+          "url": "/images/29750-198-01.webp",
+          "thumbnail": "/images/29750-198-01-sm.webp",
+          "alt": "Hurma’da 3+1 satılık çatı dubleks daire"
+        },
+        {
+          "id": "29750-198-photo-2",
+          "url": "/images/29750-198-02.webp",
+          "thumbnail": "/images/29750-198-02-sm.webp",
+          "alt": "Hurma’da 3+1 satılık çatı dubleks daire, fotoğraf 2"
+        },
+        {
+          "id": "29750-198-photo-3",
+          "url": "/images/29750-198-03.webp",
+          "thumbnail": "/images/29750-198-03-sm.webp",
+          "alt": "Hurma’da 3+1 satılık çatı dubleks daire, fotoğraf 3"
+        },
+        {
+          "id": "29750-198-photo-4",
+          "url": "/images/29750-198-04.webp",
+          "thumbnail": "/images/29750-198-04-sm.webp",
+          "alt": "Hurma’da 3+1 satılık çatı dubleks daire, fotoğraf 4"
+        },
+        {
+          "id": "29750-198-photo-5",
+          "url": "/images/29750-198-05.webp",
+          "thumbnail": "/images/29750-198-05-sm.webp",
+          "alt": "Hurma’da 3+1 satılık çatı dubleks daire, fotoğraf 5"
+        },
+        {
+          "id": "29750-198-photo-6",
+          "url": "/images/29750-198-06.webp",
+          "thumbnail": "/images/29750-198-06-sm.webp",
+          "alt": "Hurma’da 3+1 satılık çatı dubleks daire, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-hurma-satilik/daire/29750-198",
+      "needsReview": true,
+      "latitude": 36.85745,
+      "longitude": 30.59993
+    },
+    {
+      "id": "29750-192",
+      "slug": "29750-192",
+      "title": "Atatürk Bulvarı’nda plaza içinde kiralık 2+1 ofis",
+      "transaction": "rent",
+      "propertyType": "office",
+      "price": 60000,
+      "currency": "TRY",
+      "period": "month",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Öğretmenevleri",
+      "grossArea": 100,
+      "netArea": 90,
+      "rooms": "2+1",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "ANTALYA KONYAALTI ÖĞRETMENEVLERİ MAHALLESİ’NDE\n\nATATÜRK BULVARI ÜZERİNDE PREMİUM PLAZADA KİRALIK 2+1 LÜKS OFİS\n\nKonyaaltı’nın en prestijli lokasyonlarından biri olan Atatürk Bulvarı üzerinde, denize çok yakın konumda yer alan Premium Plaza içerisinde, kurumsal firmalara yakışır 2+1 kiralık ofis sizleri bekliyor. Bölge; yüksek tabela değeri, yoğun araç ve yaya trafiği ile marka bilinirliğini artırmak isteyen işletmeler için önemli bir konumdadır. (hepsiemlak)\n\nOfis Özellikleri\n• 📍 Öğretmenevleri Mahallesi – Atatürk Bulvarı Üzeri\n• 🏢 Premium Plaza – 5 katlı binanın 1. katı\n• 📐 110 m² geniş kullanım alanı\n• 🛋️ 2+1 ofis planı\n• 🍽️ Ayrı mutfak\n• 🌞 Ön cephede tamamen camlı, ferah ve aydınlık 2 oda\n• 🚗 Kapalı otopark\n• 🌊 Denize yürüme mesafesinde\n• 💼 Prestijli ve kurumsal çalışma ortamı\n\nKimler İçin Uygun?\n• Sağlık merkezleri\n• Doktor ve diş hekimi muayenehaneleri\n• Avukatlık büroları\n• Mali müşavirlik ve muhasebe ofisleri\n• Mimarlık ve mühendislik firmaları\n• Danışmanlık şirketleri\n• Kurumsal ofis arayan tüm işletmeler\n\nAtatürk Bulvarı üzerindeki premium konumu, yüksek tabela görünürlüğü ve prestijli plaza yapısıyla firmanızın kurumsal imajını güçlendirecek seçkin bir ofis fırsatı.\n\n💰 Aylık Kira: 60.000 TL\n\nDetaylı bilgi ve yerinde gösterim için bizimle iletişime geçebilirsiniz.",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-192-photo-1",
+          "url": "/images/29750-192-01.webp",
+          "thumbnail": "/images/29750-192-01-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık 2+1 ofis"
+        },
+        {
+          "id": "29750-192-photo-2",
+          "url": "/images/29750-192-02.webp",
+          "thumbnail": "/images/29750-192-02-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık 2+1 ofis, fotoğraf 2"
+        },
+        {
+          "id": "29750-192-photo-3",
+          "url": "/images/29750-192-03.webp",
+          "thumbnail": "/images/29750-192-03-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık 2+1 ofis, fotoğraf 3"
+        },
+        {
+          "id": "29750-192-photo-4",
+          "url": "/images/29750-192-04.webp",
+          "thumbnail": "/images/29750-192-04-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık 2+1 ofis, fotoğraf 4"
+        },
+        {
+          "id": "29750-192-photo-5",
+          "url": "/images/29750-192-05.webp",
+          "thumbnail": "/images/29750-192-05-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık 2+1 ofis, fotoğraf 5"
+        },
+        {
+          "id": "29750-192-photo-6",
+          "url": "/images/29750-192-06.webp",
+          "thumbnail": "/images/29750-192-06-sm.webp",
+          "alt": "Atatürk Bulvarı’nda plaza içinde kiralık 2+1 ofis, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-ogretmenevleri-kiralik/ofis/29750-192",
+      "needsReview": true,
+      "latitude": 36.87505,
+      "longitude": 30.64091
+    },
+    {
+      "id": "29750-141",
+      "slug": "29750-141",
+      "title": "Döşemealtı Yeniköy’de satılık komple bina",
+      "transaction": "sale",
+      "propertyType": "building",
+      "price": 20000000,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Döşemealtı",
+      "neighborhood": "Yeniköy",
+      "grossArea": 125,
+      "netArea": 115,
+      "rooms": "2+1",
+      "bathrooms": 2,
+      "floor": "",
+      "buildingAge": "2",
+      "description": "DÖŞEMEALTI YENİKÖY’DE SATILIK SIFIR KOMPLE BİNA\n\nAntalya Döşemealtı Yeniköy Mahallesi’nde, 432 m² arsa üzerine inşa edilmiş, kaliteli işçilik ve birinci sınıf malzeme kullanılarak tamamlananiskanlı, sıfır komple bina satışa sunulmuştur.\n\nBina Özellikleri\n\n432 m² arsa üzerine kurulu\n\nToplam 4 adet hazır 2+1 daire\n\nHer daire yaklaşık 125 m² brüt kullanım alanına sahiptir.\n\nGeniş ve ferah yaşam alanları\n\nİskanı alınmış\n\nHemen teslim\n\nDaire Özellikleri\n\n2+1 geniş ve kullanışlı plan\n\nYerden ısıtma sistemi\n\nKomple lake mutfak ve iç kapılar\n\nBirinci sınıf işçilik ve kaliteli malzeme\n\nModern mimari\n\nAydınlık ve ferah yaşam alanları\n\nYatırım Avantajı\n\nÇatı katında 5. daire inşa edilebilme potansiyeli bulunmaktadır. (İlgili mevzuat ve teknik uygunluk kapsamında değerlendirilebilir.)\n\nHem yatırım hem de kira getirisi açısından yüksek potansiyele sahiptir.\n\n📞 Bu portföyün tek yetkili emlak ofisiyiz.\n🤝 Meslektaşlarımızla paylaşıma açıktır.\nDetaylı bilgi, yerinde sunum ve randevu için bizimle iletişime geçebilirsiniz.",
+      "features": [
+        "Klima",
+        "Kiracılı"
+      ],
+      "photos": [
+        {
+          "id": "29750-141-photo-1",
+          "url": "/images/29750-141-01.webp",
+          "thumbnail": "/images/29750-141-01-sm.webp",
+          "alt": "Döşemealtı Yeniköy’de satılık komple bina"
+        },
+        {
+          "id": "29750-141-photo-2",
+          "url": "/images/29750-141-02.webp",
+          "thumbnail": "/images/29750-141-02-sm.webp",
+          "alt": "Döşemealtı Yeniköy’de satılık komple bina, fotoğraf 2"
+        },
+        {
+          "id": "29750-141-photo-3",
+          "url": "/images/29750-141-03.webp",
+          "thumbnail": "/images/29750-141-03-sm.webp",
+          "alt": "Döşemealtı Yeniköy’de satılık komple bina, fotoğraf 3"
+        },
+        {
+          "id": "29750-141-photo-4",
+          "url": "/images/29750-141-04.webp",
+          "thumbnail": "/images/29750-141-04-sm.webp",
+          "alt": "Döşemealtı Yeniköy’de satılık komple bina, fotoğraf 4"
+        },
+        {
+          "id": "29750-141-photo-5",
+          "url": "/images/29750-141-05.webp",
+          "thumbnail": "/images/29750-141-05-sm.webp",
+          "alt": "Döşemealtı Yeniköy’de satılık komple bina, fotoğraf 5"
+        },
+        {
+          "id": "29750-141-photo-6",
+          "url": "/images/29750-141-06.webp",
+          "thumbnail": "/images/29750-141-06-sm.webp",
+          "alt": "Döşemealtı Yeniköy’de satılık komple bina, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-dosemealti-yenikoy-satilik/bina/29750-141",
+      "needsReview": true
+    },
+    {
+      "id": "29750-186",
+      "slug": "29750-186",
+      "title": "Fevzi Çakmak’ta sıfır binada 250 m² 4+1 dubleks",
+      "transaction": "sale",
+      "propertyType": "apartment",
+      "price": 6600000,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Kepez",
+      "neighborhood": "Fevzi Çakmak",
+      "grossArea": 250,
+      "netArea": 240,
+      "rooms": "4+1",
+      "bathrooms": 2,
+      "floor": "4. Kat",
+      "buildingAge": "Sıfır bina",
+      "description": "Antalya Kepez Fevzi Çakmak Mahallesi’nde , modern mimarisi ve geniş kullanım alanıyla dikkat çeken 4+1 dubleks daire satışa sunulmuştur.\n\nÖne Çıkan Özellikler:\n\n4+1 dubleks\n\n250 m² brüt / 240 m² net\n\nSıfır bina\n\n4 katlı, 2 bloklu site içerisinde\n\nBinanın 4. katında\n\n2 banyo\n\nKat mülkiyetli tapu\n\nFerah ve kullanışlı iç mekan\n\nModern sabit mobilyalı salon duvar ünitesi\n\nKlima ile ısınma/soğutma\n\nSatış Fiyatı: 6.400.000 TL\n\nGeniş metrekareli, yeni ve dubleks yaşam arayanlar için değerlendirilebilecek nitelikte bir seçenek.\n\nDetaylı bilgi ve yerinde gösterim için iletişime geçebilirsiniz.\n\nKA EMLAK",
+      "features": [
+        "Klima"
+      ],
+      "photos": [
+        {
+          "id": "29750-186-photo-1",
+          "url": "/images/29750-186-01.webp",
+          "thumbnail": "/images/29750-186-01-sm.webp",
+          "alt": "Fevzi Çakmak’ta sıfır binada 250 m² 4+1 dubleks"
+        },
+        {
+          "id": "29750-186-photo-2",
+          "url": "/images/29750-186-02.webp",
+          "thumbnail": "/images/29750-186-02-sm.webp",
+          "alt": "Fevzi Çakmak’ta sıfır binada 250 m² 4+1 dubleks, fotoğraf 2"
+        },
+        {
+          "id": "29750-186-photo-3",
+          "url": "/images/29750-186-03.webp",
+          "thumbnail": "/images/29750-186-03-sm.webp",
+          "alt": "Fevzi Çakmak’ta sıfır binada 250 m² 4+1 dubleks, fotoğraf 3"
+        },
+        {
+          "id": "29750-186-photo-4",
+          "url": "/images/29750-186-04.webp",
+          "thumbnail": "/images/29750-186-04-sm.webp",
+          "alt": "Fevzi Çakmak’ta sıfır binada 250 m² 4+1 dubleks, fotoğraf 4"
+        },
+        {
+          "id": "29750-186-photo-5",
+          "url": "/images/29750-186-05.webp",
+          "thumbnail": "/images/29750-186-05-sm.webp",
+          "alt": "Fevzi Çakmak’ta sıfır binada 250 m² 4+1 dubleks, fotoğraf 5"
+        },
+        {
+          "id": "29750-186-photo-6",
+          "url": "/images/29750-186-06.webp",
+          "thumbnail": "/images/29750-186-06-sm.webp",
+          "alt": "Fevzi Çakmak’ta sıfır binada 250 m² 4+1 dubleks, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-kepez-fevzi-cakmak-satilik/daire/29750-186",
+      "needsReview": true,
+      "latitude": 36.9464,
+      "longitude": 30.70653
+    },
+    {
+      "id": "29750-190",
+      "slug": "29750-190",
+      "title": "Hisarçandır’da özel havuzlu, günlük kiralık villa",
+      "transaction": "rent",
+      "propertyType": "villa",
+      "price": null,
+      "currency": "TRY",
+      "period": "day",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Hisarçandır",
+      "grossArea": 250,
+      "netArea": 240,
+      "rooms": "2+1",
+      "bathrooms": 2,
+      "floor": "",
+      "buildingAge": "2",
+      "description": "Büyüleyici atmosferinde, doğanın kucağında unutulmaz bir tatil deneyimine davetlisiniz.\n\nModern tasarımıyla dikkat çeken Villa Badem,\n\ntaş ve ahşabın sıcaklığını lüks detaylarla birleştiriyor.\n\nGüne kuş sesleri eşliğinde,\n\nmuazzam dağ manzarasına karşı uyanın.\n\nGeniş özel havuzunuzda serinlerken,\n\ndoğanın sunduğu huzuru tüm benliğinizle hissedin.\n\nTam donanımlı mutfağı,\n\nkonforlu yaşam alanları ve her detayı incelikle düşünülmüş mimarisiyle burası sadece bir konaklama yeri değil, ruhunuzu dinlendireceğiniz bir sığınak.\n\nKendinizi doğanın büyüleyici kollarına bırakmak ve Silyan Villas ayrıcalığını yaşamak için yerinizi hemen ayırtın.\"\n\nFİYATLAR=\n\nGünlük 300-450-550 EURO\n\nAYLIK 3500-4500-5500 EURO\n\n3 farklı villa seçeni mevcuttur.",
+      "features": [
+        "Klima"
+      ],
+      "photos": [
+        {
+          "id": "29750-190-photo-1",
+          "url": "/images/29750-190-01.webp",
+          "thumbnail": "/images/29750-190-01-sm.webp",
+          "alt": "Hisarçandır’da özel havuzlu, günlük kiralık villa"
+        },
+        {
+          "id": "29750-190-photo-2",
+          "url": "/images/29750-190-02.webp",
+          "thumbnail": "/images/29750-190-02-sm.webp",
+          "alt": "Hisarçandır’da özel havuzlu, günlük kiralık villa, fotoğraf 2"
+        },
+        {
+          "id": "29750-190-photo-3",
+          "url": "/images/29750-190-03.webp",
+          "thumbnail": "/images/29750-190-03-sm.webp",
+          "alt": "Hisarçandır’da özel havuzlu, günlük kiralık villa, fotoğraf 3"
+        },
+        {
+          "id": "29750-190-photo-4",
+          "url": "/images/29750-190-04.webp",
+          "thumbnail": "/images/29750-190-04-sm.webp",
+          "alt": "Hisarçandır’da özel havuzlu, günlük kiralık villa, fotoğraf 4"
+        },
+        {
+          "id": "29750-190-photo-5",
+          "url": "/images/29750-190-05.webp",
+          "thumbnail": "/images/29750-190-05-sm.webp",
+          "alt": "Hisarçandır’da özel havuzlu, günlük kiralık villa, fotoğraf 5"
+        },
+        {
+          "id": "29750-190-photo-6",
+          "url": "/images/29750-190-06.webp",
+          "thumbnail": "/images/29750-190-06-sm.webp",
+          "alt": "Hisarçandır’da özel havuzlu, günlük kiralık villa, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-hisarcandir-kiralik/villa/29750-190",
+      "needsReview": true,
+      "latitude": 36.7706,
+      "longitude": 30.46816
+    },
+    {
+      "id": "29750-180",
+      "slug": "29750-180",
+      "title": "Arsanıza özel hafif çelik villa yapımı",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Öğretmenevleri",
+      "grossArea": 10000,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "HAFİF ÇELİK VİLLA | 12.000 TL/m² KDV DAHİL | ANTALYA | ARSANIZA ÖZEL MİMARİ TASARIM\n\nAntalya ve çevresinde arsasına modern, güvenli ve ekonomik hafif çelik villa yaptırmak isteyen müşterilerimize özel çözümler sunuyoruz.\n\nHafif çelik yapı sistemimiz; hızlı üretim, kısa montaj süresi, yüksek dayanım, mimari esneklik ve ekonomik maliyet avantajı ile betonarme yapılara güçlü bir alternatif sunar. İster hazır planlarımızdan seçim yapabilir, ister arsanıza ve ihtiyaçlarınıza özel mimari tasarım hizmeti alabilirsiniz.\n\nSTANDART HAFİF ÇELİK VİLLA FİYATIMIZ\n\n12.000 TL/m² KDV DAHİL\n\nFiyatımız standart sistem için geçerlidir.\n\nDış duvar ve iç duvar sistemimiz standart olarak 10 cm kalınlıkta uygulanmaktadır.\n\nNOT:\n\nSu basmanı, temel betonu, zemin hazırlığı, ruhsat harçları, resmi izin giderleri ve araziye bağlı ekstra işler fiyatımıza dahil değildir. Arazi durumu, proje büyüklüğü, plan tipi ve malzeme tercihlerine göre fiyat değişiklik gösterebilir.\n\nHİZMET KAPSAMIMIZ\n• Arsanıza uygun mimari planlama\n• 2D mimari plan çalışması\n• Hafif çelik taşıyıcı sistem kurulumu\n• Duvar ve çatı kaplama uygulamaları\n• Isı ve ses yalıtımı uygulamaları\n• İç ve dış cephe kaplama işleri\n• Elektrik tesisatı altyapısı\n• Sıhhi tesisat altyapısı\n• Çatı ve yağmur oluğu uygulamaları\n• Pencere ve kapı uygulamaları\n• İsteğe bağlı iç mekân düzenleme ve malzeme seçimi\n• İsteğe bağlı peyzaj, veranda, havuz ve dış mekân konsept tasarımı\n\nSTANDART PAKETTE UYGULANABİLEN İŞLER\n• Hafif çelik karkas sistem\n• Dış cephe kaplama\n• İç cephe kaplama\n• Çatı sistemi\n• Çatı izolasyonu\n• Yağmur oluğu ve inişleri\n• PVC pencere sistemleri\n• İç ve dış kapı uygulamaları\n• Elektrik tesisatı\n• Temiz su ve pis su tesisatı\n• Islak hacim seramik uygulamaları\n• İç ve dış cephe boya uygulamaları\n• Laminant parke uygulamaları\n• Mutfak dolabı ve tezgâh uygulaması\n• Banyo vitrifiye ürünleri\n• Duşakabin, klozet ve lavabo uygulaması\n\nMalzeme renkleri, seramik, parke, boya, mutfak dolabı ve kapı seçenekleri proje aşamasında müşteri tercihine göre belirlenebilir.\n\nNEDEN HAFİF ÇELİK VİLLA?\n\nHızlı Üretim ve Montaj\n\nHafif çelik sistemler, geleneksel yapılara göre çok daha kısa sürede üretilebilir ve sahada hızlı şekilde monte edilebilir.\n\nDepreme*  Karşı Güvenli Sistem\n\nÇelik taşıyıcı sistem, hafifliği ve esnek yapısı sayesinde güvenli bir yapı çözümü sunar. Projelendirme süreci yürürlükteki yönetmeliklere uygun olarak hazırlanır.\n\nEkonomik ve Uzun Ömürlü Çözüm\n\nBakım maliyeti düşük, kullanım ömrü uzun ve yatırım değeri yüksek bir yapı sistemidir.\n\nMimari Esneklik\n\n2+1, 3+1, 4+1 villa, bağ evi, yayla evi, çiftlik evi, tiny house tarzı yapılar ve özel plan çözümleri üretilebilir.\n\nYalıtımlı ve Konforlu Yaşam Alanı\n\nDoğru yalıtım detayları ile yazın serin, kışın sıcak, konforlu yaşam alanları oluşturulur.\n\nKİMLER İÇİN UYGUNDUR?\n• Arsasına villa yaptırmak isteyenler\n• Antalya ve çevresinde bağ evi / müstakil ev düşünenler\n• Ekonomik ve hızlı yapı çözümü arayanlar\n• Depreme*  karşı güvenli hafif çelik sistem isteyenler\n• Hazır proje yerine kendine özel mimari tasarım isteyenler\n• Yatırımlık veya yazlık yapı yaptırmak isteyenler\n\nTESLİM VE FİYATLANDIRMA NOTU\n\nBelirtilen 12.000 TL/m² KDV dahil fiyat, standart hafif çelik yapı sistemi için başlangıç fiyatıdır.\n\nProjenin metrekaresi, oda sayısı, çatı tipi, cephe malzemesi, iç mekân kalitesi, arazi koşulları ve teslim kapsamına göre fiyat değişebilir.\n\nSu basmanı ve temel işleri arazi yapısına göre ayrıca fiyatlandırılır.\n\nDETAYLI BİLGİ VE RANDEVU\n\nAntalya ve çevresindeki projeleriniz için bizimle iletişime geçebilirsiniz.\n\nArsanıza özel planlama, mimari tasarım, teknik şartname ve fiyat teklifi için hemen arayın.\n\nHafif çelik villa, prefabrik ev, çelik ev, bağ evi, yayla evi ve arsanıza özel modern yaşam alanları için profesyonel çözümler sunuyoruz.\n• “Bu gayrimenkulün depreme dayanıklılığı konusunda hepsiemlak hiçbir taahhüt verememektedir. Detaylı bilgi için lütfen ilan sahibiyle görüşünüz.”",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-180-photo-1",
+          "url": "/images/29750-180-01.webp",
+          "thumbnail": "/images/29750-180-01-sm.webp",
+          "alt": "Arsanıza özel hafif çelik villa yapımı"
+        },
+        {
+          "id": "29750-180-photo-2",
+          "url": "/images/29750-180-02.webp",
+          "thumbnail": "/images/29750-180-02-sm.webp",
+          "alt": "Arsanıza özel hafif çelik villa yapımı, fotoğraf 2"
+        },
+        {
+          "id": "29750-180-photo-3",
+          "url": "/images/29750-180-03.webp",
+          "thumbnail": "/images/29750-180-03-sm.webp",
+          "alt": "Arsanıza özel hafif çelik villa yapımı, fotoğraf 3"
+        },
+        {
+          "id": "29750-180-photo-4",
+          "url": "/images/29750-180-04.webp",
+          "thumbnail": "/images/29750-180-04-sm.webp",
+          "alt": "Arsanıza özel hafif çelik villa yapımı, fotoğraf 4"
+        },
+        {
+          "id": "29750-180-photo-5",
+          "url": "/images/29750-180-05.webp",
+          "thumbnail": "/images/29750-180-05-sm.webp",
+          "alt": "Arsanıza özel hafif çelik villa yapımı, fotoğraf 5"
+        },
+        {
+          "id": "29750-180-photo-6",
+          "url": "/images/29750-180-06.webp",
+          "thumbnail": "/images/29750-180-06-sm.webp",
+          "alt": "Arsanıza özel hafif çelik villa yapımı, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-ogretmenevleri-kat-karsiligi-satilik/bahce/29750-180",
+      "needsReview": true
+    },
+    {
+      "id": "29750-153",
+      "slug": "29750-153",
+      "title": "Döşemealtı’nda kat karşılığı veya satılık arsa arıyoruz",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Döşemealtı",
+      "neighborhood": "Bahçeyaka",
+      "grossArea": 500,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Arsa Sahiplerine Duyuru!\n\nDeğerli Arsanız Değerlensin!\nAntalya'nın gözde bölgeleri Döşemealtı, Konyaaltı, Muratpaşa ve Kepez'de, kat karşılığı 6-10 daire yapılabilecek arsalar arıyoruz!\n\nArsanızı güvenle değerlendirmek, şeffaf sözleşme ve zamanında teslim garantisiyle kazançlı bir yatırıma dönüştürmek ister misiniz?\n\nKA Global İnşaat Gayrimenkul olarak, size en iyi koşulları sunmaya hazırız.\n\nHayallerinizdeki projeyi birlikte inşa edelim!\n\nHemen Arayın: 0 532 224 76 58",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-153-photo-1",
+          "url": "/images/29750-153-01.webp",
+          "thumbnail": "/images/29750-153-01-sm.webp",
+          "alt": "Döşemealtı’nda kat karşılığı veya satılık arsa arıyoruz"
+        },
+        {
+          "id": "29750-153-photo-2",
+          "url": "/images/29750-153-02.webp",
+          "thumbnail": "/images/29750-153-02-sm.webp",
+          "alt": "Döşemealtı’nda kat karşılığı veya satılık arsa arıyoruz, fotoğraf 2"
+        },
+        {
+          "id": "29750-153-photo-3",
+          "url": "/images/29750-153-03.webp",
+          "thumbnail": "/images/29750-153-03-sm.webp",
+          "alt": "Döşemealtı’nda kat karşılığı veya satılık arsa arıyoruz, fotoğraf 3"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-dosemealti-bahceyaka-kat-karsiligi-satilik/imarli-konut/29750-153",
+      "needsReview": true
+    },
+    {
+      "id": "29750-151",
+      "slug": "29750-151",
+      "title": "Antalya genelinde 400–2.000 m² arsa arıyoruz",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Öğretmenevleri",
+      "grossArea": 2000,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Antalya Genelinde Değerinde Arsa Arayışımız Mevcuttur!\n\nAntalya'nın gelişen bölgelerinde yeni projeler üretmek amacıyla,\n\naşağıdaki kriterlere uygun arsalarınız için nakit satın alma veya kat karşılığı teklifleri sunuyoruz.\n\nArayış İçerisinde Olduğumuz Bölgeler:\n\nKonyaaltı & Muratpaşa: Merkezi konumlu, butik veya lüks konut yapımına uygun parseller.\n\nKepez & Aksu: Hızla değer kazanan, imarlı ve projelendirilebilir araziler.\n\nDöşemealtı: Villa yapımına uygun veya geniş ölçekli konut arsaları.\n\nAranan Özellikler:\n\nMetrekare: 400 m2 ile 2000 m2 arası\n(Daha büyük parseller değerlendirilebilir).\n\nDurum: Müstakil tapulu, imar sorunu olmayan, inşaata hazır.\n\nYöntem: Tercihinize göre Peşin Ödeme veya yüksek oranlı Kat Karşılığı sözleşme.",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-151-photo-1",
+          "url": "/images/29750-151-01.webp",
+          "thumbnail": "/images/29750-151-01-sm.webp",
+          "alt": "Antalya genelinde 400–2.000 m² arsa arıyoruz"
+        },
+        {
+          "id": "29750-151-photo-2",
+          "url": "/images/29750-151-02.webp",
+          "thumbnail": "/images/29750-151-02-sm.webp",
+          "alt": "Antalya genelinde 400–2.000 m² arsa arıyoruz, fotoğraf 2"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-ogretmenevleri-satilik/imarli-konut/29750-151",
+      "needsReview": true
+    },
+    {
+      "id": "29750-152",
+      "slug": "29750-152",
+      "title": "Muratpaşa ve Konyaaltı’nda yatırımlık arsa arıyoruz",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Muratpaşa",
+      "neighborhood": "Kırcami",
+      "grossArea": 1000,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Antalya'nın kalbi Muratpaşa ve Konyaaltı bölgelerinde,\nprojelerimize değer katacak 400 ile 2000 m2 arasında arsalar aramaktayız.\n\n• Seçenekler:\n\nİster nakit satın alma, ister yüksek paylaşım oranlı kat karşılığı tekliflerimizle arsanızı değerlendirelim.\n\n• Kriterler:\n\nİmar durumu konut veya ticari olan, merkezi lokasyondaki parseller önceliğimizdir.\n\n\"Ekspertiz hizmetimiz ücretsizdir\" veya \"Güvenilir, şeffaf süreç\"",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-152-photo-1",
+          "url": "/images/29750-152-01.webp",
+          "thumbnail": "/images/29750-152-01-sm.webp",
+          "alt": "Muratpaşa ve Konyaaltı’nda yatırımlık arsa arıyoruz"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-muratpasa-kircami-satilik/konutticaret/29750-152",
+      "needsReview": true
+    },
+    {
+      "id": "29750-194",
+      "slug": "29750-194",
+      "title": "Varsak Karşıyaka’da 3 katlı, geniş cepheli satılık dükkan",
+      "transaction": "sale",
+      "propertyType": "commercial",
+      "price": 7200000,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Kepez",
+      "neighborhood": "Varsak Karşıyaka",
+      "grossArea": 125,
+      "netArea": 115,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "KEPEZ VARSAK KARŞIYAKA MAHALLESİ’NDE SATILIK 3 KATLI TİCARİ İŞ YERİ\n\n📍 Konum: Antalya / Kepez / Varsak Karşıyaka Mahallesi\n\n💰 Satış Fiyatı: 7.250.000 TL\n\nGelişen ve ticari potansiyeli her geçen gün artan Varsak Karşıyaka bölgesinde yer alan, yüksek tabela değerine ve geniş araç/yükleme alanına sahip 3 katlı mülkümüz satılıktır.\n\n📐 Teknik Özellikler & Detaylar\n\nToplam Kullanım Alanı: 115 m²\n\nKat Planı: 3 Katlı (Giriş Kat + Bodrum Kat + Üst Kat)\n\nAlt Yapı: WC, banyo ve lavabo mevcut\n\nCephe & Erişim: Araç girişine uygun geniş cephe, önünde yükleme-boşaltma alanına elverişli özel kullanım alanı\n\nKullanım Amacı: Depolama, imalat, teknik servis ve ofis kullanımı için tam uyumlu kat düzeni\n\n✅ Uygun Olduğu Sektörler & İş Kolları\n\nOto servis, detaylı araç temizliği, oto elektrik ve mekanik bakımlar\n\nE-ticaret depolama, kargo ve lojistik merkezleri\n\nİmalathane, mobilya, alüminyum & PVC doğrama atölyeleri\n\nTabela/reklam imalatı ve teknik servis istasyonları\n\nToptan satış ve teşhir mağazaları\n\n📲 Detaylı Bilgi ve Yer Gösterimi İçin İletişime Geçebilirsiniz:\n\nKA Global Real Estate\n\nİshak KAHRAMAN\n\n📞 Telefon: 0 532 224 76 58",
+      "features": [
+        "Krediye uygun"
+      ],
+      "photos": [
+        {
+          "id": "29750-194-photo-1",
+          "url": "/images/29750-194-01.webp",
+          "thumbnail": "/images/29750-194-01-sm.webp",
+          "alt": "Varsak Karşıyaka’da 3 katlı, geniş cepheli satılık dükkan"
+        },
+        {
+          "id": "29750-194-photo-2",
+          "url": "/images/29750-194-02.webp",
+          "thumbnail": "/images/29750-194-02-sm.webp",
+          "alt": "Varsak Karşıyaka’da 3 katlı, geniş cepheli satılık dükkan, fotoğraf 2"
+        },
+        {
+          "id": "29750-194-photo-3",
+          "url": "/images/29750-194-03.webp",
+          "thumbnail": "/images/29750-194-03-sm.webp",
+          "alt": "Varsak Karşıyaka’da 3 katlı, geniş cepheli satılık dükkan, fotoğraf 3"
+        },
+        {
+          "id": "29750-194-photo-4",
+          "url": "/images/29750-194-04.webp",
+          "thumbnail": "/images/29750-194-04-sm.webp",
+          "alt": "Varsak Karşıyaka’da 3 katlı, geniş cepheli satılık dükkan, fotoğraf 4"
+        },
+        {
+          "id": "29750-194-photo-5",
+          "url": "/images/29750-194-05.webp",
+          "thumbnail": "/images/29750-194-05-sm.webp",
+          "alt": "Varsak Karşıyaka’da 3 katlı, geniş cepheli satılık dükkan, fotoğraf 5"
+        },
+        {
+          "id": "29750-194-photo-6",
+          "url": "/images/29750-194-06.webp",
+          "thumbnail": "/images/29750-194-06-sm.webp",
+          "alt": "Varsak Karşıyaka’da 3 katlı, geniş cepheli satılık dükkan, fotoğraf 6"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-kepez-varsak-karsiyaka-satilik/atolye/29750-194",
+      "needsReview": true,
+      "latitude": 36.96587,
+      "longitude": 30.70739
+    },
+    {
+      "id": "29750-178",
+      "slug": "29750-178",
+      "title": "Kepez’de kentsel dönüşüme hazır blok nizam arsa",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Kepez",
+      "neighborhood": "Çankaya",
+      "grossArea": 7000,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Kepez'in gelişim ve dönüşüm aksı üzerinde, kat yüksekliği ve emsali avantajlı, hızlı şantiye kurulumuna ve satışa uygun kentsel dönüşüm projesi. Kat paylaşım oranları yüz yüze müzakere edilecektir.",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-178-photo-1",
+          "url": "/images/29750-178-01.webp",
+          "thumbnail": "/images/29750-178-01-sm.webp",
+          "alt": "Kepez’de kentsel dönüşüme hazır blok nizam arsa"
+        },
+        {
+          "id": "29750-178-photo-2",
+          "url": "/images/29750-178-02.webp",
+          "thumbnail": "/images/29750-178-02-sm.webp",
+          "alt": "Kepez’de kentsel dönüşüme hazır blok nizam arsa, fotoğraf 2"
+        },
+        {
+          "id": "29750-178-photo-3",
+          "url": "/images/29750-178-03.webp",
+          "thumbnail": "/images/29750-178-03-sm.webp",
+          "alt": "Kepez’de kentsel dönüşüme hazır blok nizam arsa, fotoğraf 3"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-kepez-cankaya-kat-karsiligi-satilik/imarli-konut/29750-178",
+      "needsReview": true
+    },
+    {
+      "id": "29750-170",
+      "slug": "29750-170",
+      "title": "Konyaaltı’nda komple bina kentsel dönüşüm ve kat karşılığı",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Altınkum",
+      "grossArea": 800,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Antalya'nın en değerli ve prestijli sahil şeridine sahip lokasyonu olan Konyaaltı bölgesinde (Altınkum, Gürsu, Arapsuyu, Kuşkavağı, Toros ve çevre mahallelerde), mülklerinizin değerine değer katacak kentsel dönüşüm ve kat karşılığı proje geliştirme hizmeti sunuyoruz.\n\nYılların verdiği inşaat ve gayrimenkul sektörü tecrübemizle; Konyaaltı'ndaki binalarınızın mevcut durum analizini yapıyor, hak sahipleri için en adil, teknik ve hukuki açıdan en güvenli kat karşılığı sözleşme modellerini hazırlıyoruz.",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-170-photo-1",
+          "url": "/images/29750-170-01.webp",
+          "thumbnail": "/images/29750-170-01-sm.webp",
+          "alt": "Konyaaltı’nda komple bina kentsel dönüşüm ve kat karşılığı"
+        },
+        {
+          "id": "29750-170-photo-2",
+          "url": "/images/29750-170-02.webp",
+          "thumbnail": "/images/29750-170-02-sm.webp",
+          "alt": "Konyaaltı’nda komple bina kentsel dönüşüm ve kat karşılığı, fotoğraf 2"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-altinkum-kat-karsiligi-satilik/imarli-konut/29750-170",
+      "needsReview": true
+    },
+    {
+      "id": "29750-168",
+      "slug": "29750-168",
+      "title": "Konyaaltı’nda 7 kat imarlı, 800 m² kat karşılığı arsa",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Arapsuyu",
+      "grossArea": 800,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Konyaaltı’nda Stratejik Yatırım ve Proje Fırsatları!\n\nAntalya'nın değeri her geçen gün katlanan bölgesi Konyaaltı'nda, hem müteahhit firmalar hem de arsa sahipleri için kaçırılmayacak fırsatlar sunuyoruz. Geniş portföyümüz ve bölgedeki 20 yılı aşkın inşaat/gayrimenkul tecrübemizle, doğru projeyi doğru yatırımcıyla buluşturuyoruz.\n\nMüteahhit Firmalar İçin: Kat Karşılığı Arsa Fırsatları\n• Örnek Portföyümüz: Konyaaltı'nda, yüksek emsal ve 7 kat imar hakkına sahip, 800 m² genişliğinde, kat karşılığı projeler için ideal zemin sunan arsalarımız mevcuttur.\n• Avantajı:\n\nBölgenin gelişen altyapısı, yüksek yaşam kalitesi ve sürekli artan konut talebi sayesinde projenizin potansiyelini maksimize edebilir, modern ve yüksek prim getirisi olan konut projeleri geliştirebilirsiniz.\n\nArsa Sahipleri İçin: Kat Karşılığı Değerlendirme\n\nArsanız var ama en doğru, en güvenilir müteahhidi nasıl bulacağınızı bilmiyor musunuz?\n• Arsalarınızı bölgenin en güçlü ve prestijli inşaat firmalarıyla, karşılıklı fayda esasına dayalı ve hukuki altyapısı sağlam sözleşmelerle buluşturuyoruz.\n• Arsanızın değerini maksimuma çıkaracak doğru paylaşım oranları ve proje modelleri için bizimle iletişime geçebilirsiniz.\n\nKentsel Dönüşüm Projeleri ve Çözüm Ortaklığı\n\nKonyaaltı ve çevresindeki eski, riskli veya ekonomik ömrünü tamamlamış binalarınız, siteleriniz için Kentsel Dönüşüm süreçlerini baştan sona yönetiyoruz.\n• Hak sahipleri ile müteahhit firmalar arasındaki köprüyü kuruyor, adil ve kazançlı sözleşmeler hazırlanmasını sağlıyoruz.\n• Mevcut mülkünüzün değerini modern, depreme*  dayanıklı ve lüks konseptlerle katlamak için profesyonel danışmanlık sunuyoruz.\n\nAltyapı ve Konum Avantajları\n\nPortföyümüzde yer alan yerler; yol, su, elektrik, kanalizasyon gibi tüm altyapı olanaklarına sahip, imar durumu net ve lokasyon olarak Antalya'nın en dinamik noktalarındadır.\n\nBizimle Neden Çalışmalısınız?\n\n> Sadece bir gayrimenkul ofisi değil; bölgeyi iyi bilen, inşaatın içinden gelen uzman kadromuzla hem müteahhitlerin hem de mülk sahiplerinin hakkını koruyan kurumsal bir süreç yönetiyoruz.\n\n Detaylı bilgi, portföy sunumu ve iş birliği fırsatları için hemen mesaj gönderin ya da arayın\n• “Bu gayrimenkulün depreme dayanıklılığı konusunda hepsiemlak hiçbir taahhüt verememektedir. Detaylı bilgi için lütfen ilan sahibiyle görüşünüz.”",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-168-photo-1",
+          "url": "/images/29750-168-01.webp",
+          "thumbnail": "/images/29750-168-01-sm.webp",
+          "alt": "Konyaaltı’nda 7 kat imarlı, 800 m² kat karşılığı arsa"
+        },
+        {
+          "id": "29750-168-photo-2",
+          "url": "/images/29750-168-02.webp",
+          "thumbnail": "/images/29750-168-02-sm.webp",
+          "alt": "Konyaaltı’nda 7 kat imarlı, 800 m² kat karşılığı arsa, fotoğraf 2"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-arapsuyu-kat-karsiligi-satilik/imarli-konut/29750-168",
+      "needsReview": true
+    },
+    {
+      "id": "29750-177",
+      "slug": "29750-177",
+      "title": "Konyaaltı merkezde kat karşılığı projelik arsa",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Konyaaltı",
+      "neighborhood": "Hurma",
+      "grossArea": 1000,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Konyaaltı bölgesinde, tabela değeri yüksek, modern konsept proje üretmeye son derece uygun kat karşılığı alternatif. Bölgedeki emsal ve kat paylaşım oranları, sadece referanslı ve kurumsal müteahhit firmalarla ofis ortamında değerlendirilecektir. Temsili konum işaretlenmiştir.",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-177-photo-1",
+          "url": "/images/29750-177-01.webp",
+          "thumbnail": "/images/29750-177-01-sm.webp",
+          "alt": "Konyaaltı merkezde kat karşılığı projelik arsa"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-konyaalti-hurma-kat-karsiligi-satilik/imarli-konut/29750-177",
+      "needsReview": true
+    },
+    {
+      "id": "29750-176",
+      "slug": "29750-176",
+      "title": "Muratpaşa’da kat karşılığı kupon arsa",
+      "transaction": "exchange",
+      "propertyType": "land",
+      "price": null,
+      "currency": "TRY",
+      "period": "total",
+      "city": "Antalya",
+      "district": "Muratpaşa",
+      "neighborhood": "Barbaros",
+      "grossArea": 1000,
+      "netArea": null,
+      "rooms": "",
+      "bathrooms": null,
+      "floor": "",
+      "buildingAge": "",
+      "description": "Muratpaşa sınırları içerisinde, inşaat maliyetlerini kısa sürede amorti edecek ve hızlı satış kabiliyeti olan kat karşılığı proje alanı. Arsa sahiplerinin talebi ve kurumsal gizlilik nedeniyle detaylar telefonda veya mesajla verilmeyecektir; ciddi müteahhit firmalar ofisimize davetlidir.",
+      "features": [],
+      "photos": [
+        {
+          "id": "29750-176-photo-1",
+          "url": "/images/29750-176-01.webp",
+          "thumbnail": "/images/29750-176-01-sm.webp",
+          "alt": "Muratpaşa’da kat karşılığı kupon arsa"
+        }
+      ],
+      "status": "draft",
+      "featured": false,
+      "createdAt": "2026-10-21T07:52:21.638Z",
+      "updatedAt": "2026-10-21T07:52:21.638Z",
+      "version": 1,
+      "sourceUrl": "https://www.hepsiemlak.com/antalya-muratpasa-barbaros-kat-karsiligi-satilik/imarli-konut/29750-176",
+      "needsReview": true
+    }
+  ],
+  "containsPhotoFiles": false,
+  "note": "hepsiemlak KA EMLAK (29750) ofis sayfasındaki 27 ilanın tamamı (21 Ekim 2026). Panelde “Yedekten içe aktar” ile taslak olarak eklenir; “Hepsini yayınla” ile tek seferde yayına alınır."
+}

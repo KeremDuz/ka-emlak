@@ -1,0 +1,47 @@
+name: Hepsiemlak senkronizasyonu
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # Her gün gece 03:00 (UTC+3)
+  workflow_dispatch:       # Manuel tetikleme
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright tarayıcısını kur
+        run: npx playwright install chromium --with-deps
+
+      - name: npm bağımlılıklarını yükle
+        run: npm ci
+
+      - name: Playwright bağımlılığını yükle
+        run: npm install --no-save playwright
+
+      - name: Senkronizasyonu çalıştır
+        run: node scripts/sync-hepsiemlak.mjs --out data/import/hepsiemlak-sync.json
+
+      - name: Değişiklik var mı kontrol et
+        id: changes
+        run: |
+          git diff --quiet data/import/hepsiemlak-sync.json && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Değişiklikleri commit et
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/import/hepsiemlak-sync.json
+          git commit -m "chore: hepsiemlak senkronizasyonu $(date -u +%Y-%m-%d)"
+          git push
