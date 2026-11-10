@@ -20,6 +20,17 @@ Bu planlar ücretsiz başlangıç sağlar; sağlayıcı limitleri, plan şartlar
 6. Root build talimatıyla Cloudflare hedefi derlenir (`KA_BUILD_TARGET=cloudflare`); Worker Free hesabına deploy edilir. `SITE_URL` gerçek origin olarak ayarlanır. Firebase secret key veya private service account key gerekmez: Firebase ID token'ı Google'ın açık sertifikaları ve `jose` ile doğrulanır. RS256, issuer, audience, expiry, issue/auth zamanı ve tek yönetici UID kontrol edilir.
 7. Canlı sitede örnek ilanlar otomatik eklenmez. İstenirse kaynağı gözden geçirilmiş JSON import edilir; bütün importlar `needsReview=true` ve **taslak** olarak kaydedilir. Yönetici fotoğraf, güncel fiyat ve bilgileri kontrol edip ayrıca Yayınla seçer. Önizleme görselleri ile gerçek ofis içeriği karıştırılmamalıdır.
 
+## GitHub'dan otomatik yayın
+
+`.github/workflows/yayinla.yml`, `main` dalına her gönderimde tip kontrolü, testler ve derlemeyi çalıştırır; Cloudflare sırları varsa siteyi Workers'a yayınlar. Sırlar yokken yayın adımı atlanır, iş akışı yine yeşil biter.
+
+1. [dash.cloudflare.com](https://dash.cloudflare.com) üzerinde ücretsiz hesap açın. **Workers & Pages** sayfasının sağında **Account ID** yazar.
+2. **My Profile → API Tokens → Create Token → "Edit Cloudflare Workers"** şablonuyla bir anahtar oluşturun.
+3. GitHub'da depo **Settings → Secrets and variables → Actions** altında iki sır ekleyin: `CLOUDFLARE_API_TOKEN` (2. adımdaki anahtar) ve `CLOUDFLARE_ACCOUNT_ID` (1. adımdaki kimlik). Bu değerleri sohbete ya da koda yazmayın.
+4. **Actions → Yayınla → Run workflow** ile ilk yayını başlatın. Site `https://ka-emlak.<hesap-adı>.workers.dev` adresinde açılır.
+5. Aynı sayfada **Variables** sekmesine `SITE_URL` değişkenini sitenin adresiyle ekleyin (kalıcı bağlantılar ve site haritası için) ve iş akışını bir kez daha çalıştırın.
+6. Supabase ve Firebase değerleri (yukarıdaki 1–5. adımlar) Cloudflare'da Worker'ın **Settings → Variables and Secrets** alanına girilir. Bunlar girilene kadar site açılır ama "İlanlar şu an yüklenemiyor" yazar ve panele giriş yapılamaz.
+
 ## hepsiemlak ve sahibinden'den tek tıkla aktarma
 
 Panelde İlanlar sayfasındaki **“hepsiemlak ve sahibinden’den tek tıkla aktarın”** kartında “KA Emlak’a ekle” düğmesi vardır. Ofis bu düğmeyi bir kez tarayıcının yer imleri çubuğuna sürükler; sonra hepsiemlak’ta ya da sahibinden’de kendi ilanının sayfasındayken yer imine tıklar. Panel açılır, ilanın özeti görünür; “Siteye ekle ve yayınla” ilanı oluşturur, fotoğrafları tek tek aktarır ve yayınlar. Aynı portal numarası sitede varsa yalnız fiyat ve ölçüler güncellenir; başlık, açıklama ve fotoğraflar korunur.
