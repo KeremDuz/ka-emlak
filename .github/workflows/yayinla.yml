@@ -37,6 +37,11 @@ jobs:
         run: node scripts/run.mjs test
       - name: Derleme
         run: node scripts/run.mjs build
+      # Anahtarın hangi hesabı ve izinleri gördüğünü yazar; yayın hata verirse nedeni buradan anlaşılır.
+      - name: Cloudflare hesabını kontrol et
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        continue-on-error: true
+        run: env -u CLOUDFLARE_ACCOUNT_ID npx wrangler whoami
       - name: Cloudflare'a yayınla
         if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         run: npx wrangler deploy
