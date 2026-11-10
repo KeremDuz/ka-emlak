@@ -29,7 +29,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm ci
+      # @astrojs/check, TypeScript 7 ile eş bağımlılık çakışması bildirir; kilit dosyası bu seçenekle oluşturuldu.
+      - run: npm ci --legacy-peer-deps
       - name: Tip kontrolü
         run: node node_modules/typescript/bin/tsc --noEmit -p .
       - name: Testler
