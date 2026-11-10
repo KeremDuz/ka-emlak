@@ -69,6 +69,14 @@ describe('sahibinden listing page mapping', () => {
     expect(likelySame([byId('29750-199'), fromHepsiemlak], mapSource(sahibinden))).toBe(fromHepsiemlak);
     expect(likelySame([byId('29750-199')], mapSource(sahibinden))).toBeUndefined();
   });
+  it('falls back to the address and title when the info list has no category or status', () => {
+    const url = 'https://www.sahibinden.com/ilan/emlak-is-yeri-kiralik-antalya-konyaalti-kiralik-1-plus-1-ofis-plaza-icerisinde-ikinci-kat-1345671697/detay';
+    const office = { ...sahibinden, url, id: '1345671697', title: 'Antalya Konyaaltı Kiralık 1+1 Ofis Plaza İçerisinde', price: '35.000 TL', specs: { 'İlan No': '1345671697', 'm²': '60', 'Oda Sayısı': '1+1' } };
+    expect(mapSource(office)).toMatchObject({ transaction: 'rent', propertyType: 'office', price: 35000, period: 'month', rooms: '1+1' });
+    const home = { ...office, url: 'https://www.sahibinden.com/ilan/emlak-konut-satilik-hurma-da-2-plus-1-daire-1345671698/detay', id: '1345671698', title: 'Hurma’da 2+1 Daire', price: '6.500.000 TL', specs: { 'Emlak Tipi': 'Satılık Daire', 'm² (Brüt)': '100', 'Oda Sayısı': '2+1' } };
+    expect(mapSource(home)).toMatchObject({ transaction: 'sale', propertyType: 'apartment', period: 'total', grossArea: 100 });
+    expect(mapSource({ ...home, specs: { 'Emlak Tipi': 'Kiralık Daire', 'm² (Brüt)': '100' } })).toMatchObject({ transaction: 'rent', propertyType: 'apartment', period: 'month' });
+  });
   it('rejects data claiming to be sahibinden from another address', () => {
     expect(isSourceListing({ ...sahibinden, url: 'https://evil.example/ilan/x-1337536275/detay' })).toBe(false);
     expect(isSourceListing({ ...sahibinden, id: '29750-1' })).toBe(false);

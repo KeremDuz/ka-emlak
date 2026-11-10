@@ -4,17 +4,73 @@ import HeroSearch from '../components/public/HeroSearch';
 import { ListingGrid } from '../components/public/PropertyCard';
 import { getPublicData } from '../lib/server/data';
 import { catalogOptions } from '../lib/listing-helpers';
-import { ArrowUpRight } from 'lucide-react';
-const {listings,settings,mode,available}=await getPublicData(Astro.locals);
-const published=listings.filter(l=>l.status==='published');
-const featured=published.filter(l=>l.featured).slice(0,3);
-const displayed=featured.length?featured:published.slice(0,3);
-const {districts}=catalogOptions(published);
-const agent={'@context':'https://schema.org','@type':'RealEstateAgent',name:settings.name||'KA EMLAK',url:new URL('/',Astro.site||Astro.url.origin).href,image:new URL('/images/og-default.png',Astro.url.origin).href,...(settings.phone?{telephone:settings.phone}:{}),...(settings.email?{email:settings.email}:{}),address:{'@type':'PostalAddress',addressLocality:'Konyaaltı',addressRegion:'Antalya',addressCountry:'TR',...(settings.address?{streetAddress:settings.address}:{})},areaServed:{'@type':'City',name:'Antalya'},...(settings.advisor?{employee:{'@type':'Person',name:settings.advisor}}:{})};
-const agentJson=JSON.stringify(agent).replaceAll('<','\\u003c');
+import { phoneLabel, whatsappUrl } from '../lib/format';
+import { MessageCircle, Phone } from 'lucide-react';
+const { listings, settings, mode, available } = await getPublicData(Astro.locals);
+const published = listings.filter(l => l.status === 'published');
+const featured = published.filter(l => l.featured).slice(0, 3);
+const displayed = featured.length ? featured : published.slice(0, 3);
+// Öne çıkanların altında, onlarla çakışmayan en yeni ilanlar.
+const latest = [...published].filter(l => !displayed.includes(l)).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 3);
+const { districts } = catalogOptions(published);
+// Bölgeler yayındaki ilanlardan sayılır; ilanı kalmayan bölge listeden kendiliğinden düşer.
+const districtCounts = [...published.reduce((counts, l) => counts.set(l.district, (counts.get(l.district) ?? 0) + 1), new Map<string, number>())].filter(([name]) => name).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'tr'));
+const agent = { '@context': 'https://schema.org', '@type': 'RealEstateAgent', name: settings.name || 'KA EMLAK', url: new URL('/', Astro.site || Astro.url.origin).href, image: new URL('/images/og-default.png', Astro.url.origin).href, ...(settings.phone ? { telephone: settings.phone } : {}), ...(settings.email ? { email: settings.email } : {}), address: { '@type': 'PostalAddress', addressLocality: 'Konyaaltı', addressRegion: 'Antalya', addressCountry: 'TR', ...(settings.address ? { streetAddress: settings.address } : {}) }, areaServed: { '@type': 'City', name: 'Antalya' }, ...(settings.advisor ? { employee: { '@type': 'Person', name: settings.advisor } } : {}) };
+const agentJson = JSON.stringify(agent).replaceAll('<', '\\u003c');
 ---
-<SiteLayout settings={settings} mode={mode}><script type="application/ld+json" set:html={agentJson}/>
-<div class="hero-wrap"><section class="hero" aria-labelledby="hero-heading"><img class="hero-img hero-city" src="/images/antalya-konyaalti.webp" srcset="/images/antalya-konyaalti-sm.webp 1200w, /images/antalya-konyaalti.webp 2400w" sizes="100vw" alt="Gün batımında Konyaaltı sahili ve Beydağları" width="2400" height="1800" fetchpriority="high"/><div class="hero-content"><h1 id="hero-heading">Antalya’da satılık ve kiralık gayrimenkul</h1></div></section><HeroSearch districts={districts} client:load/></div>
-<section class="section"><div class="container"><div class="section-head"><h2>Öne çıkan ilanlar</h2><a class="heading-link" href="/ilanlar">Tüm ilanlar ({published.length})<ArrowUpRight size={17}/></a></div>{!available?<div class="status-banner">İlanlar şu an yüklenemiyor. <a href="/iletisim" style="text-decoration:underline">Bizi arayın.</a></div>:displayed.length?<ListingGrid listings={displayed} className="home-listings" client:load/>:<div class="empty-state"><h2>Yakında yeni ilanlar.</h2><p>Aradığınız mülkü bize yazın.</p><a class="button" href="/iletisim">İletişim<ArrowUpRight size={16}/></a></div>}</div></section>
-<section class="container about-home"><div class="about-visual"><img src="/images/advisor.jpg" alt={settings.advisor} loading="lazy" width="640" height="700" style="object-position:center top"/></div><div class="about-copy"><h2>{settings.advisor}</h2><p>{settings.about||'Konyaaltı’ndaki ofisimizden Antalya genelinde konut, iş yeri ve arsa alım, satım ve kiralama işlerine bakıyoruz.'}</p>{settings.licenseNumber&&<p class="about-license">Taşınmaz Ticareti Yetki Belgesi No: {settings.licenseNumber}</p>}<a href="/hakkimizda" class="button outline">Hakkımızda<ArrowUpRight size={16}/></a></div></section>
-<section class="container contact-strip"><h2>Mülkünüzü satmak ya da kiralamak mı istiyorsunuz?</h2><a class="button light" href="/iletisim?talep=valuation">Bize ulaşın<ArrowUpRight size={17}/></a></section></SiteLayout>
+<SiteLayout settings={settings} mode={mode}>
+  <script type="application/ld+json" set:html={agentJson}/>
+  <div class="hero-wrap">
+    <section class="hero" aria-labelledby="hero-heading">
+      <img class="hero-img" src="/images/antalya-konyaalti.webp" srcset="/images/antalya-konyaalti-sm.webp 1200w, /images/antalya-konyaalti.webp 2400w" sizes="100vw" alt="Gün batımında Konyaaltı sahili ve Beydağları" width="2400" height="1800" fetchpriority="high"/>
+      <div class="hero-content"><h1 id="hero-heading">Antalya’da satılık ve kiralık gayrimenkul</h1></div>
+    </section>
+    <HeroSearch districts={districts} client:load/>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>Öne çıkan ilanlar</h2><a class="heading-link" href="/ilanlar">Tüm ilanlar ({published.length})</a></div>
+      {!available
+        ? <div class="status-banner">İlanlar şu an yüklenemiyor. <a href="/iletisim">Bizi arayın.</a></div>
+        : displayed.length
+          ? <ListingGrid listings={displayed} priority client:load/>
+          : <div class="empty-state"><h2>Yakında yeni ilanlar.</h2><p>Aradığınız mülkü bize yazın, uygun bir ilan geldiğinde haber verelim.</p><a class="button" href="/iletisim">Bize yazın</a></div>}
+    </div>
+  </section>
+
+  {districtCounts.length > 1 && <section class="section cream-section">
+    <div class="container district-band">
+      <div><h2 class="section-title">Bölgelere göre ilanlar</h2><a class="heading-link" href="/ilanlar?gorunum=harita">Haritada görün</a></div>
+      <ul class="district-index">
+        {districtCounts.map(([name, count]) => <li><a href={`/ilanlar?district=${encodeURIComponent(name)}`}><span class="district-name">{name}</span><span class="district-count">{count} ilan</span></a></li>)}
+      </ul>
+    </div>
+  </section>}
+
+  {latest.length > 0 && <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>Yeni eklenenler</h2><a class="heading-link" href="/ilanlar">Tüm ilanlar ({published.length})</a></div>
+      <ListingGrid listings={latest} client:visible/>
+    </div>
+  </section>}
+
+  <section class="container advisor-home" aria-labelledby="advisor-heading">
+    <img class="advisor-photo" src="/images/advisor-portrait.webp" alt="" loading="lazy" width="452" height="640"/>
+    <div class="advisor-copy">
+      <h2 id="advisor-heading">{settings.advisor}</h2>
+      <p class="advisor-role">KA EMLAK gayrimenkul danışmanı</p>
+      <p class="advisor-text">{settings.about || 'Konyaaltı’ndaki ofisimizden Antalya genelinde konut, iş yeri ve arsa alım, satım ve kiralama işlerine bakıyoruz.'}</p>
+      {settings.licenseNumber && <p class="about-license">Taşınmaz Ticareti Yetki Belgesi No: {settings.licenseNumber}</p>}
+      <div class="advisor-actions">
+        {settings.phone && <a class="button" href={`tel:${settings.phone}`}><Phone size={17}/>{phoneLabel(settings.phone)}</a>}
+        <a class="button outline" href={whatsappUrl(settings.whatsapp)} target="_blank" rel="noreferrer"><MessageCircle size={17}/>WhatsApp’tan yazın</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container contact-strip">
+    <h2>Mülkünüzü satmak ya da kiralamak mı istiyorsunuz?</h2>
+    <a class="button light" href="/iletisim?talep=valuation">Mülkünüzü anlatın</a>
+  </section>
+</SiteLayout>

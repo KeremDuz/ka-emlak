@@ -71,15 +71,20 @@ function fields(source: SourceListing) {
   if (source.source === 'sahibinden') {
     // "İş Yeri" gibi büyük İ'li değerler /i bayrağıyla eşleşmez; Türkçe küçük harfe çevrilerek karşılaştırılır.
     const lower = (value: string) => value.toLocaleLowerCase('tr-TR');
-    const category = lower(spec(specs, 'Kategori')), kind = lower(spec(specs, 'Türü').replace(/&amp;/g, '&')), heating = lower(spec(specs, 'Isıtma'));
+    // Bilgi listesi ilan türüne göre değişir: iş yerlerinde "Kategori / Durumu / Türü", konutlarda "Emlak Tipi" (ör. "Kiralık Daire") bulunur.
+    // Hiçbiri okunamazsa adresin başındaki "emlak-is-yeri-kiralik-…" kısmı ve başlık kullanılır; yoksa kiralık ofis "satılık daire" diye eklenir.
+    const estate = lower(spec(specs, 'Emlak Tipi')), slug = source.url.match(/\/ilan\/emlak-([a-z-]+?)-(gunluk-kiralik|devren-kiralik|devren-satilik|kat-karsiligi[a-z-]*|kiralik|satilik)-/);
+    const slugStatus = !slug ? '' : slug[2].startsWith('kat-karsiligi') ? 'Kat Karşılığı' : slug[2] === 'gunluk-kiralik' ? 'Günlük Kiralık' : slug[2].endsWith('kiralik') ? 'Kiralık' : 'Satılık';
+    const category = lower(spec(specs, 'Kategori')) || estate || (slug?.[1] ?? '').replace(/-/g, ' ');
+    const kind = lower(spec(specs, 'Türü').replace(/&amp;/g, '&')) || estate || lower(source.title), heating = lower(spec(specs, 'Isıtma'));
     const features = [
       yes(spec(specs, 'Eşyalı')) && 'Eşyalı', /doğalgaz/i.test(heating) && 'Doğalgaz', /kombi/i.test(heating) && 'Kombi', /klima/i.test(heating) && 'Klima',
       yes(spec(specs, 'Krediye Uygun')) && 'Krediye uygun', spec(specs, 'Kullanım Durumu') === 'Kiracılı' && 'Kiracılı', yes(spec(specs, 'Site İçerisinde')) && 'Site içerisinde',
       yes(spec(specs, 'Balkon')) && 'Balkon', yes(spec(specs, 'Asansör')) && 'Asansör', /açık|kapalı/i.test(spec(specs, 'Otopark')) && 'Otopark',
     ].filter((item): item is string => !!item);
     return {
-      status: spec(specs, 'Durumu'),
-      propertyType: category.includes('arsa') ? 'land' as const : /iş ?yeri/.test(category) ? workType(kind) : category.includes('bina') ? 'building' as const : homeType(kind),
+      status: spec(specs, 'Durumu') || spec(specs, 'Emlak Tipi') || slugStatus,
+      propertyType: category.includes('arsa') ? 'land' as const : /i[şs] ?yeri/.test(category) ? workType(kind) : category.includes('bina') ? 'building' as const : homeType(kind),
       city: place(crumbs[0]), district: place(crumbs[1]), neighborhood: place(crumbs[2]),
       gross: area(spec(specs, 'm² (Brüt)')) ?? area(spec(specs, 'm²')), net: area(spec(specs, 'm² (Net)')),
       age: spec(specs, 'Bina Yaşı'), features,

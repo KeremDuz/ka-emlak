@@ -1,7 +1,25 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import {getPublicData} from '../lib/server/data';
-import {ArrowUpRight} from 'lucide-react';
-const {settings,mode}=await getPublicData(Astro.locals);
+import { getPublicData } from '../lib/server/data';
+import { phoneLabel, whatsappUrl } from '../lib/format';
+import { MessageCircle, Phone } from 'lucide-react';
+const { settings, mode } = await getPublicData(Astro.locals);
 ---
-<SiteLayout title="Hakkımızda" settings={settings} mode={mode}><section class="page-intro page-intro-compact"><div class="container"><h1>Hakkımızda</h1></div></section><section class="container about-home"><div class="about-visual"><img src="/images/advisor.jpg" alt="KA EMLAK gayrimenkul danışmanı İshak Kahraman" width="600" height="600" style="object-position:center top"/><div class="about-caption"><strong>{settings.advisor}</strong><span>GAYRİMENKUL DANIŞMANI</span></div></div><div class="about-copy"><h2>KA EMLAK</h2>{settings.about&&<p>{settings.about}</p>}<p style="margin-top:18px">Konyaaltı’ndaki ofisimizden Antalya genelinde konut, iş yeri ve arsa alım, satım ve kiralama işlerine bakıyoruz.</p>{settings.licenseNumber&&<p style="margin-top:20px">Taşınmaz Ticareti Yetki Belgesi: <strong>{settings.licenseNumber}</strong></p>}<a class="button" style="margin-top:27px" href="/iletisim">İletişim<ArrowUpRight size={17}/></a></div></section></SiteLayout>
+<SiteLayout title="Hakkımızda" description="KA EMLAK, İshak Kahraman danışmanlığında Antalya’da konut, villa, arsa ve iş yeri alım, satım ve kiralama işlerine bakar." settings={settings} mode={mode}>
+  <section class="page-intro"><div class="container"><h1>Hakkımızda</h1></div></section>
+  <section class="container advisor-home" aria-labelledby="advisor-heading">
+    <img class="advisor-photo" src="/images/advisor-portrait.webp" alt="" width="452" height="640"/>
+    <div class="advisor-copy">
+      <h2 id="advisor-heading">{settings.advisor}</h2>
+      <p class="advisor-role">KA EMLAK gayrimenkul danışmanı</p>
+      {settings.about && <p class="advisor-text">{settings.about}</p>}
+      <p class="advisor-text">Konyaaltı’ndaki ofisimizden Antalya genelinde konut, iş yeri ve arsa alım, satım ve kiralama işlerine bakıyoruz.</p>
+      {settings.licenseNumber && <p class="about-license">Taşınmaz Ticareti Yetki Belgesi No: {settings.licenseNumber}</p>}
+      <div class="advisor-actions">
+        {settings.phone && <a class="button" href={`tel:${settings.phone}`}><Phone size={17}/>{phoneLabel(settings.phone)}</a>}
+        <a class="button outline" href={whatsappUrl(settings.whatsapp)} target="_blank" rel="noreferrer"><MessageCircle size={17}/>WhatsApp’tan yazın</a>
+        <a class="button outline" href="/ilanlar">İlanları görün</a>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

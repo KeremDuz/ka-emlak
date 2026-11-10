@@ -12,3 +12,5 @@ export function whatsappUrl(phone: string, text = 'Merhaba, portföyünüz hakk�
 }
 export function slugify(value: string) { return value.toLocaleLowerCase('tr-TR').replace(/ı/g, 'i').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 export function dateLabel(value: string) { return new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(value)); }
+/** +905321234567 → 0532 123 45 67; başka biçimdeki numara olduğu gibi kalır. */
+export function phoneLabel(phone: string) { return phone.replace(/^\+90(\d{3})(\d{3})(\d{2})(\d{2})$/, '0$1 $2 $3 $4'); }

@@ -11,5 +11,6 @@ export default defineConfig({
   // Yerel önizleme verisi .local/ altına yazılır; izlenirse her kayıtta sayfa yeniden yüklenir.
   // Leaflet yalnız dinamik import edildiği için baştan paketlenir; yoksa ilk açılışta geliştirme sunucusu eski paketi ister.
   vite: { plugins: [tailwindcss()], server: { watch: { ignored: ['**/.local/**'] } }, optimizeDeps: { include: ['leaflet'] } },
-  server: { host: '127.0.0.1', port: 4321 },
+  // 4321 doluysa önizleme aracı PORT ile boş bir port verir.
+  server: { host: '127.0.0.1', port: Number(process.env.PORT) || 4321 },
 });
