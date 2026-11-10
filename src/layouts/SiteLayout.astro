@@ -8,7 +8,7 @@ interface Props { title?: string; description?: string; settings?: OfficeSetting
 const { title = 'Antalya satılık ve kiralık gayrimenkul', description = 'KA EMLAK ile Antalya, Konyaaltı, Döşemealtı ve çevresindeki satılık ve kiralık gayrimenkulleri keşfedin. İshak Kahraman ile doğrudan iletişime geçin.', settings = officeSettings, mode = 'live', image = '/images/og-default.png', noindex = false, whatsappMessage } = Astro.props;
 const path = Astro.url.pathname;
 const canonical = new URL(path, Astro.site || Astro.url.origin).href;
-const navigation = [['/', 'Ana sayfa'], ['/ilanlar', 'İlanlar'], ['/hakkimizda', 'Hakkımızda'], ['/iletisim', 'İletişim']];
+const navigation = [['/', 'Ana sayfa'], ['/ilanlar', 'İlanlar'], ['/donemlik-kiralik', 'Dönemlik kiralık'], ['/hakkimizda', 'Hakkımızda'], ['/iletisim', 'İletişim']];
 // İlan sayfalarında da "İlanlar" menüsü seçili görünür.
 const current = (href: string) => href === '/' ? path === '/' : path === href || path.startsWith(href === '/ilanlar' ? '/ilan' : `${href}/`);
 const phoneHref = settings.phone ? `tel:${settings.phone}` : '/iletisim';
@@ -58,7 +58,7 @@ const phoneHref = settings.phone ? `tel:${settings.phone}` : '/iletisim';
     <div class="container">
       <div class="footer-grid">
         <div><a class="brand" href="/" aria-label="KA EMLAK ana sayfa"><span><span class="brand-name">KA EMLAK</span><span class="brand-sub">Gayrimenkul danışmanlığı</span></span></a></div>
-        <div class="footer-column"><strong>İlanlar</strong><a href="/ilanlar?transaction=sale">Satılık</a><a href="/ilanlar?transaction=rent">Kiralık</a><a href="/ilanlar?transaction=exchange">Kat karşılığı</a><a href="/ilanlar?gorunum=harita">Haritada ilanlar</a></div>
+        <div class="footer-column"><strong>İlanlar</strong><a href="/ilanlar?transaction=sale">Satılık</a><a href="/ilanlar?transaction=rent">Kiralık</a><a href="/donemlik-kiralik">Dönemlik kiralık</a><a href="/ilanlar?transaction=exchange">Kat karşılığı</a><a href="/ilanlar?gorunum=harita">Haritada ilanlar</a></div>
         <div class="footer-column"><strong>KA EMLAK</strong><a href="/hakkimizda">Hakkımızda</a><a href="/iletisim?talep=valuation">Mülk değerleme</a><a href="/iletisim">İletişim</a><a href="https://www.hepsiemlak.com/emlak-ofisi/ka-emlak-29750" target="_blank" rel="noreferrer">Hepsiemlak sayfamız <ArrowUpRight size={14}/></a></div>
         <div class="footer-column"><strong>İletişim</strong><p>{settings.address || 'Konyaaltı / Antalya'}</p>{settings.phone && <a href={`tel:${settings.phone}`}>{phoneLabel(settings.phone)}</a>}<a href={whatsappUrl(settings.whatsapp)} target="_blank" rel="noreferrer">WhatsApp <ArrowUpRight size={14}/></a>{settings.email && <a href={`mailto:${settings.email}`}>{settings.email}</a>}</div>
       </div>

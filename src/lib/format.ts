@@ -2,6 +2,11 @@ import type { Listing, Transaction, PropertyType, Period } from './types';
 export const transactionLabels: Record<Transaction, string> = { sale: 'Satılık', rent: 'Kiralık', exchange: 'Kat karşılığı' };
 export const propertyLabels: Record<PropertyType, string> = { apartment: 'Daire', villa: 'Villa', land: 'Arsa', office: 'Ofis', commercial: 'İş yeri', building: 'Bina', warehouse: 'Depo' };
 export const periodLabels: Record<Period, string> = { total: '', day: '/ gün', week: '/ hafta', month: '/ ay', year: '/ yıl' };
+/** Dönemlik kiralık: günlük ya da haftalık kiralanan ilanlar. */
+export const isSeasonal = (listing: Pick<Listing, 'transaction' | 'period'>) => listing.transaction === 'rent' && (listing.period === 'day' || listing.period === 'week');
+/** Kart ve ilan sayfası etiketi: dönemlik kiralıklarda dönem de yazılır. */
+export function transactionLabel(listing: Pick<Listing, 'transaction' | 'period'>) { return isSeasonal(listing) ? (listing.period === 'day' ? 'Günlük kiralık' : 'Haftalık kiralık') : transactionLabels[listing.transaction]; }
+export const poolLabels = { private: 'Özel havuz', shared: 'Ortak havuz', none: 'Havuz yok' } as const;
 export function priceLabel(listing: Pick<Listing, 'price' | 'currency'>) {
   return listing.price === null ? 'Fiyat için görüşelim' : new Intl.NumberFormat('tr-TR', { style: 'currency', currency: listing.currency, maximumFractionDigits: 0 }).format(listing.price);
 }

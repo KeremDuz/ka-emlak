@@ -1,0 +1,22 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Catalog from '../components/public/Catalog';
+import { getPublicData, publicPageSize } from '../lib/server/data';
+import { filterListings } from '../lib/server/filters';
+import { catalogOptions } from '../lib/listing-helpers';
+// Günlük ve haftalık kiralanan ilanlar. Panelde "Kiralık" + kiralama dönemi "Günlük" ya da "Haftalık" seçilen ilan kendiliğinden burada görünür.
+const fixed = { transaction: 'rent', period: 'short' };
+const data = await getPublicData(Astro.locals);
+const filters = Object.fromEntries(Astro.url.searchParams);
+const all = filterListings(data.listings, fixed);
+const filtered = filterListings(data.listings, { ...filters, ...fixed });
+---
+<SiteLayout title="Antalya dönemlik kiralık villa ve evler" description="KA EMLAK portföyündeki günlük ve haftalık kiralık villalar ve evler. Uygun tarihler için arayın ya da WhatsApp’tan yazın." settings={data.settings} mode={data.mode}>
+  <section class="page-intro">
+    <div class="container">
+      <h1>Dönemlik kiralık</h1>
+      <p>Günlük ve haftalık kiralanan villalar ve evler. Uygun tarihler için arayın ya da WhatsApp’tan yazın.</p>
+    </div>
+  </section>
+  <Catalog initialListings={filtered.slice(0, publicPageSize)} initialTotal={filtered.length} initialFilters={filters} options={catalogOptions(all)} available={data.available} fixed={fixed} client:load/>
+</SiteLayout>

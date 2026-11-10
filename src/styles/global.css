@@ -72,7 +72,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .hero h1 { max-width: 11.5em; font-size: clamp(2.5rem, 5.3vw, 4.4rem); line-height: 1.06; letter-spacing: -.025em; }
 .search-panel { position: relative; z-index: 2; width: min(1120px, 100% - 96px); margin: -84px auto 0; padding: 4px 28px 26px; border-radius: 12px; background: #fff; box-shadow: var(--shadow); }
 .search-tabs { display: flex; align-items: stretch; gap: 28px; height: 60px; margin-bottom: 22px; border-bottom: 1px solid var(--line); }
-.search-tabs button { position: relative; padding: 0 2px; background: none; color: var(--muted); font-size: .94rem; font-weight: 650; transition: color .2s; }
+.search-tabs button { position: relative; flex-shrink: 0; white-space: nowrap; padding: 0 2px; background: none; color: var(--muted); font-size: .94rem; font-weight: 650; transition: color .2s; }
 .search-tabs button:hover, .search-tabs button.active { color: var(--forest); }
 .search-tab-line { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--forest); }
 .search-fields { display: grid; grid-template-columns: 1.15fr 1fr 1fr auto; align-items: end; gap: 22px; }
@@ -89,6 +89,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .heading-link { display: inline-flex; align-items: center; min-height: 44px; font-size: .94rem; font-weight: 700; color: var(--forest); white-space: nowrap; text-decoration: underline; text-decoration-color: #b9c8ba; text-underline-offset: 6px; transition: text-decoration-color .2s; }
 .heading-link:hover { text-decoration-color: var(--forest); }
 .cream-section { background: var(--cream); }
+/* Art arda gelen iki beyaz bölüm arasında boşluk iki katına çıkmasın. */
+.section-follow { padding-top: 0; }
 .status-banner { margin: 30px 0; padding: 20px 22px; border: 1px solid #e3cb99; border-radius: var(--radius); background: #fff5e2; font-size: 1rem; line-height: 1.6; }
 .status-banner a { text-decoration: underline; text-underline-offset: 3px; }
 .empty-state { width: 100%; padding: 72px 30px; border-radius: var(--radius); background: var(--cream); text-align: center; }
@@ -378,7 +380,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .hero::after { background: linear-gradient(180deg, rgb(6 26 21 / .64) 0%, rgb(6 26 21 / .46) 45%, rgb(6 26 21 / .2) 75%); }
   .hero-content { align-items: flex-start; padding: 44px 24px 0; }
   .search-panel { width: calc(100% - 20px); margin-top: -128px; padding: 2px 16px 16px; }
-  .search-tabs { gap: 22px; height: 54px; margin-bottom: 16px; }
+  .search-tabs { gap: 16px; height: 54px; margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; }
+  .search-tabs button { font-size: .9rem; }
   .search-fields { grid-template-columns: 1fr 1fr; gap: 14px 10px; }
   .search-field { padding-right: 0; border-right: 0; }
   .search-field select { height: 48px; padding: 0 30px 0 11px; border: 1px solid #d5dbd2; border-radius: 8px; background-position: right 9px center; font-weight: 600; }

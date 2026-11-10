@@ -3,6 +3,7 @@ export type PropertyType = 'apartment' | 'villa' | 'land' | 'office' | 'commerci
 export type ListingStatus = 'draft' | 'published' | 'sold' | 'rented' | 'archived' | 'trash';
 export type Currency = 'TRY' | 'EUR' | 'USD';
 export type Period = 'total' | 'day' | 'week' | 'month' | 'year';
+export type Pool = 'private' | 'shared' | 'none';
 export interface Photo { id: string; url: string; thumbnail?: string; alt: string; storagePath?: string; bytes?: number; }
 export interface Listing {
   id: string; slug: string; title: string; transaction: Transaction; propertyType: PropertyType;
@@ -12,6 +13,8 @@ export interface Listing {
   features: string[]; photos: Photo[]; status: ListingStatus; featured: boolean;
   createdAt: string; updatedAt: string; version: number; sourceUrl?: string;
   needsReview: boolean; latitude?: number; longitude?: number;
+  /** Dönemlik (günlük/haftalık) kiralıklar için: kaç kişilik, havuz, en az kaç gece. İsteğe bağlıdır. */
+  guests?: number | null; pool?: Pool; minNights?: number | null;
 }
 export interface AdminListing extends Listing { draft: Listing | null; }
 export interface OfficeSettings {

@@ -4,14 +4,19 @@ import HeroSearch from '../components/public/HeroSearch';
 import { ListingGrid } from '../components/public/PropertyCard';
 import { getPublicData } from '../lib/server/data';
 import { catalogOptions } from '../lib/listing-helpers';
-import { phoneLabel, whatsappUrl } from '../lib/format';
+import { isSeasonal, phoneLabel, whatsappUrl } from '../lib/format';
 import { MessageCircle, Phone } from 'lucide-react';
 const { listings, settings, mode, available } = await getPublicData(Astro.locals);
 const published = listings.filter(l => l.status === 'published');
-const featured = published.filter(l => l.featured).slice(0, 3);
-const displayed = featured.length ? featured : published.slice(0, 3);
+const newest = (a: typeof published[number], b: typeof published[number]) => b.createdAt.localeCompare(a.createdAt);
+// Günlük ve haftalık kiralıklar kendi bölümünde gösterilir (öne çıkarılanlar başta); aynı ilan sayfada iki kez yer almaz.
+const seasonalAll = published.filter(isSeasonal);
+const seasonal = [...seasonalAll].sort((a, b) => Number(b.featured) - Number(a.featured) || newest(a, b)).slice(0, 3);
+const others = published.filter(l => !isSeasonal(l));
+const featured = others.filter(l => l.featured).slice(0, 3);
+const displayed = featured.length ? featured : [...others].sort(newest).slice(0, 3);
 // Öne çıkanların altında, onlarla çakışmayan en yeni ilanlar.
-const latest = [...published].filter(l => !displayed.includes(l)).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 3);
+const latest = others.filter(l => !displayed.includes(l)).sort(newest).slice(0, 3);
 const { districts } = catalogOptions(published);
 // Bölgeler yayındaki ilanlardan sayılır; ilanı kalmayan bölge listeden kendiliğinden düşer.
 const districtCounts = [...published.reduce((counts, l) => counts.set(l.district, (counts.get(l.district) ?? 0) + 1), new Map<string, number>())].filter(([name]) => name).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'tr'));
@@ -38,6 +43,13 @@ const agentJson = JSON.stringify(agent).replaceAll('<', '\\u003c');
           : <div class="empty-state"><h2>Yakında yeni ilanlar.</h2><p>Aradığınız mülkü bize yazın, uygun bir ilan geldiğinde haber verelim.</p><a class="button" href="/iletisim">Bize yazın</a></div>}
     </div>
   </section>
+
+  {seasonal.length > 0 && <section class="section section-follow">
+    <div class="container">
+      <div class="section-head"><h2>Dönemlik kiralık</h2><a class="heading-link" href="/donemlik-kiralik">Tümünü görün ({seasonalAll.length})</a></div>
+      <ListingGrid listings={seasonal} client:visible/>
+    </div>
+  </section>}
 
   {districtCounts.length > 1 && <section class="section cream-section">
     <div class="container district-band">
