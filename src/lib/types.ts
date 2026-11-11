@@ -34,5 +34,6 @@ export interface ListingFilters {
 }
 export interface PublicData { listings: Listing[]; settings: OfficeSettings; mode: 'live' | 'preview'; available: boolean; }
 export interface ClientConfig {
-  mode: 'live' | 'preview'; firebase: { apiKey: string; authDomain: string; projectId: string; appId: string } | null;
+  /** auth: panel girişi için Supabase adresi ve herkese açık anahtarı; giriş bağlanmamışsa null. */
+  mode: 'live' | 'preview'; auth: { url: string; publishableKey: string } | null;
 }

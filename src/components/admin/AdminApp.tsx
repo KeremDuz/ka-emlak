@@ -74,6 +74,7 @@ export default function AdminApp() {
   const [editorStep, setEditorStep] = useState(0);
   // "KA Emlak'a ekle" yer imi ilanı adresin #aktar= kısmında getirir; giriş yapılınca aktarma penceresi açılır.
   const [sourcePayload, setSourcePayload] = useState<SourceListing | null>(null);
+  const [recovery, setRecovery] = useState(false);
   // Yer imine hepsiemlak ofis sayfasında tıklanınca bütün ilanlar #esitle= ile gelir.
   const [syncPayload, setSyncPayload] = useState<SyncPayload | null>(null);
   const [confirmBulk, setConfirmBulk] = useState(false); const [bulk, setBulk] = useState<{ total: number; done: number } | null>(null);
@@ -90,12 +91,15 @@ export default function AdminApp() {
     adminApi.config().then(async result => {
       if (!active) return; setConfig(result);
       if (result.mode === 'preview') { setAuthLoading(false); return; }
-      if (!result.firebase) throw new Error('Giriş hizmeti henüz yapılandırılmamış. Kurulum ayarlarını kontrol edin.');
-      const controller = await createAuth(result.firebase);
+      if (!result.auth) throw new Error('Giriş hizmeti henüz yapılandırılmamış. Kurulum ayarlarını kontrol edin.');
+      const controller = await createAuth(result.auth);
       if (!active) return; auth.current = controller;
-      unsubscribe = controller.subscribe(user => {
+      unsubscribe = controller.subscribe((user, recovering) => {
         if (!active) return;
-        setTokenProvider(user ? () => user.getIdToken() : null);
+        if (recovering) setRecovery(true);
+        setTokenProvider(user ? user.token : null);
+        // Giriş ve her anahtar yenilemesinde çerez de yenilenir; başarısız olursa panel yine çalışır, yalnız taslak fotoğrafları görünmez.
+        if (user) void adminApi.session(user.current).catch(() => undefined);
         setEmail(user?.email || ''); setSession(!!user); setAuthLoading(false);
       });
     }).catch(error => { if (active) { setBootError(errorMessage(error)); setAuthLoading(false); } });
@@ -206,7 +210,7 @@ export default function AdminApp() {
   };
   const logout = async () => {
     setBusy('logout');
-    try { if (config?.mode === 'live') await auth.current?.logout(); else await adminApi.logout(); setSession(false); setListings([]); setInquiries([]); setSettings(emptySettings); } catch (error) { notify(errorMessage(error), 'error'); } finally { setBusy(''); }
+    try { if (config?.mode === 'live') await auth.current?.logout(); await adminApi.logout(); setSession(false); setListings([]); setInquiries([]); setSettings(emptySettings); } catch (error) { notify(errorMessage(error), 'error'); } finally { setBusy(''); }
   };
   const exportBackup = async () => {
     setBusy('export');
@@ -236,6 +240,7 @@ export default function AdminApp() {
     <AnimatePresence>{notice && <motion.div key="notice" className={`ad-toast ad-toast-${notice.kind}`} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }} role={notice.kind === 'error' ? 'alert' : 'status'}>{notice.kind === 'success' ? <CheckCheck size={20} /> : <CircleAlert size={20} />}<span>{notice.text}</span>{notice.action && <button className="ad-toast-action" onClick={notice.action.run}>{notice.action.label}</button>}<button className="ad-icon-button" aria-label="Bildirimi kapat" onClick={() => setNotice(null)}><X size={16} /></button></motion.div>}</AnimatePresence>
     <input ref={importInput} type="file" accept="application/json,.json" hidden onChange={e => selectImport(e.target.files?.[0])} />
     <Modal open={starter} onClose={() => { if (!busy) setStarter(false); }} title="Yeni ilan" description="Boş bir ilanla başlayın ya da benzer bir ilanın bilgilerini kopyalayın." wide><div className="ad-starter"><button className="ad-starter-blank" disabled={!!busy} onClick={() => void createListing()}><span className="ad-upload-icon"><Plus size={24} /></span><strong>Boş ilanla başla</strong><small>Fotoğraflarla başlayıp bilgileri adım adım doldurun.</small></button><div className="ad-starter-copy"><strong><Copy size={16} />Benzer bir ilandan başla</strong><small>Tür, konum, alan, fiyat ve özellikler kopyalanır. Fotoğrafları yeni ilana eklersiniz.</small><div className="ad-starter-list">{listings.filter(item => item.status !== 'trash' && !isEmptyDraft(item)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 8).map(item => { const data = editData(item); return <button key={item.id} disabled={!!busy} onClick={() => void startFrom(item)}>{data.photos[0] ? <img src={data.photos[0].thumbnail || data.photos[0].url} alt="" width="64" height="48" loading="lazy" /> : <span className="ad-starter-noimage"><ImagePlus size={18} /></span>}<span><strong>{data.title || 'Başlıksız ilan'}</strong><small>{transactionLabels[data.transaction]} · {propertyLabels[data.propertyType]}{data.rooms ? ` · ${data.rooms}` : ''} · {[data.neighborhood, data.district].filter(Boolean).join(', ') || 'Konum yok'}</small></span><ArrowRight size={16} /></button>; })}</div></div></div>{busy === 'new' && <div className="ad-starter-busy"><Spinner label="İlan hazırlanıyor" /></div>}</Modal>
+    {recovery && <PasswordDialog auth={auth.current} notify={notify} onClose={() => setRecovery(false)} />}
     {sourcePayload && <SourceImportDialog payload={sourcePayload} listings={listings} notify={notify} onClose={() => setSourcePayload(null)} onDone={(listing, result) => {
       upsert(listing); setSourcePayload(null);
       const photoNote = result.failedPhotos ? ` ${result.failedPhotos} fotoğraf alınamadı.` : '';
@@ -254,6 +259,17 @@ export default function AdminApp() {
     <Modal open={!!confirm} onClose={() => { if (!busy) setConfirm(null); }} title={confirm?.permanent ? 'İlan kalıcı olarak silinsin mi?' : 'İlan çöp kutusuna taşınsın mı?'} description={confirm?.permanent ? 'Bu işlem geri alınamaz. İlan ve bağlı fotoğraflar kalıcı olarak silinir.' : 'İlan yayından kalkar. Daha sonra çöp kutusundan taslak olarak geri alabilirsiniz.'}><p className="ad-confirm-item">{confirm?.item.title || 'Başlıksız ilan'}</p><div className="ad-dialog-actions"><button className="ad-button ad-button-secondary" disabled={!!busy} onClick={() => setConfirm(null)}>Vazgeç</button><button className="ad-button ad-button-danger" disabled={!!busy} onClick={async () => { if (!confirm) return; if (confirm.permanent) { setBusy(confirm.item.id); try { await adminApi.remove(confirm.item); setListings(items => items.filter(item => item.id !== confirm.item.id)); clearRecovery(confirm.item.id); notify('İlan kalıcı olarak silindi.'); setConfirm(null); } catch (error) { notify(errorMessage(error), 'error'); } finally { setBusy(''); } } else if (await performAction(confirm.item, 'trash')) setConfirm(null); }}>{busy ? <Spinner label="İşleniyor" /> : <><Trash2 size={17} />{confirm?.permanent ? 'Kalıcı olarak sil' : 'Çöp kutusuna taşı'}</>}</button></div></Modal>
     <Modal open={!!importData} onClose={() => { if (!busy) setImportData(null); }} title="Yedekten ilanları içe aktar" description="İçe aktarılan tüm ilanlar kontrol edilmek üzere taslak olarak eklenir. Mevcut ilanlarınızın üzerine yazılmaz."><div className="ad-banner ad-banner-info">{(importData as { listings?: unknown[] })?.listings?.length || 0} ilan bulundu. JSON dosyası fotoğraf dosyalarının kendisini içermez; erişilebilir fotoğraf bağlantıları ayrıca kontrol edilmelidir.</div><div className="ad-dialog-actions"><button className="ad-button ad-button-secondary" disabled={!!busy} onClick={() => setImportData(null)}>Vazgeç</button><button className="ad-button" disabled={!!busy} onClick={async () => { setBusy('import'); try { const result = await adminApi.import(importData); notify(`${result.imported ?? result.count ?? 'İlanlar'} taslak olarak içe aktarıldı.`); setImportData(null); await load(); } catch (error) { notify(errorMessage(error), 'error'); } finally { setBusy(''); } }}>{busy ? <Spinner label="Aktarılıyor" /> : <><Upload size={17} />Taslak olarak içe aktar</>}</button></div></Modal>
   </div></MotionConfig>;
+}
+
+/** Şifre yenileme bağlantısıyla gelen yönetici yeni şifresini belirler. */
+function PasswordDialog({ auth, onClose, notify }: { auth: AuthController | null; onClose: () => void; notify: (text: string, kind?: Notice['kind']) => void }) {
+  const [password, setPassword] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault(); if (password.length < 8) { setError('Şifre en az 8 karakter olmalı.'); return; }
+    setBusy(true); setError('');
+    try { if (!auth) throw new Error('Giriş hizmeti hazır değil.'); await auth.setPassword(password); notify('Şifreniz değiştirildi.', 'success'); onClose(); } catch (cause) { setError(authError(cause)); } finally { setBusy(false); }
+  };
+  return <Modal open onClose={() => { if (!busy) onClose(); }} title="Yeni şifrenizi belirleyin" description="Bundan sonra panele bu şifreyle gireceksiniz."><form onSubmit={submit}>{error && <div className="ad-banner ad-banner-error" role="alert">{error}</div>}<InputField name="new-password" label="Yeni şifre" value={password} type="password" autoComplete="new-password" onChange={setPassword} required placeholder="En az 8 karakter" /><div className="ad-dialog-actions"><button type="button" className="ad-button ad-button-secondary" disabled={busy} onClick={onClose}>Sonra</button><button className="ad-button" disabled={busy}>Şifreyi kaydet</button></div></form></Modal>;
 }
 
 function Login({ config, bootError, auth, onSession }: { config: ClientConfig | null; bootError: string; auth: AuthController | null; onSession: () => void }) {

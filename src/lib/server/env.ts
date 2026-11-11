@@ -18,11 +18,9 @@ export function databaseReady(locals: ServerLocals) {
   return Boolean(setting(locals, 'SUPABASE_URL') && setting(locals, 'SUPABASE_PUBLISHABLE_KEY') && setting(locals, 'SUPABASE_SECRET_KEY'));
 }
 export function clientConfig(locals: ServerLocals): ClientConfig {
-  const firebase = {
-    apiKey: setting(locals, 'FIREBASE_API_KEY'), authDomain: setting(locals, 'FIREBASE_AUTH_DOMAIN'),
-    projectId: setting(locals, 'FIREBASE_PROJECT_ID'), appId: setting(locals, 'FIREBASE_APP_ID'),
-  };
-  return { mode: isPreview(locals) ? 'preview' : 'live', firebase: Object.values(firebase).every(Boolean) ? firebase : null };
+  // Publishable key tarayıcıya verilmek üzere tasarlanmıştır; gizli anahtar hiçbir zaman gönderilmez.
+  const auth = { url: setting(locals, 'SUPABASE_URL'), publishableKey: setting(locals, 'SUPABASE_PUBLISHABLE_KEY') };
+  return { mode: isPreview(locals) ? 'preview' : 'live', auth: auth.url && auth.publishableKey && setting(locals, 'ADMIN_UID') ? auth : null };
 }
 export function storageLimit(locals: ServerLocals) {
   const parsed = Number(setting(locals, 'STORAGE_LIMIT_BYTES') || 1_000_000_000);

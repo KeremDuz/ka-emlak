@@ -24,6 +24,8 @@ export type ListingAction = 'publish' | 'archive' | 'sold' | 'rented' | 'trash' 
 export const adminApi = {
   config: () => request<ClientConfig>('/api/config'),
   preview: () => request<{ ok: boolean }>('/api/admin/session', json('POST', { preview: true })),
+  /** Oturum çerezini kurar; yayınlanmamış ilan fotoğrafları <img> ile ancak bu çerezle açılır. */
+  session: (token: string) => request<{ ok: boolean }>('/api/admin/session', json('POST', { token })),
   logout: () => request('/api/admin/session', json('DELETE')),
   listings: () => request<{ listings: AdminListing[] }>('/api/admin/listings'),
   create: () => request<{ listing: AdminListing }>('/api/admin/listings', json('POST', {})),

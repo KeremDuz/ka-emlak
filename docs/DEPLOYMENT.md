@@ -6,7 +6,7 @@ Uygulamanın geliştirmesi ile canlı servis bağlantısı ayrı aşamalardır. 
 
 - Cloudflare Workers **Free**: uygulama sunucusu ve site. R2 ve ücretli Images etkinleştirilmez. Çalışan istekler için günlük kota ve CPU sınırları vardır; bu sınırlar limitsiz hizmet anlamına gelmez.
 - Supabase **Free**: ilanlar, taslaklar, iletişim talepleri ve private fotoğraf bucket'ı. Ücretsiz hesapta 500 MB DB, 1 GB dosya alanı ve trafik kotaları vardır. Düşük etkinlikte proje duraklayabilir; yönetici konsolundan yeniden başlatılması gerekir. Bu sınır kullanıcı tarafından kabul edilmiştir. Ücretli plana otomatik geçiş yapılmaz.
-- Firebase **Spark**: yalnız e-posta/şifre girişi ve şifre sıfırlama. Firebase Cloud Storage, Firestore, Cloud Functions veya Blaze kullanılmaz. Spark parola sıfırlama e-posta kotası uygulanır. Supabase varsayılan SMTP kullanılmaz.
+- Panel girişi **Supabase Auth** ile yapılır (yalnız e-posta/şifre); Firebase kullanılmaz. Supabase’in kendi e-posta gönderimi saatte birkaç iletiyle sınırlıdır; tek yönetici için şifre yenilemeye yeter. Daha fazlası gerekirse Supabase’e özel SMTP bağlanır.
 
 Bu planlar ücretsiz başlangıç sağlar; sağlayıcı limitleri, plan şartları veya ücretsiz kullanımın süresiz devam edeceği garanti edilmez. Alan adı satın alma ayrı ve isteğe bağlıdır; `workers.dev` adresiyle başlanabilir.
 
@@ -15,9 +15,9 @@ Bu planlar ücretsiz başlangıç sağlar; sağlayıcı limitleri, plan şartlar
 1. Kullanıcının kendi Supabase hesabında Free proje seçilir/oluşturulur. Mevcut projeye bağlanılacaksa veriler ve erişim politikaları önce incelenir. Yeni migration SQL'i Supabase SQL Editor veya bağlı Supabase aracıyla uygulanır: `supabase/migrations/20261019121704_ka_emlak_initial_schema.sql`. Yeni migration'lar sıralı uygulanır; uygulanmış migration değiştirilmez.
 2. SQL, `listings`, `office_settings`, `inquiries`, `media_objects`, `request_limits` ve rezervasyon kilidini oluşturur. Her tabloda RLS açıktır. Anonim rol yalnız yayımlanmış ilanların **yayın snapshot'ını** ve ofis bilgilerini okur; `draft` sütununu okuyamaz. Bütün yazma RPC'leri yalnız `service_role` rolüne açıktır ve `SECURITY INVOKER` kullanır.
 3. `ka-photos` bucket'ı **private** kalır. Anonim veya authenticated rollerine bucket geneli okuma/yazma politikası verilmez. Mevcut projelerde daha önce yazılmış geniş Storage RLS politikalarının bu bucket'a da izin vermediği doğrulanır. Fotoğraflar Worker `/media/:id` proxy'sinden sunulur; anonim isteklerde fotoğrafın yayımlanmış snapshot içinde bulunduğu denetlenir.
-4. Firebase'de Spark proje ve web uygulaması açılır, Authentication > Email/Password etkinleştirilir. Tek yönetici konsolda oluşturulur. E-posta/şifre kayıt ekranı sunulmaz. Hesabın UID'si `ADMIN_UID` olur; uygulama diğer Firebase kullanıcılarına yetki vermez. Firebase tarafında başka hesap oluşturulabilmesi yazma yetkisi sağlamaz. `workers.dev` ve daha sonra özel alan adı Authorized Domains listesine eklenir. Şifre sıfırlama e-postası Türkçe ayarlanır.
+4. Supabase’de **Authentication → Users → Add user** ile tek yönetici oluşturulur (“Auto Confirm User” işaretli). Kullanıcının **User UID** değeri `ADMIN_UID` olur; uygulama başka hiçbir Supabase kullanıcısına yetki vermez. **Authentication → Sign In / Providers** altında “Allow new users to sign up” kapatılır. **Authentication → URL Configuration** altında Site URL sitenin adresi yapılır ve Redirect URLs listesine `https://<site>/yonetim` eklenir (şifre yenileme bağlantısı buraya döner).
 5. `.env.example` içindeki adlarla gerçek değerler yerelde ignored `.env` veya `.dev.vars` dosyasına, üretimde Worker runtime settings/secrets alanına girilir. Supabase secret/service-role key **yalnız sunucuda** bulunur. Firebase web API key gizli sunucu yetkisi değildir; `/api/config` yalnız Firebase web ayarlarını döndürür. Hiçbir secret, API yanıtına, tarayıcı paketine veya Git'e yazılmaz.
-6. Root build talimatıyla Cloudflare hedefi derlenir (`KA_BUILD_TARGET=cloudflare`); Worker Free hesabına deploy edilir. `SITE_URL` gerçek origin olarak ayarlanır. Firebase secret key veya private service account key gerekmez: Firebase ID token'ı Google'ın açık sertifikaları ve `jose` ile doğrulanır. RS256, issuer, audience, expiry, issue/auth zamanı ve tek yönetici UID kontrol edilir.
+6. Root build talimatıyla Cloudflare hedefi derlenir (`KA_BUILD_TARGET=cloudflare`); Worker Free hesabına deploy edilir. `SITE_URL` gerçek origin olarak ayarlanır. Panel oturumu Supabase’in `/auth/v1/user` uç noktasına doğrulatılır (imza yöntemi projeye göre değiştiği için yerelde çözülmez), sonuç 60 saniye bellekte tutulur ve yalnız `ADMIN_UID` kabul edilir.
 7. Canlı sitede örnek ilanlar otomatik eklenmez. İstenirse kaynağı gözden geçirilmiş JSON import edilir; bütün importlar `needsReview=true` ve **taslak** olarak kaydedilir. Yönetici fotoğraf, güncel fiyat ve bilgileri kontrol edip ayrıca Yayınla seçer. Önizleme görselleri ile gerçek ofis içeriği karıştırılmamalıdır.
 
 ## GitHub'dan otomatik yayın
@@ -29,7 +29,7 @@ Bu planlar ücretsiz başlangıç sağlar; sağlayıcı limitleri, plan şartlar
 3. GitHub'da depo **Settings → Secrets and variables → Actions** altında iki sır ekleyin: `CLOUDFLARE_API_TOKEN` (2. adımdaki anahtar) ve `CLOUDFLARE_ACCOUNT_ID` (1. adımdaki kimlik). Bu değerleri sohbete ya da koda yazmayın.
 4. **Actions → Yayınla → Run workflow** ile ilk yayını başlatın. Site `https://ka-emlak.<hesap-adı>.workers.dev` adresinde açılır.
 5. Aynı sayfada **Variables** sekmesine `SITE_URL` değişkenini sitenin adresiyle ekleyin (kalıcı bağlantılar ve site haritası için) ve iş akışını bir kez daha çalıştırın.
-6. Supabase ve Firebase değerleri (yukarıdaki 1–5. adımlar) Cloudflare'da Worker'ın **Settings → Variables and Secrets** alanına girilir. Bunlar girilene kadar site açılır ama "İlanlar şu an yüklenemiyor" yazar ve panele giriş yapılamaz.
+6. Supabase değerleri (`SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `ADMIN_UID`) Cloudflare’da Worker’ın **Settings → Variables and Secrets** alanına **Secret** türünde girilir. Bunlar girilene kadar site açılır ama “İlanlar şu an yüklenemiyor” yazar ve panele giriş yapılamaz.
 
 ## hepsiemlak ve sahibinden'den tek tıkla aktarma
 
@@ -74,7 +74,7 @@ Paneldeki JSON dışa aktarma ilanların yayın/taslak snapshot'larını, ofis b
 
 ## Yayın öncesi kontroller
 
-- Oturumsuz create/save/upload/settings/inquiry-list istekleri reddedilir; başka Firebase UID'si yetki alamaz.
+- Oturumsuz create/save/upload/settings/inquiry-list istekleri reddedilir; yönetici dışındaki Supabase kullanıcıları yetki alamaz.
 - Anonim DB sorgusunda taslaklar görünmez, `draft` sütunu reddedilir. Taslak fotoğrafın `/media/:id` adresi 404 döner; yayımlanınca görünür; arşivlenince erişim kapanır.
 - İki sekmede aynı version ile kaydetmede yalnız biri başarılı olur. Yayımdaki ilan taslak autosave sırasında değişmez.
 - Yeni yükleme kota sınırında eşzamanlı da olsa aşımı geçmez; hata sonrasında dosya/rezervasyon birlikte temizlenir.

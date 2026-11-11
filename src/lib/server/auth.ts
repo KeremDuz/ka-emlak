@@ -1,36 +1,45 @@
 import type { APIContext } from 'astro';
-import { importX509, jwtVerify } from 'jose';
+import { decodeJwt } from 'jose';
 import { isPreview, setting, type ServerLocals } from './env';
 import { HttpError } from './http';
 import { withPreview } from './preview';
 
 const COOKIE='ka_admin';
-const CERT_URL='https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com';
-export type KeyLoader=(kid:string)=>Promise<CryptoKey>;
-async function googleKey(kid:string):Promise<CryptoKey> {
-  const cache = 'caches' in globalThis ? (globalThis.caches as CacheStorage & {default?:Cache}).default : undefined;
-  let response = await cache?.match(CERT_URL);
-  if(!response) { response=await fetch(CERT_URL,{signal:AbortSignal.timeout(10_000)}); if(!response.ok)throw new HttpError(503,'Giriş doğrulama servisine erişilemiyor.','AUTH_UNAVAILABLE'); if(cache)await cache.put(CERT_URL,response.clone()); }
-  const certificates=await response.json() as Record<string,string>;
-  const cert=certificates[kid]; if(!cert)throw new HttpError(401,'Oturum yenilenmeli.','AUTH_INVALID');
-  return importX509(cert,'RS256');
-}
-export async function verifyFirebaseToken(token:string, projectId:string, adminUid:string, keyLoader:KeyLoader=googleKey) {
-  if(!projectId || !adminUid)throw new HttpError(503,'Yönetici girişi henüz bağlanmadı.','AUTH_NOT_CONFIGURED');
-  if(token.length>12000)throw new HttpError(401,'Geçersiz oturum.','AUTH_INVALID');
-  try {
-    const result=await jwtVerify(token,async header=> {
-      if(header.alg!=='RS256'||!header.kid)throw new Error('Invalid key');return keyLoader(header.kid);
-    },{algorithms:['RS256'],issuer:`https://securetoken.google.com/${projectId}`,audience:projectId,requiredClaims:['exp','iat','auth_time','sub'],clockTolerance:5});
-    const {payload}=result; const now=Math.floor(Date.now()/1000);
-    if(typeof payload.iat!=='number'||payload.iat>now+5||typeof payload.auth_time!=='number'||payload.auth_time>now+5||!payload.sub||payload.sub!==adminUid)throw new HttpError(403,'Bu hesabın yönetici yetkisi yok.','FORBIDDEN');
-    return {uid:payload.sub,expires:payload.exp!};
-  } catch(error) {
-    if(error instanceof HttpError)throw error;
-    throw new HttpError(401,'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.','AUTH_INVALID');
-  }
-}
+export type Fetcher=(input:string,init?:RequestInit)=>Promise<Response>;
+export interface AuthSettings { url:string; publishableKey:string; adminUid:string; }
+// Doğrulanan oturum kısa süre bellekte tutulur; her panel isteğinde Supabase'e yeniden sorulmaz.
+const verified=new Map<string,{uid:string;expires:number;until:number}>();
+const CACHE_MS=60_000;
 async function digest(token:string) {return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(token))),x=>x.toString(16).padStart(2,'0')).join('');}
+
+/**
+ * Supabase oturum anahtarını Supabase'in kendisine doğrulatır (imza yöntemi projeden projeye değiştiği için yerelde çözülmez)
+ * ve yalnız tek yöneticinin kimliğini kabul eder. Başka biri Supabase'de hesap açsa da panele giremez.
+ */
+export async function verifySupabaseToken(token:string, settings:AuthSettings, fetcher:Fetcher=fetch) {
+  if(!settings.url||!settings.publishableKey||!settings.adminUid)throw new HttpError(503,'Yönetici girişi henüz bağlanmadı.','AUTH_NOT_CONFIGURED');
+  if(!token||token.length>12000)throw new HttpError(401,'Geçersiz oturum.','AUTH_INVALID');
+  const now=Date.now(); const key=await digest(`${settings.url}:${settings.adminUid}:${token}`);
+  const cached=verified.get(key);
+  if(cached&&cached.until>now&&cached.expires*1000>now)return {uid:cached.uid,expires:cached.expires};
+  let expires:number;
+  try { const claims=decodeJwt(token); if(typeof claims.exp!=='number')throw new Error('exp'); expires=claims.exp; }
+  catch { throw new HttpError(401,'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.','AUTH_INVALID'); }
+  if(expires*1000<=now)throw new HttpError(401,'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.','AUTH_INVALID');
+  let response:Response;
+  try { response=await fetcher(`${settings.url.replace(/\/+$/,'')}/auth/v1/user`,{headers:{apikey:settings.publishableKey,Authorization:`Bearer ${token}`},signal:AbortSignal.timeout(10_000)}); }
+  catch { throw new HttpError(503,'Giriş doğrulama servisine erişilemiyor.','AUTH_UNAVAILABLE'); }
+  if(response.status===401||response.status===403)throw new HttpError(401,'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.','AUTH_INVALID');
+  if(!response.ok)throw new HttpError(503,'Giriş doğrulama servisine erişilemiyor.','AUTH_UNAVAILABLE');
+  const user=await response.json().catch(()=>null) as {id?:unknown}|null;
+  if(!user||typeof user.id!=='string'||!user.id)throw new HttpError(401,'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.','AUTH_INVALID');
+  if(user.id!==settings.adminUid)throw new HttpError(403,'Bu hesabın yönetici yetkisi yok.','FORBIDDEN');
+  if(verified.size>200)verified.clear();
+  verified.set(key,{uid:user.id,expires,until:now+CACHE_MS});
+  return {uid:user.id,expires};
+}
+const authSettings=(locals:ServerLocals):AuthSettings=>({url:setting(locals,'SUPABASE_URL'),publishableKey:setting(locals,'SUPABASE_PUBLISHABLE_KEY'),adminUid:setting(locals,'ADMIN_UID')});
+
 export async function requireAdmin(context:Pick<APIContext,'request'|'cookies'|'locals'>) {
   const locals=context.locals as ServerLocals;
   const authorization=context.request.headers.get('Authorization');
@@ -41,7 +50,7 @@ export async function requireAdmin(context:Pick<APIContext,'request'|'cookies'|'
     if(!valid)throw new HttpError(401,'Önizleme oturumu sona erdi.','UNAUTHORIZED');
     return {uid:'local-preview',expires:Math.floor(Date.now()/1000)+3600};
   }
-  return verifyFirebaseToken(token,setting(locals,'FIREBASE_PROJECT_ID'),setting(locals,'ADMIN_UID'));
+  return verifySupabaseToken(token,authSettings(locals));
 }
 export async function startSession(context:APIContext, body:{preview?:boolean;token?:string}) {
   const locals=context.locals as ServerLocals;let token:string;let expires:number;
@@ -50,7 +59,7 @@ export async function startSession(context:APIContext, body:{preview?:boolean;to
     token=Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,'0')).join('');expires=Math.floor(Date.now()/1000)+8*3600;
     const key=await digest(token);await withPreview(state=>{state.sessions=Object.fromEntries(Object.entries(state.sessions).filter(([,until])=>until>Date.now()));state.sessions[key]=expires*1000;},true);
   } else {
-    token=body.token??'';const result=await verifyFirebaseToken(token,setting(locals,'FIREBASE_PROJECT_ID'),setting(locals,'ADMIN_UID'));expires=result.expires;
+    token=body.token??'';const result=await verifySupabaseToken(token,authSettings(locals));expires=result.expires;
   }
   context.cookies.set(COOKIE,token,{httpOnly:true,secure:!isPreview(locals),sameSite:'strict',path:'/',maxAge:Math.max(1,expires-Math.floor(Date.now()/1000))});
 }
