@@ -4,6 +4,8 @@
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-10-19",
   "compatibility_flags": ["nodejs_compat"],
+  // Cloudflare panelinden girilen değişkenler her yayında silinmesin.
+  "keep_vars": true,
   "assets": { "binding": "ASSETS", "directory": "./dist/client" },
   "observability": { "enabled": true, "head_sampling_rate": 0.1 }
 }
