@@ -6,6 +6,8 @@ import { roomsRequired } from '../listing-helpers';
 const text = (max: number) => z.string().max(max);
 const safeUrl = z.string().max(1500).refine(value => !value || value.startsWith('/') && !value.startsWith('//') || /^https:\/\//i.test(value), 'Güvenli bir adres girin.');
 export const photoSchema = z.object({ id: text(100), url: safeUrl, thumbnail: safeUrl.optional(), alt: text(200), storagePath: text(500).optional(), bytes: z.number().int().nonnegative().optional() });
+const translationSchema = z.object({ title: text(180), description: text(12000), features: z.array(text(100)).max(50), auto: z.boolean() });
+const httpsUrl = z.union([z.literal(''), z.string().max(500).regex(/^https:\/\/[^\s<>"']+$/)]);
 export const listingSchema = z.object({
   id: z.string().min(1).max(100), slug: z.string().max(250), title: text(180),
   transaction: z.enum(['sale', 'rent', 'exchange']), propertyType: z.enum(['apartment','villa','land','office','commercial','building','warehouse']),
@@ -16,6 +18,8 @@ export const listingSchema = z.object({
   createdAt: z.string().datetime(), updatedAt: z.string().datetime(), version: z.number().int().positive(), sourceUrl: safeUrl.optional(), needsReview: z.boolean(),
   latitude: z.number().min(-90).max(90).optional(), longitude: z.number().min(-180).max(180).optional(),
   guests: z.number().int().min(1).max(100).nullable().optional(), pool: z.enum(['private', 'shared', 'none']).optional(), minNights: z.number().int().min(1).max(365).nullable().optional(),
+  translations: z.object({ en: translationSchema.optional(), fa: translationSchema.optional() }).optional(),
+  videoUrl: httpsUrl.optional(), tourUrl: httpsUrl.optional(), investment: z.boolean().optional(),
 });
 export const settingsSchema = z.object({ name: text(100), advisor: text(100), phone: text(50), whatsapp: text(50), email: z.union([z.literal(''),z.string().email().max(200)]), address: text(400), hours: text(200), about: text(4000), heroImage: safeUrl, instagram: safeUrl, licenseNumber: text(100) });
 export const inquirySchema = z.object({ name: z.string().trim().min(2).max(100), phone: z.string().trim().min(10).max(30).regex(/^[+\d\s()-]+$/), message: text(2000).default(''), listingId: text(100).optional(), kind: z.enum(['callback','valuation']), website: text(1000).optional(), startedAt: z.number().optional(), consent: z.literal(true) });

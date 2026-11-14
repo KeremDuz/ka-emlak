@@ -4,6 +4,11 @@ export type ListingStatus = 'draft' | 'published' | 'sold' | 'rented' | 'archive
 export type Currency = 'TRY' | 'EUR' | 'USD';
 export type Period = 'total' | 'day' | 'week' | 'month' | 'year';
 export type Pool = 'private' | 'shared' | 'none';
+/** Sitenin dilleri. Türkçe asıl dildir; ilan metni Türkçe girilir, ötekiler çeviridir. */
+export type Locale = 'tr' | 'en' | 'fa';
+export type TranslatedLocale = Exclude<Locale, 'tr'>;
+/** Bir ilanın çevrilen metinleri. auto: makine çevirisi (yönetici düzeltince false olur). */
+export interface ListingTranslation { title: string; description: string; features: string[]; auto: boolean; }
 export interface Photo { id: string; url: string; thumbnail?: string; alt: string; storagePath?: string; bytes?: number; }
 export interface Listing {
   id: string; slug: string; title: string; transaction: Transaction; propertyType: PropertyType;
@@ -15,6 +20,12 @@ export interface Listing {
   needsReview: boolean; latitude?: number; longitude?: number;
   /** Dönemlik (günlük/haftalık) kiralıklar için: kaç kişilik, havuz, en az kaç gece. İsteğe bağlıdır. */
   guests?: number | null; pool?: Pool; minNights?: number | null;
+  /** İngilizce ve Farsça metinler; yoksa ziyaretçiye Türkçe gösterilir. */
+  translations?: Partial<Record<TranslatedLocale, ListingTranslation>>;
+  /** YouTube/Vimeo tanıtım videosu ve sanal tur (ör. Matterport) adresleri; yalnız https. */
+  videoUrl?: string; tourUrl?: string;
+  /** Yatırıma uygun olarak işaretlenen ilanlar "Yatırım" bölümünde listelenir. */
+  investment?: boolean;
 }
 export interface AdminListing extends Listing { draft: Listing | null; }
 export interface OfficeSettings {
@@ -24,7 +35,7 @@ export interface OfficeSettings {
 }
 export interface Inquiry {
   id: string; name: string; phone: string; message: string; listingId?: string;
-  kind: 'callback' | 'valuation'; status: 'new' | 'contacted' | 'closed'; createdAt: string;
+  kind: 'callback' | 'valuation' | 'land' | 'renewal'; details?: Record<string, string>; locale?: Locale; status: 'new' | 'contacted' | 'closed'; createdAt: string;
 }
 export interface ListingFilters {
   q?: string; transaction?: string; propertyType?: string; district?: string;
