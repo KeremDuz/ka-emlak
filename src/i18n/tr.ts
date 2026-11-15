@@ -23,8 +23,11 @@ export const tr = {
   footer: {
     listings: 'İlanlar', sale: 'Satılık', rent: 'Kiralık', seasonal: 'Dönemlik kiralık', exchange: 'Kat karşılığı', map: 'Haritada ilanlar',
     about: 'Hakkımızda', valuation: 'Mülk değerleme', contact: 'İletişim', hepsiemlak: 'Hepsiemlak sayfamız', contactHeading: 'İletişim',
-    privacy: 'Gizlilik ve aydınlatma', cookies: 'Çerez tercihleri', admin: 'Yönetici girişi',
+    katKarsiligi: 'Kat karşılığı inşaat', renewal: 'Kentsel dönüşüm', landValuation: 'Ücretsiz arsa değerleme', investment: 'Yatırımlık ilanlar',
+    privacy: 'Gizlilik ve aydınlatma', cookies: 'Çerez tercihleri', admin: 'Yönetici girişi', kvkk: 'KVKK aydınlatma',
   },
+  consent: { title: 'Çerez tercihi', change: 'Tercihleri değiştir', learnMore: 'Gizlilik ve aydınlatma' },
+  legal: { updated: 'Güncelleme tarihi' },
   whatsapp: {
     general: 'Merhaba, portföyünüz hakkında bilgi almak istiyorum.',
     listing: 'Merhaba, {title} ilanınız hakkında bilgi almak istiyorum. {url}',
@@ -48,6 +51,7 @@ export const tr = {
     latest: 'Yeni eklenenler',
     ownerTitle: 'Mülkünüzü satmak ya da kiralamak mı istiyorsunuz?',
     ownerAction: 'Mülkünüzü anlatın',
+    ownerLand: 'Arsanız için kat karşılığı',
   },
   advisor: {
     role: 'KA EMLAK gayrimenkul danışmanı',
@@ -103,6 +107,11 @@ export const tr = {
     dialogTitle: '{title} fotoğrafları', dialogHelp: 'Sağ ve sol oklarla fotoğraflar arasında gezinin. Escape ile kapatın.',
     close: 'Galeriyi kapat', prev: 'Önceki fotoğraf', next: 'Sonraki fotoğraf', counter: '{current} / {total}',
   },
+  media: {
+    video: 'Video', tour: 'Sanal tur', loadVideo: 'Videoyu oynat', loadTour: 'Sanal turu aç',
+    note: 'Oynattığınızda içerik {host} üzerinden yüklenir.', open: 'Bağlantıyı yeni sekmede aç',
+    videoTitle: '{title} videosu', tourTitle: '{title} sanal turu',
+  },
   form: {
     callbackTitle: 'Sizi arayalım', valuationTitle: 'Mülk değerleme',
     callbackIntro: 'Numaranızı bırakın, size dönelim.', valuationIntro: 'Mülkünüzü kısaca yazın, size dönelim.',
@@ -119,7 +128,9 @@ export const tr = {
   },
   map: { aria: 'İlan konumları haritası', contributors: 'katkıcıları' },
   pages: {
-    listings: { title: 'Antalya satılık ve kiralık ilanlar', h1: 'İlanlar' },
+    investment: { count: '{n} ilan', countOne: '{n} ilan', emptyTitle: 'Şu an yatırımlık işaretli ilan yok', emptyText: 'Yeni ilanlar eklendikçe burada görünür. Aradığınız özellikleri bize yazın, uygun bir mülk çıkınca haber verelim.', all: 'Tüm ilanlar' },
+    owner: { formTitleAria: 'Başvuru formu' },
+    listings: { title: 'Antalya satılık ve kiralık ilanlar', description: 'Antalya, Konyaaltı ve Döşemealtı’ndaki satılık, kiralık ve dönemlik kiralık ilanları filtreleyin; fotoğraflara, fiyata ve konuma göre karşılaştırın.', h1: 'İlanlar' },
     seasonal: {
       title: 'Antalya dönemlik kiralık villa ve evler',
       description: 'KA EMLAK portföyündeki günlük ve haftalık kiralık villalar ve evler. Uygun tarihler için arayın ya da WhatsApp’tan yazın.',

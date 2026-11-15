@@ -6,7 +6,7 @@ const escape = (value: string) => value.replace(/[<>&"']/g, c => ({ '<': '&lt;',
 export const GET: APIRoute = async ({ locals, url }) => {
   const data = await getPublicData(locals as ServerLocals);
   if (!data.available || data.mode === 'preview') return new Response('<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"/>', { headers: { 'Content-Type': 'application/xml' } });
-  const paths = ['/', '/ilanlar', '/donemlik-kiralik', '/hakkimizda', '/iletisim', ...data.listings.map(l => `/ilan/${l.slug}`)];
+  const paths = ['/', '/ilanlar', '/donemlik-kiralik', '/yatirim', '/kat-karsiligi', '/kentsel-donusum', '/arsa-degerleme', '/hakkimizda', '/iletisim', '/gizlilik', '/cerezler', '/kvkk', ...data.listings.map(l => `/ilan/${l.slug}`)];
   // Her sayfa üç dilde ayrı bir kayıttır; her kayıt üç dilin karşılıklarını (hreflang) taşır.
   const entry = (path: string) => alternates(path, url.origin).map(link => `<xhtml:link rel="alternate" hreflang="${link.locale}" href="${escape(link.href)}"/>`).join('');
   const urls = paths.flatMap(path => { const links = entry(path); return locales.map(locale => `<url><loc>${escape(new URL(localePath(locale, path), url.origin).href)}</loc>${links}</url>`); });

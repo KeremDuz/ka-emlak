@@ -43,3 +43,33 @@ export function slugify(value: string) { return value.toLocaleLowerCase('tr-TR')
 export function dateLabel(value: string, locale: Locale = 'tr') { return new Intl.DateTimeFormat(intlLocales[locale], { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(value)); }
 /** +905321234567 → 0532 123 45 67; başka biçimdeki numara olduğu gibi kalır. */
 export function phoneLabel(phone: string) { return phone.replace(/^\+90(\d{3})(\d{3})(\d{2})(\d{2})$/, '0$1 $2 $3 $4'); }
+
+/** İlan videosu ve sanal tur bağlantıları: yalnız https, yalnız bilinen oynatıcılar iframe ile gömülür.
+    Başka her adres `src: null` döner ve sayfada düz dış bağlantı olarak gösterilir. Dönen `src` tıklamadan önce yüklenmez. */
+export interface MediaEmbed { href: string; host: string; src: string | null; }
+const tourHosts: Record<string, (url: URL) => string | null> = {
+  'my.matterport.com': url => url.pathname.startsWith('/show') && url.searchParams.get('m') ? url.href : null,
+  'kuula.co': url => /^\/(share|post)\//.test(url.pathname) ? url.href : null,
+  'roundme.com': url => /^\/(embed|tour)\//.test(url.pathname) ? url.href.replace('/tour/', '/embed/') : null,
+  'momento360.com': url => url.pathname.startsWith('/e/') ? url.href : null,
+};
+export function mediaEmbed(raw: string | undefined, kind: 'video' | 'tour'): MediaEmbed | null {
+  let url: URL;
+  try { url = new URL((raw ?? '').trim()); } catch { return null; }
+  if (url.protocol !== 'https:' || url.username || url.password) return null;
+  const host = url.hostname.replace(/^www\./, '').toLowerCase();
+  const plain: MediaEmbed = { href: url.href, host, src: null };
+  if (kind === 'tour') {
+    const src = tourHosts[host]?.(url) ?? null;
+    return { ...plain, src };
+  }
+  let youtube: string | null = null;
+  if (host === 'youtu.be') youtube = url.pathname.slice(1).split('/')[0];
+  else if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'youtube-nocookie.com') youtube = url.pathname === '/watch' ? url.searchParams.get('v') : (url.pathname.match(/^\/(?:embed|shorts|live)\/([^/?]+)/)?.[1] ?? null);
+  if (youtube && /^[\w-]{6,20}$/.test(youtube)) return { ...plain, src: `https://www.youtube-nocookie.com/embed/${youtube}?autoplay=1&rel=0` };
+  if (host === 'vimeo.com' || host === 'player.vimeo.com') {
+    const id = url.pathname.match(/^\/(?:video\/)?(\d{5,12})(?:\/|$)/)?.[1];
+    if (id) return { ...plain, src: `https://player.vimeo.com/video/${id}?autoplay=1&dnt=1` };
+  }
+  return plain;
+}

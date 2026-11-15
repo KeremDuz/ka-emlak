@@ -22,7 +22,7 @@ const options = catalogOptions(filterListings(data.listings, fixed));
       <section class="page-intro"><div class="container"><h1>{t.pages.seasonal.h1}</h1><p>{t.pages.seasonal.intro}</p></div></section>
       <Catalog initialListings={filtered.slice(0, publicPageSize)} initialTotal={filtered.length} initialFilters={filters} options={options} available={data.available} fixed={fixed} locale={locale} t={t.catalog} card={t.card} mapText={t.map} client:load/>
     </SiteLayout>
-  : <SiteLayout locale={locale} title={t.pages.listings.title} settings={data.settings} mode={data.mode}>
+  : <SiteLayout locale={locale} title={t.pages.listings.title} description={t.pages.listings.description} settings={data.settings} mode={data.mode}>
       <section class="page-intro page-intro-compact"><div class="container"><h1>{t.pages.listings.h1}</h1></div></section>
       <Catalog initialListings={filtered.slice(0, publicPageSize)} initialTotal={filtered.length} initialFilters={filters} options={options} available={data.available} locale={locale} t={t.catalog} card={t.card} mapText={t.map} client:load/>
     </SiteLayout>}

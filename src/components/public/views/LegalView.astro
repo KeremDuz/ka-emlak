@@ -1,18 +1,29 @@
 ---
 import SiteLayout from '../../../layouts/SiteLayout.astro';
-import { dictionary, localePath } from '../../../i18n';
+import { dictionary } from '../../../i18n';
+import { legal } from '../../../content/legal';
 import type { Locale } from '../../../lib/types';
-// Gizlilik ve çerez sayfaları sözlükteki metinle çizilir. src/content/legal.ts taslakları Google Analytics gibi henüz olmayan
-// özellikleri anlattığı için, o özellikler eklenene kadar burada kullanılmaz.
-interface Props { locale: Locale; kind: 'privacy' | 'cookies'; }
+// KVKK, gizlilik ve çerez metinleri src/content/legal.ts içindedir (üç dilde taslak; yayından önce avukat gözden geçirmelidir).
+interface Props { locale: Locale; kind: 'kvkk' | 'privacy' | 'cookies'; }
 const { locale, kind } = Astro.props;
 const t = dictionary(locale);
-const page = t.pages[kind];
-const contact = localePath(locale, '/iletisim');
+const doc = legal[locale][kind];
+// SiteLayout başlığa " | KA EMLAK" ekler.
+const title = doc.metaTitle.replace(/\s*\|\s*KA EMLAK$/, '');
+// Yer tutucu tarih yayında gösterilmez.
+const updated = doc.updated && doc.updated !== 'PLACEHOLDER_DATE' ? doc.updated : '';
 ---
-<SiteLayout locale={locale} title={page.title} description={page.description}>
-  <section class="page-intro"><div class="container"><h1>{page.h1}</h1><p>{page.intro}</p></div></section>
+<SiteLayout locale={locale} title={title} description={doc.metaDescription}>
+  <section class="page-intro"><div class="container"><h1>{doc.title}</h1><p>{doc.intro}</p>
+    {updated && <p class="legal-updated">{t.legal.updated}: {updated}</p>}
+    {kind === 'cookies' && <p><button type="button" class="button outline sm" data-consent-open>{t.consent.change}</button></p>}
+  </div></section>
   <section class="content-page container"><article class="prose">
-    {page.sections.map(section => <><h2>{section.h}</h2><p set:html={section.html.replace('{contact}', contact)}/></>)}
+    {locale !== 'tr' && <p class="legal-note">{doc.languageNote}</p>}
+    {doc.sections.map(section => <>
+      <h2>{section.heading}</h2>
+      {section.paragraphs.map(text => <p>{text}</p>)}
+      {section.bullets && (section.ordered ? <ol>{section.bullets.map(item => <li>{item}</li>)}</ol> : <ul>{section.bullets.map(item => <li>{item}</li>)}</ul>)}
+    </>)}
   </article></section>
 </SiteLayout>

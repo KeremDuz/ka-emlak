@@ -22,8 +22,11 @@ export const en: Dictionary = {
   footer: {
     listings: 'Listings', sale: 'For sale', rent: 'For rent', seasonal: 'Short-term rentals', exchange: 'Flat-for-land', map: 'Listings on the map',
     about: 'About us', valuation: 'Property valuation', contact: 'Contact', hepsiemlak: 'Our Hepsiemlak page', contactHeading: 'Contact',
-    privacy: 'Privacy notice', cookies: 'Cookies', admin: 'Admin sign-in',
+    katKarsiligi: 'Land-for-flats construction', renewal: 'Urban renewal', landValuation: 'Free land valuation', investment: 'Investment listings',
+    privacy: 'Privacy notice', cookies: 'Cookies', admin: 'Admin sign-in', kvkk: 'Personal data notice (KVKK)',
   },
+  consent: { title: 'Cookie choice', change: 'Change preferences', learnMore: 'Privacy notice' },
+  legal: { updated: 'Last updated' },
   whatsapp: {
     general: 'Hello, I would like some information about your properties.',
     listing: 'Hello, I would like some information about this listing: {title}. {url}',
@@ -47,6 +50,7 @@ export const en: Dictionary = {
     latest: 'Recently added',
     ownerTitle: 'Looking to sell or let your property?',
     ownerAction: 'Tell us about your property',
+    ownerLand: 'Land-for-flats for your plot',
   },
   advisor: {
     role: 'Real estate consultant, KA EMLAK',
@@ -101,6 +105,11 @@ export const en: Dictionary = {
     dialogTitle: 'Photos of {title}', dialogHelp: 'Use the left and right arrow keys to move between photos. Press Escape to close.',
     close: 'Close gallery', prev: 'Previous photo', next: 'Next photo', counter: '{current} / {total}',
   },
+  media: {
+    video: 'Video', tour: 'Virtual tour', loadVideo: 'Play video', loadTour: 'Open virtual tour',
+    note: 'When you play it, the content loads from {host}.', open: 'Open the link in a new tab',
+    videoTitle: 'Video of {title}', tourTitle: 'Virtual tour of {title}',
+  },
   form: {
     callbackTitle: 'Request a call', valuationTitle: 'Property valuation',
     callbackIntro: 'Leave your number and we will call you back.', valuationIntro: 'Tell us briefly about your property and we will get back to you.',
@@ -116,7 +125,9 @@ export const en: Dictionary = {
   },
   map: { aria: 'Map of listing locations', contributors: 'contributors' },
   pages: {
-    listings: { title: 'Property for sale and rent in Antalya', h1: 'Listings' },
+    investment: { count: '{n} listings', countOne: '{n} listing', emptyTitle: 'No listings are marked as investments right now', emptyText: 'They appear here as new listings are added. Tell us what you are looking for and we will let you know when a suitable property comes up.', all: 'All listings' },
+    owner: { formTitleAria: 'Application form' },
+    listings: { title: 'Property for sale and rent in Antalya', description: 'Filter property for sale, long-term and short-term rent in Antalya, Konyaaltı and Döşemealtı, and compare by photos, price and location.', h1: 'Listings' },
     seasonal: {
       title: 'Short-term rental villas and homes in Antalya',
       description: 'Villas and homes from the KA EMLAK portfolio, let by the day or week. Call or message us on WhatsApp for available dates.',

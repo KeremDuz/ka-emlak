@@ -1,0 +1,24 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import LandApplication from './LandApplication.astro';
+import { getPublicData } from '../../../lib/server/data';
+import { katKarsiligi } from '../../../content/kat-karsiligi';
+import { kentselDonusum } from '../../../content/kentsel-donusum';
+import type { Locale } from '../../../lib/types';
+// Kat karşılığı (kind="kat") ve kentsel dönüşüm (kind="kentsel") sayfaları: src/content metni + başvuru formu.
+interface Props { locale: Locale; kind: 'kat' | 'kentsel'; }
+const { locale, kind } = Astro.props;
+const page = (kind === 'kat' ? katKarsiligi : kentselDonusum)[locale];
+const { settings, mode } = await getPublicData(Astro.locals);
+---
+<SiteLayout locale={locale} title={page.title} description={page.metaDescription} settings={settings} mode={mode}>
+  <section class="page-intro"><div class="container"><h1>{page.title}</h1><p>{page.intro}</p></div></section>
+  <section class="content-page container"><article class="prose">
+    {page.sections.map(section => <>
+      <h2>{section.heading}</h2>
+      {section.paragraphs.map(text => <p>{text}</p>)}
+      {section.bullets && (section.ordered ? <ol>{section.bullets.map(item => <li>{item}</li>)}</ol> : <ul>{section.bullets.map(item => <li>{item}</li>)}</ul>)}
+    </>)}
+  </article></section>
+  <LandApplication locale={locale} type={kind === 'kat' ? 'katKarsiligi' : 'kentselDonusum'} title={page.formTitle} intro={page.formIntro} headingId="land-form-heading"/>
+</SiteLayout>

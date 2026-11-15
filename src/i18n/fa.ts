@@ -23,8 +23,11 @@ export const fa: Dictionary = {
   footer: {
     listings: 'آگهی‌ها', sale: 'فروش', rent: 'اجاره', seasonal: 'اجاره کوتاه‌مدت', exchange: 'مشارکت در ساخت', map: 'آگهی‌ها روی نقشه',
     about: 'درباره ما', valuation: 'ارزش‌گذاری ملک', contact: 'تماس با ما', hepsiemlak: 'صفحه ما در Hepsiemlak', contactHeading: 'تماس',
-    privacy: 'حریم خصوصی', cookies: 'کوکی‌ها', admin: 'ورود مدیر',
+    katKarsiligi: 'مشارکت در ساخت', renewal: 'نوسازی شهری', landValuation: 'ارزیابی رایگان زمین', investment: 'آگهی‌های سرمایه‌گذاری',
+    privacy: 'حریم خصوصی', cookies: 'کوکی‌ها', admin: 'ورود مدیر', kvkk: 'اطلاعیه داده‌های شخصی (KVKK)',
   },
+  consent: { title: 'انتخاب کوکی', change: 'تغییر تنظیمات', learnMore: 'حریم خصوصی' },
+  legal: { updated: 'آخرین به‌روزرسانی' },
   whatsapp: {
     general: 'سلام، درباره ملک‌های شما اطلاعات می‌خواستم.',
     listing: 'سلام، درباره این آگهی اطلاعات می‌خواستم: {title} {url}',
@@ -48,6 +51,7 @@ export const fa: Dictionary = {
     latest: 'جدیدترین آگهی‌ها',
     ownerTitle: 'قصد فروش یا اجاره دادن ملک خود را دارید؟',
     ownerAction: 'ملک خود را معرفی کنید',
+    ownerLand: 'مشارکت در ساخت برای زمین شما',
   },
   advisor: {
     role: 'مشاور املاک KA EMLAK',
@@ -102,6 +106,11 @@ export const fa: Dictionary = {
     dialogTitle: 'عکس‌های {title}', dialogHelp: 'با کلیدهای جهت‌دار چپ و راست بین عکس‌ها جابه‌جا شوید. برای بستن Escape را بزنید.',
     close: 'بستن گالری', prev: 'عکس قبلی', next: 'عکس بعدی', counter: '{current} از {total}',
   },
+  media: {
+    video: 'ویدیو', tour: 'تور مجازی', loadVideo: 'پخش ویدیو', loadTour: 'باز کردن تور مجازی',
+    note: 'با پخش، محتوا از {host} بارگذاری می‌شود.', open: 'باز کردن پیوند در برگهٔ جدید',
+    videoTitle: 'ویدیوی {title}', tourTitle: 'تور مجازی {title}',
+  },
   form: {
     callbackTitle: 'با شما تماس می‌گیریم', valuationTitle: 'ارزش‌گذاری ملک',
     callbackIntro: 'شماره خود را بگذارید تا با شما تماس بگیریم.', valuationIntro: 'ملک خود را کوتاه معرفی کنید تا با شما تماس بگیریم.',
@@ -117,7 +126,9 @@ export const fa: Dictionary = {
   },
   map: { aria: 'نقشه موقعیت آگهی‌ها', contributors: '(مشارکت‌کنندگان)' },
   pages: {
-    listings: { title: 'ملک‌های فروشی و اجاره‌ای در آنتالیا', h1: 'آگهی‌ها' },
+    investment: { count: '{n} آگهی', countOne: '{n} آگهی', emptyTitle: 'اکنون آگهی‌ای با نشان سرمایه‌گذاری نیست', emptyText: 'با افزوده شدن آگهی‌های تازه اینجا نمایش داده می‌شوند. آنچه می‌خواهید برای ما بنویسید تا هر وقت ملک مناسبی آمد خبرتان کنیم.', all: 'همهٔ آگهی‌ها' },
+    owner: { formTitleAria: 'فرم درخواست' },
+    listings: { title: 'ملک‌های فروشی و اجاره‌ای در آنتالیا', description: 'آگهی‌های فروش، اجاره و اجاره کوتاه‌مدت در آنتالیا، کونیاآلتی و دوشمه‌آلتی را فیلتر کنید و بر اساس عکس، قیمت و موقعیت مقایسه کنید.', h1: 'آگهی‌ها' },
     seasonal: {
       title: 'اجاره کوتاه‌مدت ویلا و خانه در آنتالیا',
       description: 'ویلاها و خانه‌های اجاره روزانه و هفتگی KA EMLAK. برای تاریخ‌های خالی تماس بگیرید یا در واتس‌اپ پیام بدهید.',

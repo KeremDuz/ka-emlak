@@ -1,0 +1,29 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { ListingGrid } from '../PropertyCard';
+import { getPublicData } from '../../../lib/server/data';
+import { yatirim } from '../../../content/yatirim';
+import { dictionary, fill, localePath } from '../../../i18n';
+import { numberLabel } from '../../../lib/format';
+import type { Locale } from '../../../lib/types';
+// Yatırımlık ilanlar. filterListings `investment` anahtarını tanımadığı için ilanlar burada doğrudan süzülür.
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const page = yatirim[locale];
+const data = await getPublicData(Astro.locals);
+const listings = data.listings.filter(l => l.status === 'published' && l.investment).sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+const count = fill(listings.length === 1 ? t.pages.investment.countOne : t.pages.investment.count, { n: numberLabel(listings.length, locale) });
+---
+<SiteLayout locale={locale} title={page.title} description={page.metaDescription} settings={data.settings} mode={data.mode}>
+  <section class="page-intro"><div class="container"><h1>{page.title}</h1><p>{page.intro}</p></div></section>
+  <section class="container section-follow investment-list" style="padding-top:28px">
+    {listings.length > 0
+      ? <><p class="investment-count">{count}</p><ListingGrid listings={listings} locale={locale} t={t.card} client:visible/></>
+      : <div class="empty-state"><h2>{t.pages.investment.emptyTitle}</h2><p>{t.pages.investment.emptyText}</p><a class="button" href={localePath(locale, '/ilanlar')}>{t.pages.investment.all}</a></div>}
+  </section>
+  <section class="section cream-section"><div class="container"><article class="prose">
+    <h2>{page.notesTitle}</h2>
+    <ul>{page.notes.map(note => <li>{note}</li>)}</ul>
+  </article></div></section>
+</SiteLayout>

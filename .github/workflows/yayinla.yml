@@ -23,6 +23,9 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       # Sitenin gerçek adresi (ör. https://ka-emlak.<hesap>.workers.dev); depo değişkeni olarak eklenir.
       SITE_URL: ${{ vars.SITE_URL }}
+      # Herkese açık değerler (sır değil); derleme sırasında sayfaya gömülür. Boşsa ölçüm ve doğrulama eklenmez.
+      PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
+      PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.PUBLIC_GOOGLE_SITE_VERIFICATION }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

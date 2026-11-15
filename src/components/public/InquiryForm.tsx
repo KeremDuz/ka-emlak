@@ -1,3 +1,4 @@
+import { track } from '../../lib/analytics';
 import { useRef, useState } from 'react';
 import { CheckCircle2, CircleAlert } from 'lucide-react';
 import { localePath } from '../../i18n/config';
@@ -16,8 +17,8 @@ export default function InquiryForm({ listingId, kind = 'callback', compact = fa
       const result = await response.json();
       // Sunucunun hata metinleri Türkçedir; öteki dillerde sözlükteki karşılığı gösterilir.
       if (!response.ok) { known = true; throw new Error(locale === 'tr' ? result.error || t.error : response.status === 429 ? t.errorRate : t.error); }
-      setSuccess(true); setMessage(locale === 'tr' ? result.message || t.success : t.success); form.reset();
-    } catch (error) { setMessage(known && error instanceof Error ? error.message : locale === 'tr' && error instanceof Error ? error.message : t.errorNetwork); }
+      track('form_submit', { form: kind, success: true }); setSuccess(true); setMessage(locale === 'tr' ? result.message || t.success : t.success); form.reset();
+    } catch (error) { track('form_submit', { form: kind, success: false }); setMessage(known && error instanceof Error ? error.message : locale === 'tr' && error instanceof Error ? error.message : t.errorNetwork); }
     finally { setPending(false); }
   }
   const submitLabel = kind === 'valuation' ? t.submitValuation : t.submitCallback;

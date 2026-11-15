@@ -4,7 +4,8 @@ import Gallery from '../Gallery';
 import InquiryForm from '../InquiryForm';
 import { ListingGrid } from '../PropertyCard';
 import ListingMap from '../ListingMap';
-import { areaLabel, isSeasonal, labelsFor, listingUrl, localizedListing, numberLabel, periodSuffix, phoneLabel, priceLabel, transactionLabel, whatsappUrl } from '../../../lib/format';
+import ListingMedia from '../ListingMedia';
+import { areaLabel, isSeasonal, labelsFor, listingUrl, localizedListing, mediaEmbed, numberLabel, periodSuffix, phoneLabel, priceLabel, transactionLabel, whatsappUrl } from '../../../lib/format';
 import { dictionary, fill, intlLocales, localePath } from '../../../i18n';
 import type { Locale } from '../../../lib/types';
 import type { ListingLookup } from './listing-lookup';
@@ -21,6 +22,7 @@ const contentLang = locale !== 'tr' && !local?.translated ? 'tr' : undefined;
 // Boş satırlar paragrafları ayırır; paragraf içindeki tek satır sonları korunur.
 const newline = String.fromCharCode(10);
 const paragraphs = (local?.description ?? '').split(newline).map(line => line.trim()).reduce<string[][]>((groups, line) => { if (line) groups[groups.length - 1].push(line); else if (groups[groups.length - 1].length) groups.push([]); return groups; }, [[]]).filter(group => group.length).map(group => group.join(newline));
+const media = listing ? [{ kind: 'video' as const, media: mediaEmbed(listing.videoUrl, 'video') }, { kind: 'tour' as const, media: mediaEmbed(listing.tourUrl, 'tour') }].filter((item): item is { kind: 'video' | 'tour'; media: NonNullable<ReturnType<typeof mediaEmbed>> } => item.media !== null) : [];
 const similar = listings.filter(l => l.id !== listing?.id).sort((a, b) => Number(b.district === listing?.district) - Number(a.district === listing?.district)).slice(0, 3);
 const origin = Astro.site || Astro.url.origin;
 const url = listing ? new URL(listingUrl(listing, locale), origin).href : '';
@@ -41,7 +43,8 @@ const suffix = listing ? periodSuffix(listing, locale) : '';
 const place = listing ? `${listing.neighborhood}, ${listing.district}` : '';
 const structured = listing && local ? { '@context': 'https://schema.org', '@type': 'RealEstateListing', name: local.title, description: local.description, inLanguage: contentLang ?? locale, url, image: listing.photos.map(p => new URL(p.url, Astro.url.origin).href), datePosted: listing.createdAt, ...(listing.price !== null ? { offers: { '@type': 'Offer', price: listing.price, priceCurrency: listing.currency, availability: 'https://schema.org/InStock', url } } : {}), about: { '@type': 'Place', ...(listing.latitude !== undefined && listing.longitude !== undefined ? { geo: { '@type': 'GeoCoordinates', latitude: listing.latitude, longitude: listing.longitude } } : {}), address: { '@type': 'PostalAddress', addressLocality: listing.district, addressRegion: 'Antalya', addressCountry: 'TR' } } } : null;
 ---
-<SiteLayout locale={locale} title={local?.title || t.listing.unavailableTitle} description={local?.description.slice(0, 160)} settings={settings} mode={mode} image={listing?.photos[0]?.url} noindex={!listing} whatsappMessage={message || undefined}>
+<SiteLayout locale={locale} title={local?.title || t.listing.unavailableTitle} description={local?.description.slice(0, 160)} settings={settings} mode={mode} image={listing?.photos[0]?.url} noindex={!listing} whatsappMessage={message || undefined} listing={listing ? { id: listing.id, transaction: listing.transaction, propertyType: listing.propertyType } : undefined}>
+{listing && local && <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [[t.nav.home, localePath(locale, '/')], [t.nav.listings, localePath(locale, '/ilanlar')], [local.title, listingUrl(listing, locale)]].map(([name, path], index) => ({ '@type': 'ListItem', position: index + 1, name, item: new URL(path, origin).href })) }).replace(/</g, '<')}/>}
 {structured && <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')}/>}
 <div class="container detail-top">
   <nav class="breadcrumbs" aria-label={t.listing.breadcrumbAria}><a href={href('/')}>{t.nav.home}</a><span aria-hidden="true">/</span>{listing && isSeasonal(listing) ? <a href={href('/donemlik-kiralik')}>{t.nav.seasonal}</a> : <a href={href('/ilanlar')}>{t.nav.listings}</a>}{listing && <><span aria-hidden="true">/</span><a href={href(`/ilanlar?district=${encodeURIComponent(listing.district)}`)}>{listing.district}</a></>}</nav>
@@ -52,6 +55,7 @@ const structured = listing && local ? { '@context': 'https://schema.org', '@type
       <p class="detail-location"><MapPin size={17} aria-hidden="true"/>{place} / Antalya</p>
       <div class="property-price detail-price-mobile">{priceLabel(listing, locale)}{suffix && <small>{suffix}</small>}</div>
       <Gallery photos={listing.photos} title={local.title} id={listing.id} locale={locale} t={t.gallery} client:load/>
+      {media.length > 0 && <ListingMedia items={media} title={local.title} t={t.media} client:visible/>}
       <section class="detail-section">
         <h2>{t.listing.specs}</h2>
         <dl class="spec-grid">{specs.map(([key, value]) => <div class="spec-row"><dt>{key}</dt><dd><bdi>{value}</bdi></dd></div>)}</dl>

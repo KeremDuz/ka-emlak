@@ -82,6 +82,28 @@ Paneldeki JSON dışa aktarma ilanların yayın/taslak snapshot'larını, ofis b
 
 İçe aktarma güvenli bir portföy kurtarma/taşıma işlemidir: mevcut kayıtları değiştirmez, yeni kimlikli **kontrol bekleyen taslaklar** ekler. Aynı depoda mevcut fotoğrafları yeniden kullanır; eksik fotoğrafları çıkarır ve tekrar yüklenmesini ister. JSON'daki ofis ayarları ve talepler otomatik uygulanmaz; bunlar export'ta inceleme/yedek amacıyla korunur. Tam felaket kurtarma için önce fotoğraf dosyalarını yeni depoya geri yüklemek ve manifest eşlemesini yapmak gerekir; yalnız JSON importunu tam fotoğraf yedeği olarak kabul etmeyin.
 
+## Analytics ve Search Console
+
+Ziyaretçi sitesi Google Analytics 4 (GA4) kullanır; yalnız ziyaretçi çerez afişinde "Kabul et" derse. Ölçüm kodu boşsa hiçbir betik yüklenmez ve sayfada Google adresi geçmez.
+
+1. [analytics.google.com](https://analytics.google.com) içinde bir GA4 mülkü ve "Web" veri akışı açın; `G-XXXXXXXXXX` biçimindeki **Ölçüm Kimliği**ni alın. Bu kimlik herkese açıktır, sır değildir.
+2. Kimliği `PUBLIC_GA_MEASUREMENT_ID` adıyla düz değişken olarak ekleyin. Site GitHub Actions'ta derlendiği için **GitHub deposu > Settings > Secrets and variables > Actions > Variables** altına eklenir (`.github/workflows/yayinla.yml` bunu derlemeye geçirir). Yerelde `.env` dosyasına, Cloudflare'da düz değişken olarak da yazılabilir; `PUBLIC_*` değerleri derleme anında sayfaya gömüldüğü için değişince yeniden yayın gerekir.
+3. Search Console için [search.google.com/search-console](https://search.google.com/search-console) içinde "URL öneki" mülkü ekleyin, "HTML etiketi" yöntemindeki `content` değerini `PUBLIC_GOOGLE_SITE_VERIFICATION` değişkenine yazın (GitHub Actions değişkeni), yeniden yayınlandıktan sonra "Doğrula"ya basın. Ardından `https://<site>/sitemap.xml` adresini Sitemaps bölümüne ekleyin. `robots.txt` sitemap adresini `SITE_URL` değerinden üretir.
+4. GA4 > Yönetici > Etkinlikler bölümünde `whatsapp_click`, `phone_click` ve `form_submit` olaylarını "Temel etkinlik olarak işaretle" (key event). Olaylar ilk kez geldikten sonra listede görünür (birkaç saat sürebilir).
+5. Yayından sonra denetim: siteyi gizli pencerede açın; onay vermeden Ağ sekmesinde `googletagmanager.com` isteği olmamalı. "Kabul et"ten sonra `gtag/js` ve `collect` istekleri görünür; GA4 > Raporlar > Gerçek zamanlı'da kendi ziyaretiniz çıkar.
+
+Onay ve olaylar:
+
+- Seçim tarayıcıda `localStorage` anahtarı `ka:consent` içinde `{analytics, at}` olarak tutulur. Altbilgideki "Çerez tercihleri" bağlantısı ve çerez sayfasındaki "Tercihleri değiştir" düğmesi afişi yeniden açar. Reddetmek ya da geri çekmek Consent Mode'u `denied` yapar ve `_ga` çerezlerini siler.
+- Consent Mode v2 varsayılanı `denied`'dir; kabulde `analytics_storage: granted` olur. Reklam alanları her zaman `denied` kalır.
+- Olaylar: `whatsapp_click` ve `phone_click` (`placement`: header, detail, mobile_bar, footer, advisor; varsa `listing_id`), `form_submit` (`form`: callback, valuation, land, renewal; `success`: true/false), `language_switch` (`from`, `to`), `listing_view` (`listing_id`, `transaction`, `property_type`, `locale`). Ad, telefon, mesaj ve form içeriği hiçbir olayda gönderilmez; `src/lib/analytics.ts` yalnız izin listesindeki ad ve parametreleri geçirir.
+- `tel:` ve `wa.me` bağlantıları kendiliğinden ölçülür. Başka bir öğeye `data-ga="whatsapp_click"` (ya da `phone_click`) ile `data-ga-placement` / `data-ga-listing` verilebilir.
+- Yeni bir form başarı ya da başarısızlıkta şunu gönderir (onay yoksa olay sessizce atılır):
+  `window.dispatchEvent(new CustomEvent('ka:track', { detail: { name: 'form_submit', params: { form: 'land', success: true } } }))`
+  Kod içinden aynısı: `import { track } from '../../lib/analytics'; track('form_submit', { form: 'land', success: true })`.
+- Yasal metinler `src/content/legal.ts` içindedir (`/kvkk`, `/gizlilik`, `/cerezler`; üç dilde). Bunlar taslaktır: yer tutucular ([VERİ SORUMLUSU UNVANI], [ADRES], [E-POSTA], [VERGİ/MERSİS NO], `PLACEHOLDER_DATE`) doldurulmalı ve metin yayından önce avukata gösterilmelidir.
+- `Content-Security-Policy-Report-Only` başlığı gönderilir (engellemez). Tarayıcı konsolunda ihlal görünmüyorsa ileride `Content-Security-Policy` olarak zorlanabilir.
+
 ## Yayın öncesi kontroller
 
 - Oturumsuz create/save/upload/settings/inquiry-list istekleri reddedilir; yönetici dışındaki Supabase kullanıcıları yetki alamaz.

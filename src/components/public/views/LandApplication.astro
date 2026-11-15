@@ -1,0 +1,19 @@
+---
+import LandForm from '../LandForm';
+import { arsaFormu } from '../../../content/arsa-formu';
+import { antalyaDistricts } from '../../../lib/listing-helpers';
+import { dictionary, localePath } from '../../../i18n';
+import type { LandApplicationType } from '../../../content/types';
+import type { Locale } from '../../../lib/types';
+// Kat karşılığı, kentsel dönüşüm ve değerleme sayfalarında ortak olan krem bant: başlık, kısa açıklama ve başvuru formu.
+interface Props { locale: Locale; type: LandApplicationType; title: string; intro: string; headingId: string; }
+const { locale, type, title, intro, headingId } = Astro.props;
+const t = dictionary(locale);
+---
+<section class="section cream-section land-section" aria-labelledby={headingId}>
+  <div class="container land-wrap">
+    <h2 id={headingId}>{title}</h2>
+    <p class="land-intro">{intro}</p>
+    <LandForm locale={locale} content={arsaFormu[locale]} officeOptions={arsaFormu.tr.options} districts={antalyaDistricts} initialType={type} privacyHref={localePath(locale, '/gizlilik')} honeypotLabel={t.form.honeypot} client:load/>
+  </div>
+</section>

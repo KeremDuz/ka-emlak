@@ -1,12 +1,15 @@
 ---
 import '../styles/global.css';
 import { ArrowUpRight, Menu, Phone, MessageCircle } from 'lucide-react';
+import Consent from '../components/public/Consent';
+import { legal } from '../content/legal';
+import { validMeasurementId } from '../lib/analytics';
 import { phoneLabel, whatsappUrl } from '../lib/format';
 import { officeSettings } from '../lib/seed';
 import type { Locale, OfficeSettings } from '../lib/types';
 import { alternates, dictionary, direction, fill, localeNames, localePath, locales, ogLocales, splitLocale } from '../i18n';
-interface Props { title?: string; description?: string; settings?: OfficeSettings; mode?: 'live' | 'preview'; image?: string; noindex?: boolean; whatsappMessage?: string; locale?: Locale; }
-const { locale = 'tr', settings = officeSettings, mode = 'live', image = '/images/og-default.png', noindex = false } = Astro.props;
+interface Props { title?: string; description?: string; settings?: OfficeSettings; mode?: 'live' | 'preview'; image?: string; noindex?: boolean; whatsappMessage?: string; locale?: Locale; listing?: { id: string; transaction?: string; propertyType?: string }; }
+const { locale = 'tr', settings = officeSettings, mode = 'live', image = '/images/og-default.png', noindex = false, listing } = Astro.props;
 const t = dictionary(locale);
 const { title = t.site.defaultTitle, description = t.site.defaultDescription, whatsappMessage = t.whatsapp.general } = Astro.props;
 const origin = Astro.site || Astro.url.origin;
@@ -23,6 +26,11 @@ const current = (to: string) => to === '/' ? path === '/' : path === to || path.
 const phoneHref = settings.phone ? `tel:${settings.phone}` : href('/iletisim');
 // Farsça yazı tipi yalnız Farsça sayfalarda yüklenir.
 const fonts = `https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400&family=Manrope:wght@400..800${locale === 'fa' ? '&family=Vazirmatn:wght@400..800' : ''}&display=swap`;
+// Ölçüm kodu ve Search Console doğrulaması derleme sırasında PUBLIC_ değişkenlerinden gelir; boşsa hiçbir şey eklenmez.
+const gaId = validMeasurementId(import.meta.env.PUBLIC_GA_MEASUREMENT_ID);
+const siteVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '').trim();
+const consentText = legal[locale].cookies.banner;
+const analyticsConfig = JSON.stringify({ id: gaId, locale, listing });
 const phoneText = settings.phone ? phoneLabel(settings.phone) : '';
 ---
 <!doctype html>
@@ -50,8 +58,10 @@ const phoneText = settings.phone ? phoneLabel(settings.phone) : '';
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link rel="stylesheet" href={fonts}/>
+  {siteVerification && <meta name="google-site-verification" content={siteVerification}/>}
+  <slot name="head"/>
 </head>
-<body>
+<body data-listing-id={listing?.id}>
   <a href="#main" class="skip-link">{t.site.skip}</a>
   {mode === 'preview' && <div class="preview-note">{t.site.previewNote}<a href="/yonetim">{t.site.adminPanel}</a></div>}
   <div class="site-header-wrap" id="site-header">
@@ -78,15 +88,19 @@ const phoneText = settings.phone ? phoneLabel(settings.phone) : '';
     <div class="container">
       <div class="footer-grid">
         <div><a class="brand" href={href('/')} aria-label={t.site.homeAria}><span><span class="brand-name" dir="ltr">KA EMLAK</span><span class="brand-sub">{t.site.brandSub}</span></span></a></div>
-        <div class="footer-column"><strong>{t.footer.listings}</strong><a href={href('/ilanlar?transaction=sale')}>{t.footer.sale}</a><a href={href('/ilanlar?transaction=rent')}>{t.footer.rent}</a><a href={href('/donemlik-kiralik')}>{t.footer.seasonal}</a><a href={href('/ilanlar?transaction=exchange')}>{t.footer.exchange}</a><a href={href('/ilanlar?gorunum=harita')}>{t.footer.map}</a></div>
-        <div class="footer-column"><strong>KA EMLAK</strong><a href={href('/hakkimizda')}>{t.footer.about}</a><a href={href('/iletisim?talep=valuation')}>{t.footer.valuation}</a><a href={href('/iletisim')}>{t.footer.contact}</a><a href="https://www.hepsiemlak.com/emlak-ofisi/ka-emlak-29750" target="_blank" rel="noreferrer">{t.footer.hepsiemlak} <ArrowUpRight size={14}/></a></div>
+        <div class="footer-column"><strong>{t.footer.listings}</strong><a href={href('/ilanlar?transaction=sale')}>{t.footer.sale}</a><a href={href('/ilanlar?transaction=rent')}>{t.footer.rent}</a><a href={href('/donemlik-kiralik')}>{t.footer.seasonal}</a><a href={href('/ilanlar?transaction=exchange')}>{t.footer.exchange}</a><a href={href('/ilanlar?gorunum=harita')}>{t.footer.map}</a><a href={href('/yatirim')}>{t.footer.investment}</a></div>
+        <div class="footer-column"><strong>KA EMLAK</strong><a href={href('/hakkimizda')}>{t.footer.about}</a><a href={href('/kat-karsiligi')}>{t.footer.katKarsiligi}</a><a href={href('/kentsel-donusum')}>{t.footer.renewal}</a><a href={href('/arsa-degerleme')}>{t.footer.landValuation}</a><a href={href('/iletisim')}>{t.footer.contact}</a><a href="https://www.hepsiemlak.com/emlak-ofisi/ka-emlak-29750" target="_blank" rel="noreferrer">{t.footer.hepsiemlak} <ArrowUpRight size={14}/></a></div>
         <div class="footer-column"><strong>{t.footer.contactHeading}</strong><p>{settings.address || t.site.defaultAddress}</p>{settings.phone && <a href={`tel:${settings.phone}`} dir="ltr" class="footer-phone">{phoneText}</a>}<a href={whatsappUrl(settings.whatsapp, whatsappMessage)} target="_blank" rel="noreferrer">WhatsApp <ArrowUpRight size={14}/></a>{settings.email && <a href={`mailto:${settings.email}`}>{settings.email}</a>}</div>
       </div>
-      <div class="footer-bottom"><span>© {new Date().getFullYear()} KA EMLAK</span><div><a href={href('/gizlilik')}>{t.footer.privacy}</a><a href={href('/cerezler')}>{t.footer.cookies}</a><a href="/yonetim">{t.footer.admin}</a></div></div>
+      <div class="footer-bottom"><span>© {new Date().getFullYear()} KA EMLAK</span><div><a href={href('/gizlilik')}>{t.footer.privacy}</a><a href={href('/kvkk')}>{t.footer.kvkk}</a><a href={href('/cerezler')} data-consent-open>{t.footer.cookies}</a><a href="/yonetim">{t.footer.admin}</a></div></div>
     </div>
   </footer>
   <div class="mobile-contact-bar"><a href={phoneHref}><Phone size={18}/>{t.site.call}</a><a href={whatsappUrl(settings.whatsapp, whatsappMessage)} target="_blank" rel="noreferrer"><MessageCircle size={18}/>WhatsApp</a></div>
+  <Consent banner={consentText} title={t.consent.title} privacyHref={href('/gizlilik')} privacyLabel={t.consent.learnMore} client:idle/>
+  <script type="application/json" id="ka-analytics" set:html={analyticsConfig}/>
   <script>
+    import { initAnalytics } from '../lib/analytics';
+    try { initAnalytics(JSON.parse(document.getElementById('ka-analytics')?.textContent || '{}')); } catch { /* ölçüm yok */ }
     const menu = document.getElementById('menu-toggle');
     const navigation = document.getElementById('main-navigation');
     const setMenu = (open: boolean) => { menu?.setAttribute('aria-expanded', String(open)); menu?.setAttribute('aria-label', (open ? menu.dataset.closeLabel : menu.dataset.openLabel) ?? ''); navigation?.classList.toggle('open', open); };

@@ -93,6 +93,6 @@ const aboutText = locale === 'tr' ? settings.about || t.advisor.about : t.adviso
 
   <section class="container contact-strip">
     <h2>{t.home.ownerTitle}</h2>
-    <a class="button light" href={href('/iletisim?talep=valuation')}>{t.home.ownerAction}</a>
+    <div class="contact-strip-actions"><a class="button light" href={href('/iletisim?talep=valuation')}>{t.home.ownerAction}</a><a class="button ghost-light" href={href('/kat-karsiligi')}>{t.home.ownerLand}</a></div>
   </section>
 </SiteLayout>

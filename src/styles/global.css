@@ -531,3 +531,79 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   [dir="rtl"] .filter-bar-end { margin-right: 0; }
   [dir="rtl"] .filter-bar-end select { padding-left: 34px; padding-right: 12px; }
 }
+
+/* Çerez afişi, yasal metinler */
+.consent { position: fixed; inset: auto 0 0 0; z-index: 60; padding: 16px 0; background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -8px 28px rgb(18 61 52 / .1); }
+.consent:focus { outline: none; }
+.consent-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; }
+.consent-text { flex: 1 1 420px; margin: 0; font-size: .9375rem; line-height: 1.6; color: #303c36; }
+.consent-title { color: var(--forest); }
+.consent-text a { color: var(--forest); text-decoration: underline; text-underline-offset: 3px; }
+.consent-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.consent-link { min-height: 44px; padding: 0 6px; border: 0; background: none; color: var(--forest); font: inherit; font-size: .94rem; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.consent-options { flex: 1 1 100%; display: grid; gap: 4px; }
+.consent-option { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; padding: 8px 0; cursor: pointer; }
+.consent-option input { flex: none; width: 22px; height: 22px; margin-top: 2px; accent-color: var(--forest); }
+.consent-option span { display: grid; gap: 2px; }
+.consent-option small { color: var(--muted); font-size: .875rem; line-height: 1.5; }
+.legal-updated { font-size: .9375rem; }
+.legal-note { padding: 12px 16px; border-inline-start: 3px solid var(--bronze); background: var(--cream); font-size: .9375rem; }
+@media (max-width: 800px) {
+  .consent { padding: 14px 0 calc(14px + env(safe-area-inset-bottom)); max-height: 80vh; overflow-y: auto; }
+  .consent-actions .button { flex: 1 1 140px; }
+}
+[dir="rtl"] .legal-note { border-inline-start-width: 3px; }
+
+/* ---------- Kat karşılığı, kentsel dönüşüm, arsa değerleme, yatırım, ilan videosu ---------- */
+.prose ol { padding-left: 24px; list-style: decimal; }
+.prose ol li { padding-left: 4px; }
+[dir="rtl"] .prose ol { padding-left: 0; padding-right: 24px; }
+.land-section { margin-top: 56px; }
+.page-intro + .land-section { margin-top: 28px; }
+.land-wrap { max-width: 780px; }
+.land-wrap h2 { margin-bottom: 10px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.land-intro { max-width: 60ch; margin-bottom: 28px; color: var(--muted); }
+.land-form { padding: 0; }
+.land-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
+.land-form .form-field select { width: 100%; min-height: 50px; padding: 12px 40px 12px 14px; border: 1px solid #d5dbd2; border-radius: 8px; color: var(--ink); font-size: 1rem; }
+.land-form .form-field select:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgb(18 61 52 / .12); outline: none; }
+.land-form [aria-invalid="true"] { border-color: #b4452a !important; }
+[dir="rtl"] .land-form .form-field select { padding: 12px 14px 12px 40px; background-position: left 12px center; }
+.land-optional { font-weight: 400; color: var(--muted); }
+.land-help { color: var(--muted); font-size: .875rem; line-height: 1.45; }
+.land-error { color: #8a3a1e; font-size: .875rem; font-weight: 600; line-height: 1.45; }
+.land-fieldset { margin: 0 0 20px; padding: 0; border: 0; min-width: 0; }
+.land-fieldset legend { margin-bottom: 9px; padding: 0; font-size: .9rem; font-weight: 650; }
+.land-choice { display: flex; flex-wrap: wrap; gap: 10px; }
+.land-choice label { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; border: 1.5px solid #c3cfc4; border-radius: 8px; background: #fff; color: var(--ink); font-size: .94rem; font-weight: 650; cursor: pointer; transition: background-color .2s, border-color .2s, color .2s; }
+.land-choice label:hover { border-color: var(--forest); }
+.land-choice label.active { border-color: var(--forest); background: var(--forest); color: #fff; }
+.land-choice input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.land-choice label:focus-within { outline: 3px solid rgb(18 61 52 / .35); outline-offset: 2px; }
+.land-form textarea { min-height: 110px; }
+.land-submit { margin-top: 6px; }
+.land-success { display: flex; gap: 16px; align-items: flex-start; padding: 26px 28px; border-radius: var(--radius); background: #e9f1e5; color: var(--forest); }
+.land-success svg { flex-shrink: 0; margin-top: 2px; }
+.land-success h3 { margin-bottom: 6px; font-size: 1.3rem; }
+.land-success p { color: #303c36; }
+.contact-strip-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.button.ghost-light { background: transparent; color: #fff; border-color: rgb(255 255 255 / .7); }
+.button.ghost-light:hover { background: rgb(255 255 255 / .12); border-color: #fff; }
+.investment-count { margin-bottom: 22px; color: var(--muted); }
+.investment-list { padding-bottom: 64px; }
+.media-frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius); background: #0f1a16; }
+.media-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.media-poster { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: 100%; aspect-ratio: 16 / 9; min-height: 180px; padding: 20px; border: 0; border-radius: var(--radius); background: var(--forest); color: #fff; text-align: center; cursor: pointer; transition: background-color .2s; }
+.media-poster:hover { background: var(--forest-hover); }
+.media-poster:focus-visible { outline: 3px solid var(--bronze-text); outline-offset: 3px; }
+.media-poster strong { font-size: 1.1rem; }
+.media-poster small { max-width: 36ch; color: rgb(255 255 255 / .85); font-size: .875rem; }
+.media-host { opacity: .75; font-weight: 500; }
+@media (max-width: 720px) {
+  .land-grid { grid-template-columns: 1fr; }
+  .land-section { margin-top: 36px; }
+  .land-choice label { flex: 1 1 auto; min-height: 48px; }
+  .land-form input, .land-form select, .land-form textarea { font-size: 1rem; }
+  .contact-strip-actions { width: 100%; flex-direction: column; }
+  .contact-strip-actions .button { width: 100%; }
+}
