@@ -1,4 +1,4 @@
-import type { AdminListing, ClientConfig, Inquiry, OfficeSettings, Photo } from '../types';
+import type { AdminListing, ClientConfig, Inquiry, Listing, OfficeSettings, Photo } from '../types';
 
 let tokenProvider: (() => Promise<string | null>) | null = null;
 export function setTokenProvider(provider: (() => Promise<string | null>) | null) { tokenProvider = provider; }
@@ -21,6 +21,7 @@ export async function request<T>(url: string, options: RequestInit = {}): Promis
 const json = (method: string, body?: unknown): RequestInit => ({ method, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
 export interface StorageUsage { usedBytes: number; reservedBytes?: number; limitBytes: number; warning: boolean; blocked: boolean; }
 export type ListingAction = 'publish' | 'archive' | 'sold' | 'rented' | 'trash' | 'restore' | 'duplicate' | 'feature' | 'price';
+export type TranslateStatus = 'ok' | 'fresh' | 'partial' | 'not_configured' | 'failed';
 export const adminApi = {
   config: () => request<ClientConfig>('/api/config'),
   preview: () => request<{ ok: boolean }>('/api/admin/session', json('POST', { preview: true })),
@@ -31,6 +32,10 @@ export const adminApi = {
   create: () => request<{ listing: AdminListing }>('/api/admin/listings', json('POST', {})),
   save: (id: string, listing: unknown, version: number) => request<{ listing: AdminListing }>(`/api/admin/listings/${encodeURIComponent(id)}`, json('PUT', { listing, version })),
   action: (item: AdminListing, action: ListingAction, price?: number | null) => request<{ listing: AdminListing }>(`/api/admin/listings/${encodeURIComponent(item.id)}/action`, json('POST', { action, version: item.version, ...(action === 'price' ? { price } : {}) })),
+  /** Kayıtlı ilanın eksik ya da eskimiş çevirilerini tamamlar; yanıt yeni sürümlü ilanı taşır. */
+  translate: (item: AdminListing) => request<{ listing: AdminListing; status: TranslateStatus }>(`/api/admin/listings/${encodeURIComponent(item.id)}/translate`, json('POST', { version: item.version })),
+  /** Düzenleyicideki (kaydedilmemiş olabilir) Türkçe metni çevirir; ilana yazmaz. */
+  translateText: (id: string, source: Pick<Listing, 'title' | 'description' | 'features'>) => request<{ status: TranslateStatus; translations?: NonNullable<Listing['translations']> }>(`/api/admin/listings/${encodeURIComponent(id)}/translate`, json('POST', { source })),
   remove: (item: AdminListing) => request(`/api/admin/listings/${encodeURIComponent(item.id)}`, json('DELETE', { version: item.version })),
   settings: () => request<{ settings: OfficeSettings }>('/api/admin/settings'),
   saveSettings: (settings: OfficeSettings) => request<{ settings: OfficeSettings }>('/api/admin/settings', json('PUT', { settings })),

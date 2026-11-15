@@ -1,0 +1,31 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import InquiryForm from '../InquiryForm';
+import { getPublicData } from '../../../lib/server/data';
+import { dictionary } from '../../../i18n';
+import type { Locale } from '../../../lib/types';
+import { ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { phoneLabel, whatsappUrl } from '../../../lib/format';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const { settings, mode } = await getPublicData(Astro.locals);
+const kind = Astro.url.searchParams.get('talep') === 'valuation' ? 'valuation' : 'callback';
+---
+<SiteLayout locale={locale} title={t.pages.contact.title} description={t.pages.contact.description} settings={settings} mode={mode}>
+  <section class="page-intro"><div class="container"><h1>{t.pages.contact.h1}</h1></div></section>
+  <section class="container content-page contact-layout">
+    <div class="contact-info">
+      <h2>{settings.advisor}</h2>
+      <p class="advisor-role">{t.advisor.role}</p>
+      <ul class="contact-methods">
+        {settings.phone && <li class="contact-method"><Phone size={22} aria-hidden="true"/><div><strong>{t.pages.contact.phone}</strong><a href={`tel:${settings.phone}`} dir="ltr" class="contact-phone">{phoneLabel(settings.phone)}</a></div></li>}
+        <li class="contact-method"><MessageCircle size={22} aria-hidden="true"/><div><strong>WhatsApp</strong><a href={whatsappUrl(settings.whatsapp, t.whatsapp.general)} target="_blank" rel="noreferrer">{t.pages.contact.whatsappSend} <ArrowUpRight size={16} aria-hidden="true"/></a></div></li>
+        <li class="contact-method"><MapPin size={22} aria-hidden="true"/><div><strong>{t.pages.contact.office}</strong><p>{settings.address || t.site.defaultAddress}</p><a class="minor" href="https://www.google.com/maps/search/?api=1&query=KA+Emlak+Konyaalt%C4%B1+Antalya" target="_blank" rel="noreferrer">{t.pages.contact.directions} <ArrowUpRight size={15} aria-hidden="true"/></a></div></li>
+        {settings.email && <li class="contact-method"><Mail size={22} aria-hidden="true"/><div><strong>{t.pages.contact.email}</strong><a href={`mailto:${settings.email}`} dir="ltr" class="contact-phone">{settings.email}</a></div></li>}
+        {settings.hours && <li class="contact-method"><Clock size={22} aria-hidden="true"/><div><strong>{t.pages.contact.hours}</strong><p>{settings.hours}</p></div></li>}
+      </ul>
+    </div>
+    <InquiryForm kind={kind} heading="h2" locale={locale} t={t.form} client:load/>
+  </section>
+</SiteLayout>

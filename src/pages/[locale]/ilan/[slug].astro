@@ -1,0 +1,11 @@
+---
+import ListingDetailView from '../../../components/public/views/ListingDetailView.astro';
+import { lookupListing } from '../../../components/public/views/listing-lookup';
+import { routeLocale } from '../../../i18n/config';
+const locale = routeLocale(Astro.params.locale);
+if (!locale) return Astro.rewrite('/404');
+const found = await lookupListing(Astro.locals, Astro.params.slug, locale);
+if (found.redirect) return Astro.redirect(found.redirect, 301);
+if (!found.listing) Astro.response.status = found.status;
+---
+<ListingDetailView locale={locale} found={found}/>

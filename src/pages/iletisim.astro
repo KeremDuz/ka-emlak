@@ -1,26 +1,4 @@
 ---
-import SiteLayout from '../layouts/SiteLayout.astro';
-import InquiryForm from '../components/public/InquiryForm';
-import { getPublicData } from '../lib/server/data';
-import { ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
-import { phoneLabel, whatsappUrl } from '../lib/format';
-const { settings, mode } = await getPublicData(Astro.locals);
-const kind = Astro.url.searchParams.get('talep') === 'valuation' ? 'valuation' : 'callback';
+import ContactView from '../components/public/views/ContactView.astro';
 ---
-<SiteLayout title="İletişim" description="KA EMLAK’a telefon, WhatsApp ya da form ile ulaşın. Ofisimiz Konyaaltı, Antalya’dadır." settings={settings} mode={mode}>
-  <section class="page-intro"><div class="container"><h1>İletişim</h1></div></section>
-  <section class="container content-page contact-layout">
-    <div class="contact-info">
-      <h2>{settings.advisor}</h2>
-      <p class="advisor-role">KA EMLAK gayrimenkul danışmanı</p>
-      <ul class="contact-methods">
-        {settings.phone && <li class="contact-method"><Phone size={22} aria-hidden="true"/><div><strong>Telefon</strong><a href={`tel:${settings.phone}`}>{phoneLabel(settings.phone)}</a></div></li>}
-        <li class="contact-method"><MessageCircle size={22} aria-hidden="true"/><div><strong>WhatsApp</strong><a href={whatsappUrl(settings.whatsapp)} target="_blank" rel="noreferrer">Mesaj gönderin <ArrowUpRight size={16} aria-hidden="true"/></a></div></li>
-        <li class="contact-method"><MapPin size={22} aria-hidden="true"/><div><strong>Ofis</strong><p>{settings.address || 'Konyaaltı / Antalya'}</p><a class="minor" href="https://www.google.com/maps/search/?api=1&query=KA+Emlak+Konyaalt%C4%B1+Antalya" target="_blank" rel="noreferrer">Yol tarifi alın <ArrowUpRight size={15} aria-hidden="true"/></a></div></li>
-        {settings.email && <li class="contact-method"><Mail size={22} aria-hidden="true"/><div><strong>E-posta</strong><a href={`mailto:${settings.email}`}>{settings.email}</a></div></li>}
-        {settings.hours && <li class="contact-method"><Clock size={22} aria-hidden="true"/><div><strong>Çalışma saatleri</strong><p>{settings.hours}</p></div></li>}
-      </ul>
-    </div>
-    <InquiryForm kind={kind} heading="h2" client:load/>
-  </section>
-</SiteLayout>
+<ContactView locale="tr"/>

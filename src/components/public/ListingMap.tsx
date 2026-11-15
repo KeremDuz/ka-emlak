@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { Map as LeafletMap } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import type { Dictionary } from '../../i18n/tr';
 
 export interface MapPoint { id: string; lat: number; lng: number; title?: string; price?: string; url?: string; photo?: string; }
 export const antalyaCenter: [number, number] = [36.8969, 30.7133];
@@ -9,14 +10,14 @@ export const tileAttribution = '&copy; <a href="https://www.openstreetmap.org/co
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 
 /** Tek ilan için yaklaşık bölge dairesi, liste için tıklanabilir noktalar. Tam adres gösterilmez. */
-export default function ListingMap({ points, single = false, label = 'İlan konumları haritası' }: { points: MapPoint[]; single?: boolean; label?: string }) {
+export default function ListingMap({ points, single = false, label, text }: { points: MapPoint[]; single?: boolean; label?: string; text?: Dictionary['map'] }) {
   const container = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let map: LeafletMap | undefined; let cancelled = false; let observer: ResizeObserver | undefined;
     void import('leaflet').then(L => {
       if (cancelled || !container.current) return;
       map = L.map(container.current, { scrollWheelZoom: false, attributionControl: true }).setView(points[0] ? [points[0].lat, points[0].lng] : antalyaCenter, single ? 14 : 11);
-      L.tileLayer(tileUrl, { attribution: tileAttribution, maxZoom: 18 }).addTo(map);
+      L.tileLayer(tileUrl, { attribution: text ? tileAttribution.replace(/katkıcıları$/, text.contributors) : tileAttribution, maxZoom: 18 }).addTo(map);
       const style = { color: '#123d34', fillColor: '#123d34', weight: 2 };
       if (single && points[0]) { L.circle([points[0].lat, points[0].lng], { ...style, radius: 350, fillOpacity: .15 }).addTo(map); observer = new ResizeObserver(() => map?.invalidateSize()); observer.observe(container.current); return; }
       const layers = points.map(point => {
@@ -34,5 +35,5 @@ export default function ListingMap({ points, single = false, label = 'İlan konu
     });
     return () => { cancelled = true; observer?.disconnect(); map?.remove(); };
   }, [points, single]);
-  return <div ref={container} className={`listing-map ${single ? 'listing-map-single' : ''}`} role="region" aria-label={label} />;
+  return <div ref={container} className={`listing-map ${single ? 'listing-map-single' : ''}`} role="region" aria-label={label ?? text?.aria ?? 'İlan konumları haritası'} />;
 }

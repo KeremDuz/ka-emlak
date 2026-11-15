@@ -1,0 +1,18 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { dictionary, localePath } from '../../../i18n';
+import type { Locale } from '../../../lib/types';
+// Gizlilik ve çerez sayfaları sözlükteki metinle çizilir. src/content/legal.ts taslakları Google Analytics gibi henüz olmayan
+// özellikleri anlattığı için, o özellikler eklenene kadar burada kullanılmaz.
+interface Props { locale: Locale; kind: 'privacy' | 'cookies'; }
+const { locale, kind } = Astro.props;
+const t = dictionary(locale);
+const page = t.pages[kind];
+const contact = localePath(locale, '/iletisim');
+---
+<SiteLayout locale={locale} title={page.title} description={page.description}>
+  <section class="page-intro"><div class="container"><h1>{page.h1}</h1><p>{page.intro}</p></div></section>
+  <section class="content-page container"><article class="prose">
+    {page.sections.map(section => <><h2>{section.h}</h2><p set:html={section.html.replace('{contact}', contact)}/></>)}
+  </article></section>
+</SiteLayout>

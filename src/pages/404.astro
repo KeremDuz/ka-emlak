@@ -1,8 +1,6 @@
 ---
-import SiteLayout from '../layouts/SiteLayout.astro';
+import NotFoundView from '../components/public/views/NotFoundView.astro';
+import { splitLocale } from '../i18n/config';
+// /en/... ve /fa/... altında bulunamayan sayfa kendi dilinde gösterilir.
 ---
-<SiteLayout title="Sayfa bulunamadı" noindex>
-  <section class="container section">
-    <div class="empty-state"><h1>Sayfa bulunamadı.</h1><p>Aradığınız sayfa taşınmış veya kaldırılmış olabilir.</p><div class="empty-actions"><a class="button" href="/ilanlar">İlanlara gidin</a><a class="button outline" href="/">Ana sayfa</a></div></div>
-  </section>
-</SiteLayout>
+<NotFoundView locale={splitLocale(Astro.url.pathname).locale}/>

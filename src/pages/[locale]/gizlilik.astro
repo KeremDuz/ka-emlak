@@ -1,0 +1,8 @@
+---
+import LegalView from '../../components/public/views/LegalView.astro';
+import { routeLocale } from '../../i18n/config';
+// Yalnız /en ve /fa geçerlidir; öteki ekler (/tr, /xx) 404 sayfasına gider.
+const locale = routeLocale(Astro.params.locale);
+if (!locale) return Astro.rewrite('/404');
+---
+<LegalView locale={locale} kind="privacy"/>

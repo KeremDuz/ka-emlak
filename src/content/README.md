@@ -1,0 +1,13 @@
+# src/content
+
+Sayfa metinleri burada tutulur: üç dilde (`tr` kaynak, `en`, `fa`) aynı yapıda düz veri. JSX ve uygulama içe aktarması yoktur.
+
+- `types.ts`: ortak tipler (`Locale`, `Localized<T>`, `ContentSection` ve her dosyanın içerik tipi). `ordered: true` olan bölümlerde `bullets` sıralı adımdır, `<ol>` ile gösterin.
+- `kat-karsiligi.ts` (`katKarsiligi`) ve `kentsel-donusum.ts` (`kentselDonusum`): arsa ve bina sahiplerine yönelik sayfalar.
+- `yatirim.ts` (`yatirim`): yatırım ilanları bölümünün girişi ve yabancı alıcı notları.
+- `arsa-formu.ts` (`arsaFormu`): arsa başvuru formunun etiket, yardım, doğrulama ve sonuç metinleri. `consent` içindeki `{privacy}`, `privacyLinkLabel` metnini taşıyan bağlantıyla değiştirilir.
+- `legal.ts` (`legal`): `kvkk`, `privacy`, `cookies` (çerez bildirimi metinleri `cookies.banner` içinde).
+
+Yayından önce doldurulacak yer tutucular (üç dilde de aynı yazılır, `legal.ts` içinde aranabilir): `[VERİ SORUMLUSU UNVANI]`, `[ADRES]`, `[E-POSTA]`, `[VERGİ/MERSİS NO]` ve `updated` alanındaki `PLACEHOLDER_DATE`.
+
+Hukuki metinler taslaktır: yayından önce bir avukat tarafından gözden geçirilmelidir. İngilizce ve Farsça metinler çeviridir; Türkçe metin esas alınır. Farsça dizelerde telefon numarası yön yalıtım karakterleriyle (U+2066, U+2069) sarılıdır; silmeyin.

@@ -1,0 +1,30 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { getPublicData } from '../../../lib/server/data';
+import { phoneLabel, whatsappUrl } from '../../../lib/format';
+import { dictionary, fill, localePath } from '../../../i18n';
+import type { Locale } from '../../../lib/types';
+import { MessageCircle, Phone } from 'lucide-react';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const { settings, mode } = await getPublicData(Astro.locals);
+---
+<SiteLayout locale={locale} title={t.pages.about.title} description={t.pages.about.description} settings={settings} mode={mode}>
+  <section class="page-intro"><div class="container"><h1>{t.pages.about.h1}</h1></div></section>
+  <section class="container advisor-home" aria-labelledby="advisor-heading">
+    <img class="advisor-photo" src="/images/advisor-portrait.webp" alt="" width="452" height="640"/>
+    <div class="advisor-copy">
+      <h2 id="advisor-heading">{settings.advisor}</h2>
+      <p class="advisor-role">{t.advisor.role}</p>
+      {locale === 'tr' && settings.about && <p class="advisor-text">{settings.about}</p>}
+      <p class="advisor-text">{t.advisor.about}</p>
+      {settings.licenseNumber && <p class="about-license">{fill(t.advisor.license, { n: settings.licenseNumber })}</p>}
+      <div class="advisor-actions">
+        {settings.phone && <a class="button" href={`tel:${settings.phone}`}><Phone size={17}/><bdi dir="ltr">{phoneLabel(settings.phone)}</bdi></a>}
+        <a class="button outline" href={whatsappUrl(settings.whatsapp, t.whatsapp.general)} target="_blank" rel="noreferrer"><MessageCircle size={17}/>{t.advisor.whatsapp}</a>
+        <a class="button outline" href={localePath(locale, '/ilanlar')}>{t.advisor.seeListings}</a>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

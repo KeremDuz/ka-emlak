@@ -18,7 +18,8 @@ export function saveDraft(current: AdminListing, incoming: Listing): AdminListin
 export function transition(current: AdminListing, action: ListingAction, price?: number|null): AdminListing {
   const now=new Date().toISOString(); const version=current.version+1;
   if (action==='duplicate') {
-    const original=current.draft ?? current; const duplicate=newListing();
+    // Kopya çoğunlukla başka bir taşınmaz için kullanılır; çeviriler (özellikle elle düzeltilenler) taşınmaz.
+    const {translations:_,...original}=current.draft ?? current; const duplicate=newListing();
     return {...original,id:duplicate.id,slug:duplicate.slug,title:`${original.title} — kopya`,status:'draft',featured:false,createdAt:now,updatedAt:now,version:1,needsReview:true,draft:null};
   }
   if(current.status==='trash' && action!=='restore') throw new HttpError(409,'Önce ilanı çöp kutusundan geri alın.','TRASHED');

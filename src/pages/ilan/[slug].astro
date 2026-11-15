@@ -1,70 +1,9 @@
 ---
-import SiteLayout from '../../layouts/SiteLayout.astro';
-import Gallery from '../../components/public/Gallery';
-import InquiryForm from '../../components/public/InquiryForm';
-import { ListingGrid } from '../../components/public/PropertyCard';
-import ListingMap from '../../components/public/ListingMap';
-import {getPublicData} from '../../lib/server/data';
-import {isSeasonal,periodLabels,phoneLabel,poolLabels,priceLabel,propertyLabels,transactionLabel,transactionLabels,whatsappUrl} from '../../lib/format';
-import {ArrowUpRight,Check,MapPin,MessageCircle,Phone} from 'lucide-react';
-const {listings,settings,mode,available}=await getPublicData(Astro.locals);
-const listing=listings.find(l=>l.slug===Astro.params.slug);
-// Başlık değişince adres de değişir; adresin sonundaki kimlik eki eski paylaşılan linkleri yeni adrese taşır.
-const idSuffix=!listing&&Astro.params.slug?.match(/-([0-9a-f]{8})$/)?.[1];
-const moved=idSuffix?listings.find(l=>l.id.startsWith(idSuffix)):undefined;
-if(moved)return Astro.redirect(`/ilan/${moved.slug}`,301);
-if(!listing)Astro.response.status=available?404:503;
-// Boş satırlar paragrafları ayırır; paragraf içindeki tek satır sonları korunur.
-const newline=String.fromCharCode(10);
-const paragraphs=(listing?.description??'').split(newline).map(line=>line.trim()).reduce<string[][]>((groups,line)=>{if(line)groups[groups.length-1].push(line);else if(groups[groups.length-1].length)groups.push([]);return groups;},[[]]).filter(group=>group.length).map(group=>group.join(newline));
-const similar=listings.filter(l=>l.id!==listing?.id).sort((a,b)=>Number(b.district===listing?.district)-Number(a.district===listing?.district)).slice(0,3);
-const url=new URL(Astro.url.pathname,Astro.site||Astro.url.origin).href;
-const message=listing?`Merhaba, ${listing.title} ilanınız hakkında bilgi almak istiyorum. ${url}`:'';
-const specs=listing?[
- ['İlan türü',transactionLabels[listing.transaction]],['Gayrimenkul',propertyLabels[listing.propertyType]],['Brüt alan',`${listing.grossArea} m²`],
- ...(listing.netArea?[['Net alan',`${listing.netArea} m²`]]:[]),...(listing.rooms?[['Oda sayısı',listing.rooms]]:[]),...(listing.bathrooms?[['Banyo sayısı',String(listing.bathrooms)]]:[]),...(listing.floor?[['Bulunduğu kat',listing.floor]]:[]),...(listing.buildingAge?[['Bina yaşı',listing.buildingAge]]:[]),...(isSeasonal(listing)?[...(listing.guests?[['Kişi kapasitesi',`${listing.guests} kişi`]]:[]),...(listing.pool?[['Havuz',poolLabels[listing.pool]]]:[]),...(listing.minNights?[['En az konaklama',`${listing.minNights} gece`]]:[])]:[]),['Konum',`${listing.neighborhood}, ${listing.district}`],
-]:[];
-const structured=listing?{'@context':'https://schema.org','@type':'RealEstateListing',name:listing.title,description:listing.description,url,image:listing.photos.map(p=>new URL(p.url,Astro.url.origin).href),datePosted:listing.createdAt,...(listing.price!==null?{offers:{'@type':'Offer',price:listing.price,priceCurrency:listing.currency,availability:'https://schema.org/InStock',url}}:{}),about:{'@type':'Place',...(listing.latitude!==undefined&&listing.longitude!==undefined?{geo:{'@type':'GeoCoordinates',latitude:listing.latitude,longitude:listing.longitude}}:{}),address:{'@type':'PostalAddress',addressLocality:listing.district,addressRegion:'Antalya',addressCountry:'TR'}}}:null;
+import ListingDetailView from '../../components/public/views/ListingDetailView.astro';
+import { lookupListing } from '../../components/public/views/listing-lookup';
+const locale = 'tr' as const;
+const found = await lookupListing(Astro.locals, Astro.params.slug, locale);
+if (found.redirect) return Astro.redirect(found.redirect, 301);
+if (!found.listing) Astro.response.status = found.status;
 ---
-<SiteLayout title={listing?.title||'İlan şu anda yayında değil'} description={listing?.description.slice(0,160)} settings={settings} mode={mode} image={listing?.photos[0]?.url} noindex={!listing} whatsappMessage={message||undefined}>
-{structured&&<script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g,'\\u003c')}/>}
-<div class="container detail-top">
-  <nav class="breadcrumbs" aria-label="Konum"><a href="/">Ana sayfa</a><span aria-hidden="true">/</span>{listing&&isSeasonal(listing)?<a href="/donemlik-kiralik">Dönemlik kiralık</a>:<a href="/ilanlar">İlanlar</a>}{listing&&<><span aria-hidden="true">/</span><a href={`/ilanlar?district=${encodeURIComponent(listing.district)}`}>{listing.district}</a></>}</nav>
-  {listing?<div class="detail-layout">
-    <article>
-      <p class="detail-kind">{transactionLabel(listing)} {propertyLabels[listing.propertyType].toLocaleLowerCase('tr-TR')}</p>
-      <h1 class="detail-title">{listing.title}</h1>
-      <p class="detail-location"><MapPin size={17} aria-hidden="true"/>{listing.neighborhood}, {listing.district} / Antalya</p>
-      <div class="property-price detail-price-mobile">{priceLabel(listing)}{listing.price!==null&&listing.transaction==='rent'&&<small>{periodLabels[listing.period]}</small>}</div>
-      <Gallery photos={listing.photos} title={listing.title} id={listing.id} client:load/>
-      <section class="detail-section">
-        <h2>Özellikler</h2>
-        <dl class="spec-grid">{specs.map(([key,value])=><div class="spec-row"><dt>{key}</dt><dd>{value}</dd></div>)}</dl>
-      </section>
-      <section class="detail-section">
-        <h2>Açıklama</h2>
-        <div class="description-text" data-description>{paragraphs.map(p=><p>{p}</p>)}</div>
-        <button type="button" class="description-toggle" data-description-toggle hidden aria-expanded="false">Devamını oku</button>
-      </section>
-      {listing.features.length>0&&<section class="detail-section"><h2>Öne çıkanlar</h2><div class="feature-list">{listing.features.map(f=><span><Check size={16} aria-hidden="true"/>{f}</span>)}</div></section>}
-      <section class="detail-section">
-        <h2>Konum</h2>
-        <p>{listing.neighborhood}, {listing.district} / Antalya. Haritadaki konum yaklaşıktır.</p>
-        {listing.latitude!==undefined&&listing.longitude!==undefined&&<ListingMap points={[{id:listing.id,lat:listing.latitude,lng:listing.longitude}]} single label={`${listing.neighborhood}, ${listing.district} yaklaşık konum haritası`} client:visible/>}
-        <a class="button outline sm" style="margin-top:18px" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.neighborhood} ${listing.district} Antalya`)}`} target="_blank" rel="noreferrer">Google Haritalar’da aç<ArrowUpRight size={16} aria-hidden="true"/></a>
-      </section>
-    </article>
-    <aside class="detail-aside" aria-label="İletişim">
-      <div class="advisor-card">
-        <div class="property-price">{priceLabel(listing)}{listing.price!==null&&listing.transaction==='rent'&&<small>{periodLabels[listing.period]}</small>}</div>
-        <div class="advisor-sign"><img src="/images/advisor-portrait.webp" alt="" width="56" height="56"/><div><strong>{settings.advisor}</strong><small>KA EMLAK gayrimenkul danışmanı</small></div></div>
-        <a class="button" href={whatsappUrl(settings.whatsapp,message)} target="_blank" rel="noreferrer"><MessageCircle size={18} aria-hidden="true"/>WhatsApp’tan yazın</a>
-        {settings.phone&&<a class="button outline" href={`tel:${settings.phone}`}><Phone size={17} aria-hidden="true"/>{phoneLabel(settings.phone)}</a>}
-      </div>
-      <InquiryForm listingId={listing.id} compact client:load/>
-    </aside>
-  </div>:<section class="section"><div class="empty-state"><h1>{available?'Bu ilan şu anda yayında değil.':'İlan bilgilerine şu an erişilemiyor.'}</h1><p>{available?'Satılmış, kiralanmış ya da yayından kaldırılmış olabilir.':'Şu an bir erişim sorunu var. İlan hakkında bizi arayabilirsiniz.'}</p><a class="button" href="/ilanlar">Tüm ilanlara dön</a></div></section>}
-</div>
-{similar.length>0&&<section class="section cream-section"><div class="container"><div class="section-head"><h2>Benzer ilanlar</h2><a href="/ilanlar" class="heading-link">Tüm ilanlar</a></div><ListingGrid listings={similar} client:visible/></div></section>}
-<script>const text=document.querySelector('[data-description]');const toggle=document.querySelector('[data-description-toggle]');if(text&&toggle){text.classList.add('clamped');if(text.scrollHeight>text.clientHeight+24){toggle.hidden=false;toggle.addEventListener('click',()=>{const open=text.classList.toggle('clamped')===false;toggle.setAttribute('aria-expanded',String(open));toggle.textContent=open?'Daha az göster':'Devamını oku';if(!open)text.closest('section')?.scrollIntoView({block:'start',behavior:'smooth'});});}else text.classList.remove('clamped');}</script>
-</SiteLayout>
+<ListingDetailView locale={locale} found={found}/>

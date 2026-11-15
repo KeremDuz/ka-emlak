@@ -1,0 +1,13 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { dictionary, localePath } from '../../../i18n';
+import type { Locale } from '../../../lib/types';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const { pages: { notFound } } = dictionary(locale);
+---
+<SiteLayout locale={locale} title={notFound.title} noindex>
+  <section class="container section">
+    <div class="empty-state"><h1>{notFound.h1}</h1><p>{notFound.text}</p><div class="empty-actions"><a class="button" href={localePath(locale, '/ilanlar')}>{notFound.toListings}</a><a class="button outline" href={localePath(locale, '/')}>{notFound.home}</a></div></div>
+  </section>
+</SiteLayout>

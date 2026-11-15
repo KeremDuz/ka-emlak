@@ -1,0 +1,86 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import Gallery from '../Gallery';
+import InquiryForm from '../InquiryForm';
+import { ListingGrid } from '../PropertyCard';
+import ListingMap from '../ListingMap';
+import { areaLabel, isSeasonal, labelsFor, listingUrl, localizedListing, numberLabel, periodSuffix, phoneLabel, priceLabel, transactionLabel, whatsappUrl } from '../../../lib/format';
+import { dictionary, fill, intlLocales, localePath } from '../../../i18n';
+import type { Locale } from '../../../lib/types';
+import type { ListingLookup } from './listing-lookup';
+import { ArrowUpRight, Check, MapPin, MessageCircle, Phone } from 'lucide-react';
+interface Props { locale: Locale; found: ListingLookup; }
+const { locale, found } = Astro.props;
+const t = dictionary(locale);
+const labels = labelsFor(locale);
+const href = (to: string) => localePath(locale, to);
+const { listing, data: { listings, settings, mode, available } } = found;
+const local = listing ? localizedListing(listing, locale) : undefined;
+// Çevirisi olmayan metin Türkçe kalır; ekran okuyucu ve tarayıcı için dili işaretlenir.
+const contentLang = locale !== 'tr' && !local?.translated ? 'tr' : undefined;
+// Boş satırlar paragrafları ayırır; paragraf içindeki tek satır sonları korunur.
+const newline = String.fromCharCode(10);
+const paragraphs = (local?.description ?? '').split(newline).map(line => line.trim()).reduce<string[][]>((groups, line) => { if (line) groups[groups.length - 1].push(line); else if (groups[groups.length - 1].length) groups.push([]); return groups; }, [[]]).filter(group => group.length).map(group => group.join(newline));
+const similar = listings.filter(l => l.id !== listing?.id).sort((a, b) => Number(b.district === listing?.district) - Number(a.district === listing?.district)).slice(0, 3);
+const origin = Astro.site || Astro.url.origin;
+const url = listing ? new URL(listingUrl(listing, locale), origin).href : '';
+const message = listing && local ? fill(t.whatsapp.listing, { title: local.title, url }) : '';
+const n = (value: number) => numberLabel(value, locale);
+const s = t.listing.spec;
+const specs: [string, string][] = listing ? [
+  [s.type, labels.transaction[listing.transaction]], [s.property, labels.property[listing.propertyType]], [s.gross, areaLabel(listing.grossArea, locale)],
+  ...(listing.netArea ? [[s.net, areaLabel(listing.netArea, locale)] as [string, string]] : []), ...(listing.rooms ? [[s.rooms, listing.rooms] as [string, string]] : []), ...(listing.bathrooms ? [[s.baths, n(listing.bathrooms)] as [string, string]] : []),
+  ...(listing.floor ? [[s.floor, listing.floor] as [string, string]] : []), ...(listing.buildingAge ? [[s.age, listing.buildingAge] as [string, string]] : []),
+  ...(isSeasonal(listing) ? [...(listing.guests ? [[s.guests, fill(s.guestsValue, { n: n(listing.guests) })] as [string, string]] : []), ...(listing.pool ? [[s.pool, labels.pool[listing.pool]] as [string, string]] : []), ...(listing.minNights ? [[s.minStay, fill(s.nights, { n: n(listing.minNights) })] as [string, string]] : [])] : []),
+  [s.location, `${listing.neighborhood}, ${listing.district}`],
+] : [];
+// Üstteki satır: "Satılık daire" (Türkçede küçük harf) ya da "Apartment · For sale".
+const property = listing ? (locale === 'tr' ? labels.property[listing.propertyType].toLocaleLowerCase(intlLocales.tr) : labels.property[listing.propertyType]) : '';
+const kind = listing ? fill(t.listing.kind, { transaction: transactionLabel(listing, locale), property }) : '';
+const suffix = listing ? periodSuffix(listing, locale) : '';
+const place = listing ? `${listing.neighborhood}, ${listing.district}` : '';
+const structured = listing && local ? { '@context': 'https://schema.org', '@type': 'RealEstateListing', name: local.title, description: local.description, inLanguage: contentLang ?? locale, url, image: listing.photos.map(p => new URL(p.url, Astro.url.origin).href), datePosted: listing.createdAt, ...(listing.price !== null ? { offers: { '@type': 'Offer', price: listing.price, priceCurrency: listing.currency, availability: 'https://schema.org/InStock', url } } : {}), about: { '@type': 'Place', ...(listing.latitude !== undefined && listing.longitude !== undefined ? { geo: { '@type': 'GeoCoordinates', latitude: listing.latitude, longitude: listing.longitude } } : {}), address: { '@type': 'PostalAddress', addressLocality: listing.district, addressRegion: 'Antalya', addressCountry: 'TR' } } } : null;
+---
+<SiteLayout locale={locale} title={local?.title || t.listing.unavailableTitle} description={local?.description.slice(0, 160)} settings={settings} mode={mode} image={listing?.photos[0]?.url} noindex={!listing} whatsappMessage={message || undefined}>
+{structured && <script type="application/ld+json" set:html={JSON.stringify(structured).replace(/</g, '\\u003c')}/>}
+<div class="container detail-top">
+  <nav class="breadcrumbs" aria-label={t.listing.breadcrumbAria}><a href={href('/')}>{t.nav.home}</a><span aria-hidden="true">/</span>{listing && isSeasonal(listing) ? <a href={href('/donemlik-kiralik')}>{t.nav.seasonal}</a> : <a href={href('/ilanlar')}>{t.nav.listings}</a>}{listing && <><span aria-hidden="true">/</span><a href={href(`/ilanlar?district=${encodeURIComponent(listing.district)}`)}>{listing.district}</a></>}</nav>
+  {listing && local ? <div class="detail-layout">
+    <article>
+      <p class="detail-kind">{kind}</p>
+      <h1 class="detail-title" dir="auto" lang={contentLang}>{local.title}</h1>
+      <p class="detail-location"><MapPin size={17} aria-hidden="true"/>{place} / Antalya</p>
+      <div class="property-price detail-price-mobile">{priceLabel(listing, locale)}{suffix && <small>{suffix}</small>}</div>
+      <Gallery photos={listing.photos} title={local.title} id={listing.id} locale={locale} t={t.gallery} client:load/>
+      <section class="detail-section">
+        <h2>{t.listing.specs}</h2>
+        <dl class="spec-grid">{specs.map(([key, value]) => <div class="spec-row"><dt>{key}</dt><dd><bdi>{value}</bdi></dd></div>)}</dl>
+      </section>
+      <section class="detail-section">
+        <h2>{t.listing.description}</h2>
+        <div class="description-text" data-description dir="auto" lang={contentLang}>{paragraphs.map(p => <p>{p}</p>)}</div>
+        <button type="button" class="description-toggle" data-description-toggle data-more={t.listing.readMore} data-less={t.listing.readLess} hidden aria-expanded="false">{t.listing.readMore}</button>
+        {local.auto && <p class="translation-note">{t.listing.autoTranslated}</p>}
+      </section>
+      {local.features.length > 0 && <section class="detail-section"><h2>{t.listing.highlights}</h2><div class="feature-list" lang={contentLang}>{local.features.map(f => <span dir="auto"><Check size={16} aria-hidden="true"/>{f}</span>)}</div></section>}
+      <section class="detail-section">
+        <h2>{t.listing.location}</h2>
+        <p>{place} / Antalya. {t.listing.approximate}</p>
+        {listing.latitude !== undefined && listing.longitude !== undefined && <ListingMap points={[{ id: listing.id, lat: listing.latitude, lng: listing.longitude }]} single label={fill(t.listing.mapAria, { place })} text={t.map} client:visible/>}
+        <a class="button outline sm" style="margin-top:18px" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${listing.neighborhood} ${listing.district} Antalya`)}`} target="_blank" rel="noreferrer">{t.listing.googleMaps}<ArrowUpRight size={16} aria-hidden="true"/></a>
+      </section>
+    </article>
+    <aside class="detail-aside" aria-label={t.listing.contactAria}>
+      <div class="advisor-card">
+        <div class="property-price">{priceLabel(listing, locale)}{suffix && <small>{suffix}</small>}</div>
+        <div class="advisor-sign"><img src="/images/advisor-portrait.webp" alt="" width="56" height="56"/><div><strong>{settings.advisor}</strong><small>{t.advisor.role}</small></div></div>
+        <a class="button" href={whatsappUrl(settings.whatsapp, message)} target="_blank" rel="noreferrer"><MessageCircle size={18} aria-hidden="true"/>{t.advisor.whatsapp}</a>
+        {settings.phone && <a class="button outline" href={`tel:${settings.phone}`}><Phone size={17} aria-hidden="true"/><bdi dir="ltr">{phoneLabel(settings.phone)}</bdi></a>}
+      </div>
+      <InquiryForm listingId={listing.id} compact locale={locale} t={t.form} client:load/>
+    </aside>
+  </div> : <section class="section"><div class="empty-state"><h1>{available ? t.listing.goneTitle : t.listing.downTitle}</h1><p>{available ? t.listing.goneText : t.listing.downText}</p><a class="button" href={href('/ilanlar')}>{t.listing.back}</a></div></section>}
+</div>
+{similar.length > 0 && <section class="section cream-section"><div class="container"><div class="section-head"><h2>{t.listing.similar}</h2><a href={href('/ilanlar')} class="heading-link">{t.listing.allListings}</a></div><ListingGrid listings={similar} locale={locale} t={t.card} client:visible/></div></section>}
+<script>const text = document.querySelector('[data-description]'); const toggle = document.querySelector<HTMLButtonElement>('[data-description-toggle]'); if (text && toggle) { text.classList.add('clamped'); if (text.scrollHeight > text.clientHeight + 24) { toggle.hidden = false; toggle.addEventListener('click', () => { const open = text.classList.toggle('clamped') === false; toggle.setAttribute('aria-expanded', String(open)); toggle.textContent = (open ? toggle.dataset.less : toggle.dataset.more) ?? ''; if (!open) text.closest('section')?.scrollIntoView({ block: 'start', behavior: 'smooth' }); }); } else text.classList.remove('clamped'); }</script>
+</SiteLayout>

@@ -1,0 +1,98 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import HeroSearch from '../HeroSearch';
+import { ListingGrid } from '../PropertyCard';
+import { getPublicData } from '../../../lib/server/data';
+import { catalogOptions } from '../../../lib/listing-helpers';
+import { isSeasonal, numberLabel, phoneLabel, whatsappUrl } from '../../../lib/format';
+import { dictionary, fill, intlLocales, localePath, plural } from '../../../i18n';
+import type { Locale } from '../../../lib/types';
+import { MessageCircle, Phone } from 'lucide-react';
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const t = dictionary(locale);
+const href = (to: string) => localePath(locale, to);
+const { listings, settings, mode, available } = await getPublicData(Astro.locals);
+const published = listings.filter(l => l.status === 'published');
+const newest = (a: typeof published[number], b: typeof published[number]) => b.createdAt.localeCompare(a.createdAt);
+// Günlük ve haftalık kiralıklar kendi bölümünde gösterilir (öne çıkarılanlar başta); aynı ilan sayfada iki kez yer almaz.
+const seasonalAll = published.filter(isSeasonal);
+const seasonal = [...seasonalAll].sort((a, b) => Number(b.featured) - Number(a.featured) || newest(a, b)).slice(0, 3);
+const others = published.filter(l => !isSeasonal(l));
+const featured = others.filter(l => l.featured).slice(0, 3);
+const displayed = featured.length ? featured : [...others].sort(newest).slice(0, 3);
+// Öne çıkanların altında, onlarla çakışmayan en yeni ilanlar.
+const latest = others.filter(l => !displayed.includes(l)).sort(newest).slice(0, 3);
+const { districts } = catalogOptions(published);
+// Bölgeler yayındaki ilanlardan sayılır; ilanı kalmayan bölge listeden kendiliğinden düşer.
+const districtCounts = [...published.reduce((counts, l) => counts.set(l.district, (counts.get(l.district) ?? 0) + 1), new Map<string, number>())].filter(([name]) => name).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'tr'));
+const origin = Astro.site || Astro.url.origin;
+const agent = { '@context': 'https://schema.org', '@type': 'RealEstateAgent', name: settings.name || 'KA EMLAK', url: new URL(href('/'), origin).href, image: new URL('/images/og-default.png', Astro.url.origin).href, ...(settings.phone ? { telephone: settings.phone } : {}), ...(settings.email ? { email: settings.email } : {}), address: { '@type': 'PostalAddress', addressLocality: 'Konyaaltı', addressRegion: 'Antalya', addressCountry: 'TR', ...(settings.address ? { streetAddress: settings.address } : {}) }, areaServed: { '@type': 'City', name: 'Antalya' }, ...(settings.advisor ? { employee: { '@type': 'Person', name: settings.advisor } } : {}) };
+const agentJson = JSON.stringify(agent).replaceAll('<', '\\u003c');
+const count = (n: number) => fill(plural(n, t.home.districtCountOne, t.home.districtCount), { n: numberLabel(n, locale) });
+// settings.about ofisin Türkçe yazdığı metindir; öteki dillerde sözlükteki metin gösterilir.
+const aboutText = locale === 'tr' ? settings.about || t.advisor.about : t.advisor.about;
+---
+<SiteLayout locale={locale} settings={settings} mode={mode}>
+  <script type="application/ld+json" set:html={agentJson}/>
+  <div class="hero-wrap">
+    <section class="hero" aria-labelledby="hero-heading">
+      <img class="hero-img" src="/images/antalya-konyaalti.webp" srcset="/images/antalya-konyaalti-sm.webp 1200w, /images/antalya-konyaalti.webp 2400w" sizes="100vw" alt={t.home.heroAlt} width="2400" height="1800" fetchpriority="high"/>
+      <div class="hero-content"><h1 id="hero-heading">{t.home.heroTitle}</h1></div>
+    </section>
+    <HeroSearch districts={districts} locale={locale} t={t.search} client:load/>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>{t.home.featured}</h2><a class="heading-link" href={href('/ilanlar')}>{fill(t.home.allListings, { n: numberLabel(published.length, locale) })}</a></div>
+      {!available
+        ? <div class="status-banner">{t.home.unavailable} <a href={href('/iletisim')}>{t.home.unavailableLink}</a></div>
+        : displayed.length
+          ? <ListingGrid listings={displayed} priority locale={locale} t={t.card} client:load/>
+          : <div class="empty-state"><h2>{t.home.emptyTitle}</h2><p>{t.home.emptyText}</p><a class="button" href={href('/iletisim')}>{t.home.emptyAction}</a></div>}
+    </div>
+  </section>
+
+  {seasonal.length > 0 && <section class="section section-follow">
+    <div class="container">
+      <div class="section-head"><h2>{t.home.seasonal}</h2><a class="heading-link" href={href('/donemlik-kiralik')}>{fill(t.home.seeAll, { n: numberLabel(seasonalAll.length, locale) })}</a></div>
+      <ListingGrid listings={seasonal} locale={locale} t={t.card} client:visible/>
+    </div>
+  </section>}
+
+  {districtCounts.length > 1 && <section class="section cream-section">
+    <div class="container district-band">
+      <div><h2 class="section-title">{t.home.districts}</h2><a class="heading-link" href={href('/ilanlar?gorunum=harita')}>{t.home.onMap}</a></div>
+      <ul class="district-index">
+        {districtCounts.map(([name, n]) => <li><a href={href(`/ilanlar?district=${encodeURIComponent(name)}`)}><span class="district-name" dir="auto">{name}</span><span class="district-count">{count(n)}</span></a></li>)}
+      </ul>
+    </div>
+  </section>}
+
+  {latest.length > 0 && <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>{t.home.latest}</h2><a class="heading-link" href={href('/ilanlar')}>{fill(t.home.allListings, { n: numberLabel(published.length, locale) })}</a></div>
+      <ListingGrid listings={latest} locale={locale} t={t.card} client:visible/>
+    </div>
+  </section>}
+
+  <section class="container advisor-home" aria-labelledby="advisor-heading">
+    <img class="advisor-photo" src="/images/advisor-portrait.webp" alt="" loading="lazy" width="452" height="640"/>
+    <div class="advisor-copy">
+      <h2 id="advisor-heading">{settings.advisor}</h2>
+      <p class="advisor-role">{t.advisor.role}</p>
+      <p class="advisor-text">{aboutText}</p>
+      {settings.licenseNumber && <p class="about-license">{fill(t.advisor.license, { n: settings.licenseNumber })}</p>}
+      <div class="advisor-actions">
+        {settings.phone && <a class="button" href={`tel:${settings.phone}`}><Phone size={17}/><bdi dir="ltr">{phoneLabel(settings.phone)}</bdi></a>}
+        <a class="button outline" href={whatsappUrl(settings.whatsapp, t.whatsapp.general)} target="_blank" rel="noreferrer"><MessageCircle size={17}/>{t.advisor.whatsapp}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container contact-strip">
+    <h2>{t.home.ownerTitle}</h2>
+    <a class="button light" href={href('/iletisim?talep=valuation')}>{t.home.ownerAction}</a>
+  </section>
+</SiteLayout>

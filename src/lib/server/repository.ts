@@ -1,4 +1,5 @@
-import type { AdminListing, Inquiry, Listing, OfficeSettings, Photo } from '../types';
+import type { AdminListing, Inquiry, Listing, ListingTranslation, OfficeSettings, Photo, TranslatedLocale } from '../types';
+import { sourceHash } from './translation-source';
 import { isPreview, storageLimit, type ServerLocals } from './env';
 import { withPreview, deleteLocalAsset, type MediaRecord } from './preview';
 import { rpc, supabase, storageRequest } from './database';
@@ -45,6 +46,15 @@ export class Repository {
   }
   async save(id:string,listing:Listing,version:number){const current=await this.listing(id);expected(current,version);await this.validatePhotos(listing.photos);return this.commit(saveDraft(current,listing),version);}
   async action(id:string,action:ListingAction,version:number,price?:number|null){const current=await this.listing(id);expected(current,version);const next=transition(current,action,price);if(action==='publish')await this.validatePhotos(next.photos);return this.commit(next,action==='duplicate'?0:version);}
+  /**
+   * Çevirileri yayındaki metne ekler. Olağan sürümlü kayıttır (sürüm bir artar); çağıran isteğin yanıtı yeni sürümü panele taşır.
+   * Bekleyen taslağın Türkçe metni yayındakiyle aynıysa çeviri taslağa da yazılır; yöneticinin düzelttiği çeviri korunur.
+   */
+  async saveTranslations(current:AdminListing,translations:Partial<Record<TranslatedLocale,ListingTranslation>>){
+    const version=current.version+1;let draft=current.draft;
+    if(draft&&sourceHash(draft)===sourceHash(current)){const kept=draft.translations??{};draft={...draft,version,translations:{...kept,...Object.fromEntries(Object.entries(translations).filter(([locale])=>kept[locale as TranslatedLocale]?.auto!==false))}};}
+    return this.commit({...current,version,translations:{...current.translations,...translations},draft},current.version);
+  }
   async remove(id:string,version:number){
     const current=await this.listing(id);expected(current,version);if(current.status!=='trash')throw new HttpError(409,'Kalıcı silmeden önce ilanı çöp kutusuna taşıyın.','NOT_TRASHED');
     if(this.preview)await withPreview(state=>{const row=state.listings.find(item=>item.id===id);if(!row)throw new HttpError(404,'İlan bulunamadı.');expected(row,version);state.listings=state.listings.filter(item=>item.id!==id);},true);

@@ -56,6 +56,16 @@ Aynı yer imine hepsiemlak’taki **ofis sayfasındayken** (`/emlak-ofisi/ka-eml
 - Veri gzip’lenip `#esitle=` ile taşınır. Panel yalnız aynı ofis numarasıyla başlayan hepsiemlak ilanlarını kabul eder. Portföy yüklenmeden ya da yüklenirken hata varken eşitleme penceresi açılmaz.
 - Daha önce sürüklenen eski yer imi bu özelliği içermez; düğme yeniden sürüklenmelidir. Eşitleme canlı hepsiemlak ofis sayfasında henüz denenmedi; panel tarafı yerel önizlemede örnek veriyle denendi.
 
+## Otomatik çeviri (isteğe bağlı)
+
+İlan yayınlanınca başlık, açıklama ve özellikler İngilizce ve Farsçaya kendiliğinden çevrilir. Üç değer gerekir; Cloudflare Worker secret olarak siz girersiniz (sohbete ya da koda yazmayın):
+
+- `TRANSLATE_API_URL`: `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions` (Google AI Studio, OpenAI uyumlu tam adres)
+- `TRANSLATE_API_KEY`: AI Studio'dan aldığınız anahtar
+- `TRANSLATE_MODEL`: `gemini-4-hydrogen`
+
+Üçünden biri eksikse çeviri yapılmaz, ilanlar Türkçe yayında kalır ve panelde bunu belirten bir not görünür. Sağlayıcı yanıt vermezse (ör. bölge kısıtı, kota) `wrangler.jsonc`'taki `AI` (Workers AI) bağlaması varsa çeviri otomatik olarak oradan denenir; ek ayar gerekmez. Panelde elle düzelttiğiniz çeviriye sonradan dokunulmaz. Türkçe metin değişince çeviri "eski" sayılır ve ilan yeniden yayınlanınca ya da ilan listesindeki "Eksik çevirileri tamamla" ile yenilenir. Veritabanında ek bir SQL gerekmez.
+
 ## Veri davranışı
 
 Yayımdaki ilanın düzenlemesi ayrı `draft` snapshot'ına otomatik kaydedilir. Ziyaretçi son yayımlanmış snapshot'ı görür. Yayınla doğrulaması başarılı olduğunda taslak atomik olarak yayına alınır. İlan kaldırma arşiv/çöp kutusu durumudur; kalıcı silme yalnız çöp kutusundan yapılır. Her ilan güncellemesi `version` ile denetlenir; eski sürüm **409** döndürür ve mevcut veriyi ezmez.

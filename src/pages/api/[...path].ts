@@ -10,8 +10,11 @@ import { publicListing, publicPageSize } from '../../lib/server/data';
 import { uploadPhoto } from '../../lib/server/uploads';
 import { exportBackup, importBackup } from '../../lib/server/backup';
 import { importSourcePhoto, prepareSourceListing } from '../../lib/server/source-import';
+import { aiBinding, ensureTranslations, translateTexts, translationConfig } from '../../lib/server/translate';
+import { sourceHash } from '../../lib/server/translation-source';
 
 export const prerender=false;
+const translateSource=z.object({title:z.string().max(180),description:z.string().max(12000),features:z.array(z.string().max(100)).max(50)});
 const actions=z.enum(['publish','archive','sold','rented','trash','restore','duplicate','feature','price']);
 async function route(context:APIContext):Promise<Response>{
   const {request}=context;const url=new URL(request.url);const path=(context.params.path??'').split('/').filter(Boolean);const method=request.method;
@@ -30,7 +33,8 @@ async function route(context:APIContext):Promise<Response>{
     const hashed=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`inquiry:${ip}`))),x=>x.toString(16).padStart(2,'0')).join('');
     await repo.rateLimit(hashed,5,3600);
     if(input.listingId&&!(await repo.listings(true)).some(item=>item.id===input.listingId))throw new HttpError(404,'İlan artık yayında değil.','NOT_FOUND');
-    await repo.saveInquiry({id:crypto.randomUUID(),name:input.name,phone:input.phone,message:input.message,listingId:input.listingId,kind:input.kind,status:'new',createdAt:new Date().toISOString()});
+    const details=Object.entries(input.details??{}).map(([key,value])=>[key.trim(),value.trim()]).filter(([key,value])=>key&&value);
+    await repo.saveInquiry({id:crypto.randomUUID(),name:input.name,phone:input.phone,message:input.message,listingId:input.listingId,kind:input.kind,...(details.length?{details:Object.fromEntries(details)}:{}),...(input.locale?{locale:input.locale}:{}),status:'new',createdAt:new Date().toISOString()});
     return json({ok:true},201);
   }
   if(path[0]!=='admin')throw new HttpError(404,'Adres bulunamadı.','NOT_FOUND');
@@ -43,7 +47,16 @@ async function route(context:APIContext):Promise<Response>{
   if(path[1]==='listings'){
     if(path.length===2){if(method==='GET')return json({listings:await repo.listings()});if(method==='POST')return json({listing:await repo.create()},201);}
     const id=z.string().min(1).max(100).parse(path[2]);
-    if(path[3]==='action'&&method==='POST'){const body=z.object({action:actions,version:z.number().int().positive(),price:z.number().nonnegative().max(1e13).nullable().optional()}).parse(await bodyJson(request));return json({listing:await repo.action(id,body.action,body.version,body.price)});}
+    if(path[3]==='action'&&method==='POST'){const body=z.object({action:actions,version:z.number().int().positive(),price:z.number().nonnegative().max(1e13).nullable().optional()}).parse(await bodyJson(request));const listing=await repo.action(id,body.action,body.version,body.price);if(body.action!=='publish')return json({listing});
+      // İlan artık yayında; çeviri başarısız olsa da yanıt başarılıdır ve ilan Türkçe yayında kalır.
+      const translated=await ensureTranslations(repo,listing);return json({listing:translated.listing,translation:translated.status});}
+    if(path[3]==='translate'&&method==='POST'){
+      const body=z.object({version:z.number().int().positive().optional(),force:z.boolean().optional(),source:translateSource.optional()}).parse(await bodyJson(request,60_000));
+      // Düzenleyici kaydedilmemiş metni gönderir: çeviri yalnız geri döner, ilana düzenleyicinin olağan kaydıyla yazılır.
+      if(body.source){const result=await translateTexts(body.source,translationConfig(locals),{ai:aiBinding(locals)});if(result.status!=='ok')return json(result);const hash=sourceHash(body.source);return json({status:Object.keys(result.failed).length?'partial':'ok',translations:Object.fromEntries(Object.entries(result.translations).map(([locale,value])=>[locale,{...value,auto:true,sourceHash:hash}]))});}
+      const current=await repo.listing(id);if(current.version!==body.version)throw new HttpError(409,'İlan başka bir sekmede değişti. Son sürümü yeniden yükleyin.','VERSION_CONFLICT',{version:current.version});
+      const result=await ensureTranslations(repo,current,{force:body.force});return json({listing:result.listing,status:result.status});
+    }
     if(path.length===3&&method==='GET')return json({listing:await repo.listing(id)});
     if(path.length===3&&method==='PUT'){const body=z.object({listing:z.unknown(),version:z.number().int().positive()}).parse(await bodyJson(request));return json({listing:await repo.save(id,editable(body.listing),body.version)});}
     if(path.length===3&&method==='DELETE'){const body=url.searchParams.has('version')?{version:Number(url.searchParams.get('version'))}:z.object({version:z.number()}).parse(await bodyJson(request));await repo.remove(id,requestVersion(body.version));return json({ok:true});}
