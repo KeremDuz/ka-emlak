@@ -1,7 +1,5 @@
-# main dalına her gönderimde: tip kontrolü, testler, derleme ve Cloudflare Workers'a yayın.
-# Yayın adımı depo sırları eklenince çalışır (docs/DEPLOYMENT.md, "GitHub'dan otomatik yayın"):
-#   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID. Sırlar yokken yalnız kontrol ve derleme yapılır.
-name: Yayınla
+# main dalına her gönderimde tip kontrolü, testler ve derleme. Yayını Cloudflare Workers Builds yapar (docs/DEPLOYMENT.md).
+name: Kontrol
 
 on:
   push:
@@ -19,8 +17,6 @@ jobs:
   yayinla:
     runs-on: ubuntu-latest
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       # Sitenin gerçek adresi (ör. https://ka-emlak.<hesap>.workers.dev); depo değişkeni olarak eklenir.
       SITE_URL: ${{ vars.SITE_URL }}
       # Herkese açık değerler (sır değil); derleme sırasında sayfaya gömülür. Boşsa ölçüm ve doğrulama eklenmez.
@@ -40,14 +36,4 @@ jobs:
         run: node scripts/run.mjs test
       - name: Derleme
         run: node scripts/run.mjs build
-      # Anahtarın hangi hesabı ve izinleri gördüğünü yazar; yayın hata verirse nedeni buradan anlaşılır.
-      - name: Cloudflare hesabını kontrol et
-        if: env.CLOUDFLARE_API_TOKEN != ''
-        continue-on-error: true
-        run: env -u CLOUDFLARE_ACCOUNT_ID npx wrangler whoami
-      - name: Cloudflare'a yayınla
-        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
-        run: npx wrangler deploy
-      - name: Yayın atlandı
-        if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
-        run: echo "::notice::Cloudflare sırları eklenmediği için yayın yapılmadı. Adımlar docs/DEPLOYMENT.md içinde."
+      # Yayın artık Cloudflare Workers Builds ile yapılır (kaemlak12 hesabı, GitHub bağlantısı); bu iş akışı yalnız kontrol eder.
