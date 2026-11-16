@@ -6,6 +6,10 @@
   "compatibility_flags": ["nodejs_compat"],
   // Cloudflare panelinden girilen değişkenler her yayında silinmesin.
   "keep_vars": true,
+  // Eski workers.dev adresi kullanıcı isteğiyle kapalı. Site yeni hesaba taşınınca kaemlak.com için routes eklenir;
+  // alan adı bağlanmadan önce yeni hesapta test etmek gerekirse geçici olarak true yapılabilir.
+  "workers_dev": false,
+  "preview_urls": false,
   "assets": { "binding": "ASSETS", "directory": "./dist/client" },
   // İsteğe bağlı yedek çeviri (Workers AI); asıl çeviri TRANSLATE_* değerleriyle yapılır.
   "ai": { "binding": "AI" },
