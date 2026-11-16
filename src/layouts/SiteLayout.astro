@@ -92,11 +92,12 @@ const phoneText = settings.phone ? phoneLabel(settings.phone) : '';
         <div class="footer-column"><strong>KA EMLAK</strong><a href={href('/hakkimizda')}>{t.footer.about}</a><a href={href('/kat-karsiligi')}>{t.footer.katKarsiligi}</a><a href={href('/kentsel-donusum')}>{t.footer.renewal}</a><a href={href('/arsa-degerleme')}>{t.footer.landValuation}</a><a href={href('/iletisim')}>{t.footer.contact}</a><a href="https://www.hepsiemlak.com/emlak-ofisi/ka-emlak-29750" target="_blank" rel="noreferrer">{t.footer.hepsiemlak} <ArrowUpRight size={14}/></a></div>
         <div class="footer-column"><strong>{t.footer.contactHeading}</strong><p>{settings.address || t.site.defaultAddress}</p>{settings.phone && <a href={`tel:${settings.phone}`} dir="ltr" class="footer-phone">{phoneText}</a>}<a href={whatsappUrl(settings.whatsapp, whatsappMessage)} target="_blank" rel="noreferrer">WhatsApp <ArrowUpRight size={14}/></a>{settings.email && <a href={`mailto:${settings.email}`}>{settings.email}</a>}</div>
       </div>
-      <div class="footer-bottom"><span>© {new Date().getFullYear()} KA EMLAK</span><div><a href={href('/gizlilik')}>{t.footer.privacy}</a><a href={href('/kvkk')}>{t.footer.kvkk}</a><a href={href('/cerezler')} data-consent-open>{t.footer.cookies}</a><a href="/yonetim">{t.footer.admin}</a></div></div>
+      <div class="footer-bottom"><span>© {new Date().getFullYear()} KA EMLAK</span><div><a href={href('/gizlilik')}>{t.footer.privacy}</a><a href={href('/kvkk')}>{t.footer.kvkk}</a><a href={href('/cerezler')} data-consent-open={gaId ? '' : undefined}>{t.footer.cookies}</a><a href="/yonetim">{t.footer.admin}</a></div></div>
     </div>
   </footer>
   <div class="mobile-contact-bar"><a href={phoneHref}><Phone size={18}/>{t.site.call}</a><a href={whatsappUrl(settings.whatsapp, whatsappMessage)} target="_blank" rel="noreferrer"><MessageCircle size={18}/>WhatsApp</a></div>
-  <Consent banner={consentText} title={t.consent.title} privacyHref={href('/gizlilik')} privacyLabel={t.consent.learnMore} client:idle/>
+  {/* Analytics yokken çerez onayı istenecek bir şey yoktur; afiş yalnız ölçüm kimliği varsa çıkar. */}
+  {gaId && <Consent banner={consentText} title={t.consent.title} privacyHref={href('/gizlilik')} privacyLabel={t.consent.learnMore} client:idle/>}
   <script type="application/json" id="ka-analytics" set:html={analyticsConfig}/>
   <script>
     import { initAnalytics } from '../lib/analytics';

@@ -6,7 +6,7 @@ import { requireAdmin, startSession, endSession } from '../../lib/server/auth';
 import { Repository } from '../../lib/server/repository';
 import { editable, inquirySchema, office } from '../../lib/server/validation';
 import { filterListings } from '../../lib/server/filters';
-import { publicListing, publicPageSize } from '../../lib/server/data';
+import { clearPublicDataCache, publicListing, publicPageSize } from '../../lib/server/data';
 import { uploadPhoto } from '../../lib/server/uploads';
 import { exportBackup, importBackup } from '../../lib/server/backup';
 import { importSourcePhoto, prepareSourceListing } from '../../lib/server/source-import';
@@ -44,6 +44,8 @@ async function route(context:APIContext):Promise<Response>{
     await requireAdmin(context);if(method==='GET')return json({ok:true});
   }
   await requireAdmin(context);
+  // Paneldeki her değişiklik bu Worker örneğindeki ziyaretçi önbelleğini boşaltır.
+  if(method!=='GET')clearPublicDataCache();
   if(path[1]==='listings'){
     if(path.length===2){if(method==='GET')return json({listings:await repo.listings()});if(method==='POST')return json({listing:await repo.create()},201);}
     const id=z.string().min(1).max(100).parse(path[2]);

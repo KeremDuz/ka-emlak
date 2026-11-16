@@ -2,28 +2,44 @@
 import SiteLayout from '../../../layouts/SiteLayout.astro';
 import { dictionary } from '../../../i18n';
 import { legal } from '../../../content/legal';
+import { validMeasurementId } from '../../../lib/analytics';
+import { getPublicData } from '../../../lib/server/data';
 import type { Locale } from '../../../lib/types';
 // KVKK, gizlilik ve çerez metinleri src/content/legal.ts içindedir (üç dilde taslak; yayından önce avukat gözden geçirmelidir).
 interface Props { locale: Locale; kind: 'kvkk' | 'privacy' | 'cookies'; }
 const { locale, kind } = Astro.props;
 const t = dictionary(locale);
+const { settings, mode } = await getPublicData(Astro.locals);
 const doc = legal[locale][kind];
 // SiteLayout başlığa " | KA EMLAK" ekler.
 const title = doc.metaTitle.replace(/\s*\|\s*KA EMLAK$/, '');
 // Yer tutucu tarih yayında gösterilmez.
 const updated = doc.updated && doc.updated !== 'PLACEHOLDER_DATE' ? doc.updated : '';
+// Yer tutucular paneldeki ofis bilgileriyle doldurulur; bilgisi olmayan kısım (e-posta, vergi no) cümleden çıkarılır.
+const withoutEmail = [/E-posta: \[E-POSTA\]\. ?/g, /Email: \[E-POSTA\]\. ?/g, /ایمیل: \[E-POSTA\]\. ?/g, / ya da \[E-POSTA\] e-posta adresine/g, / or by email to \[E-POSTA\]/g, / یا به ایمیل \[E-POSTA\]/g, /\[E-POSTA\] adresine yazın ya da /g, /write to \[E-POSTA\] or /g, /به \[E-POSTA\] بنویسید یا /g];
+const withoutTaxNo = [/Vergi\/MERSİS numarası: \[VERGİ\/MERSİS NO\]\. ?/g, /Tax\/MERSİS number: \[VERGİ\/MERSİS NO\]\. ?/g, /شمارهٔ مالیاتی\/مرسیس: \[VERGİ\/MERSİS NO\]\. ?/g];
+const controller = settings.advisor ? `${settings.advisor} (${settings.name || 'KA EMLAK'})` : settings.name || 'KA EMLAK';
+const fillText = (text: string) => {
+  let out = text;
+  if (!settings.email) for (const pattern of withoutEmail) out = out.replace(pattern, '');
+  for (const pattern of withoutTaxNo) out = out.replace(pattern, '');
+  return out.replaceAll('[VERİ SORUMLUSU UNVANI] ("KA EMLAK")', controller).replaceAll('[VERİ SORUMLUSU UNVANI] («KA EMLAK»)', controller)
+    .replaceAll('[VERİ SORUMLUSU UNVANI]', controller).replaceAll('[ADRES]', settings.address || t.site.defaultAddress)
+    .replaceAll('[E-POSTA]', settings.email).trim();
+};
+const consentEnabled = Boolean(validMeasurementId(import.meta.env.PUBLIC_GA_MEASUREMENT_ID));
 ---
-<SiteLayout locale={locale} title={title} description={doc.metaDescription}>
-  <section class="page-intro"><div class="container"><h1>{doc.title}</h1><p>{doc.intro}</p>
+<SiteLayout locale={locale} title={title} description={doc.metaDescription} settings={settings} mode={mode}>
+  <section class="page-intro"><div class="container"><h1>{doc.title}</h1><p>{fillText(doc.intro)}</p>
     {updated && <p class="legal-updated">{t.legal.updated}: {updated}</p>}
-    {kind === 'cookies' && <p><button type="button" class="button outline sm" data-consent-open>{t.consent.change}</button></p>}
+    {kind === 'cookies' && consentEnabled && <p><button type="button" class="button outline sm" data-consent-open>{t.consent.change}</button></p>}
   </div></section>
   <section class="content-page container"><article class="prose">
     {locale !== 'tr' && <p class="legal-note">{doc.languageNote}</p>}
     {doc.sections.map(section => <>
       <h2>{section.heading}</h2>
-      {section.paragraphs.map(text => <p>{text}</p>)}
-      {section.bullets && (section.ordered ? <ol>{section.bullets.map(item => <li>{item}</li>)}</ol> : <ul>{section.bullets.map(item => <li>{item}</li>)}</ul>)}
+      {section.paragraphs.map(text => <p>{fillText(text)}</p>)}
+      {section.bullets && (section.ordered ? <ol>{section.bullets.map(item => <li>{fillText(item)}</li>)}</ol> : <ul>{section.bullets.map(item => <li>{fillText(item)}</li>)}</ul>)}
     </>)}
   </article></section>
 </SiteLayout>
