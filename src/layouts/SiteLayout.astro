@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { ArrowUpRight, Menu, Phone, MessageCircle } from 'lucide-react';
+import { ArrowUpRight, Check, ChevronDown, Globe, Menu, Phone, MessageCircle } from 'lucide-react';
 import Consent from '../components/public/Consent';
 import { legal } from '../content/legal';
 import { validMeasurementId } from '../lib/analytics';
@@ -77,9 +77,13 @@ const phoneText = settings.phone ? phoneLabel(settings.phone) : '';
           {locales.map(other => <a href={here(other)} lang={other} hreflang={other} class={other === locale ? 'active' : ''} aria-current={other === locale ? 'true' : undefined}>{localeNames[other]}</a>)}
         </div>
       </nav>
-      <div class="lang-switch lang-switch-bar" role="group" aria-label={t.site.language}>
-        {locales.map(other => <a href={here(other)} lang={other} hreflang={other} class={other === locale ? 'active' : ''} aria-current={other === locale ? 'true' : undefined}>{localeNames[other]}</a>)}
-      </div>
+      {/* Dil seçimi masaüstünde açılır menüdür; telefonda diller menünün içinde listelenir. */}
+      <details class="lang-picker lang-switch-bar" id="lang-picker">
+        <summary aria-label={t.site.language}><Globe size={17} aria-hidden="true"/><span>{locale.toUpperCase()}</span><ChevronDown size={15} aria-hidden="true"/></summary>
+        <div class="lang-switch lang-picker-menu" role="group" aria-label={t.site.language}>
+          {locales.map(other => <a href={here(other)} lang={other} hreflang={other} class={other === locale ? 'active' : ''} aria-current={other === locale ? 'true' : undefined}><span>{localeNames[other]}</span>{other === locale && <Check size={16} aria-hidden="true"/>}</a>)}
+        </div>
+      </details>
       <a class="header-contact" href={phoneHref} aria-label={settings.phone ? fill(t.site.callAria, { phone: phoneText }) : t.site.contact}><Phone size={17}/><span dir="ltr">{settings.phone ? phoneText : t.site.contact}</span></a>
       <button class="mobile-menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="main-navigation" aria-label={t.site.menuOpen} data-open-label={t.site.menuOpen} data-close-label={t.site.menuClose}><Menu size={24}/></button>
     </header>
@@ -108,6 +112,10 @@ const phoneText = settings.phone ? phoneLabel(settings.phone) : '';
     const setMenu = (open: boolean) => { menu?.setAttribute('aria-expanded', String(open)); menu?.setAttribute('aria-label', (open ? menu.dataset.closeLabel : menu.dataset.openLabel) ?? ''); navigation?.classList.toggle('open', open); };
     menu?.addEventListener('click', () => setMenu(menu.getAttribute('aria-expanded') !== 'true'));
     document.addEventListener('keydown', event => { if (event.key === 'Escape' && menu?.getAttribute('aria-expanded') === 'true') { setMenu(false); menu.focus(); } });
+    // Dil menüsü dışarı tıklanınca ya da Esc ile kapanır.
+    const picker = document.getElementById('lang-picker') as HTMLDetailsElement | null;
+    document.addEventListener('click', event => { if (picker?.open && !picker.contains(event.target as Node)) picker.open = false; });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && picker?.open) { picker.open = false; picker.querySelector('summary')?.focus(); } });
     // Sayfa kaydırılınca üst menünün altına ince bir çizgi gelir.
     const header = document.getElementById('site-header');
     const mark = () => header?.classList.toggle('scrolled', window.scrollY > 8);

@@ -64,7 +64,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 /* ---------- Ana sayfa girişi ---------- */
 .hero-wrap { width: min(1440px, 100% - 40px); margin-inline: auto; }
-.hero { position: relative; height: clamp(460px, 66vh, 620px); border-radius: 14px; background: #5d7163; overflow: hidden; }
+/* Giriş fotoğrafı yüklenene kadar alan boş kalmasın: aynı fotoğrafın 142 baytlık bulanık hali sayfaya gömülüdür. */
+.hero { position: relative; height: clamp(460px, 66vh, 620px); border-radius: 14px; background: #5d7163 url("data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACwBACdASogABgAPrlMnUunJKKht+gA4BcJYwDDNC04MPeTsLwMftiO5nZYcIAAAP3SA9S8RBY2F6YaxLw4bYtkEbmGPXAAxg8Qem5KZwYDtVQOaShWVizOlh2u8L4HhBARt5iOATLMgcVz04CoT+PEZnmFRR3i4gAAAA==") 50% 56% / cover no-repeat; overflow: hidden; }
 .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-position: 50% 56%; }
 /* Başlığın altındaki en parlak noktada beyaz yazı 4.5:1 kontrastı korur (ölçüldü). */
 .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(6 26 21 / .62) 0%, rgb(6 26 21 / .5) 60%, rgb(6 26 21 / .16) 100%), linear-gradient(0deg, rgb(4 28 20 / .3), transparent 45%); }
@@ -441,6 +442,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .lang-switch a:hover, .lang-switch a.active { color: var(--forest); }
 .lang-switch a.active { font-weight: 750; text-decoration: underline; text-decoration-color: var(--bronze); text-decoration-thickness: 2px; text-underline-offset: 6px; }
 .lang-switch-menu { display: none; }
+.lang-picker { position: relative; flex-shrink: 0; }
+.lang-picker summary { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--forest); font-size: .875rem; font-weight: 700; cursor: pointer; list-style: none; transition: border-color .2s; }
+.lang-picker summary::-webkit-details-marker { display: none; }
+.lang-picker summary:hover, .lang-picker[open] summary { border-color: var(--forest); }
+.lang-picker summary svg:last-child { transition: transform .2s var(--ease); }
+.lang-picker[open] summary svg:last-child { transform: rotate(180deg); }
+.lang-picker-menu { position: absolute; top: calc(100% + 6px); inset-inline-end: 0; z-index: 60; flex-direction: column; align-items: stretch; gap: 2px; min-width: 160px; padding: 6px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; box-shadow: var(--shadow); }
+.lang-switch.lang-picker-menu a { justify-content: space-between; gap: 12px; padding: 0 12px; color: var(--ink); font-size: .95rem; font-weight: 600; }
+.lang-switch.lang-picker-menu a:hover { background: var(--tint); }
+.lang-switch.lang-picker-menu a.active { color: var(--forest); font-weight: 750; text-decoration: none; }
 .translation-note { margin-top: 12px; color: var(--muted); font-size: .875rem; line-height: 1.5; }
 @media (max-width: 1100px) { .lang-switch a { padding: 0 6px; } }
 /* Dil değiştirici başlığa eklenince 801-1100 px arası üst çubuk taşıyordu: telefon yalnız simge olur, 960 px ve altında menü açılır liste olur. */

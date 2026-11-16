@@ -35,6 +35,7 @@ const aboutText = locale === 'tr' ? settings.about || t.advisor.about : t.adviso
 ---
 <SiteLayout locale={locale} settings={settings} mode={mode}>
   <script type="application/ld+json" set:html={agentJson}/>
+  <link slot="head" rel="preload" as="image" href="/images/antalya-konyaalti.webp" imagesrcset="/images/antalya-konyaalti-sm.webp 1200w, /images/antalya-konyaalti.webp 2400w" imagesizes="100vw" fetchpriority="high"/>
   <div class="hero-wrap">
     <section class="hero" aria-labelledby="hero-heading">
       <img class="hero-img" src="/images/antalya-konyaalti.webp" srcset="/images/antalya-konyaalti-sm.webp 1200w, /images/antalya-konyaalti.webp 2400w" sizes="100vw" alt={t.home.heroAlt} width="2400" height="1800" fetchpriority="high"/>
