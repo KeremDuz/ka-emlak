@@ -115,16 +115,16 @@ Onay ve olaylar:
 
 Kaynaklar: [Workers limitleri](https://developers.cloudflare.com/workers/platform/limits/), [Supabase Free](https://supabase.com/pricing), [Supabase duraklatma](https://supabase.com/docs/guides/platform/free-project-pausing), [Firebase Spark](https://firebase.google.com/docs/projects/billing/firebase-pricing-plans), [ID token doğrulama](https://firebase.google.com/docs/auth/admin/verify-id-tokens).
 
-## Alan adları: kaemlak.com ve kaemlak.com.tr
+## Alan adı: kaemlak.com
 
-Asıl adres `kaemlak.com`'dur. `kaemlak.com.tr`, `www.` adresleri ve `ka-emlak.kaemlak.workers.dev` aynı sayfaya kalıcı (301) yönlendirilir. Yönlendirme `src/middleware.ts` içindedir ve asıl adresi `SITE_URL` değişkeninden alır. `SITE_URL` değişmeden hiçbir yönlendirme yapılmaz.
+Asıl ve tek adres `kaemlak.com`'dur (kaemlak.com.tr alınmadı). `www.kaemlak.com` ve `ka-emlak.kaemlak.workers.dev` aynı sayfaya kalıcı (301) yönlendirilir. Yönlendirme `src/middleware.ts` içindedir ve asıl adresi `SITE_URL` değişkeninden alır; `SITE_URL` değişmeden hiçbir yönlendirme yapılmaz.
 
-1. Cloudflare panelinde **Add a domain** ile `kaemlak.com` ve `kaemlak.com.tr` alanlarını ücretsiz planla ekleyin.
-2. Cloudflare'ın verdiği iki ad sunucusunu (nameserver) alan adını aldığınız firmanın panelinde iki alan adına da yazın. Etkinleşmesi birkaç saat sürebilir.
-3. İki alan adı da "Active" olunca Cloudflare panelinde **Workers & Pages → ka-emlak → Settings → Domains & Routes → Add → Custom domain** ile şu dört adresi ekleyin: `kaemlak.com`, `www.kaemlak.com`, `kaemlak.com.tr`, `www.kaemlak.com.tr`.
-4. GitHub'da `SITE_URL` değişkenini `https://kaemlak.com` yapın ve Yayınla iş akışını yeniden çalıştırın. Bundan sonra öteki adresler kaemlak.com'a yönlenir; kalıcı bağlantılar, site haritası ve hreflang yeni adresi kullanır.
+1. Cloudflare panelinde **Add a domain** ile `kaemlak.com` alanını ücretsiz planla ekleyin.
+2. Cloudflare'ın verdiği iki ad sunucusunu (nameserver) alan adını aldığınız firmanın panelinde kaemlak.com'a yazın. Etkinleşmesi birkaç saat sürebilir.
+3. Alan adı "Active" olunca `wrangler.jsonc` içine `routes` eklenir: `kaemlak.com` ve `www.kaemlak.com` (`custom_domain: true`). Alan adı Cloudflare hesabında etkin olmadan eklenirse yayın hata verir.
+4. GitHub'da `SITE_URL` değişkeni `https://kaemlak.com` yapılır ve Yayınla iş akışı yeniden çalıştırılır. Bundan sonra öteki adresler kaemlak.com'a yönlenir; kalıcı bağlantılar, site haritası ve hreflang yeni adresi kullanır.
 5. Supabase → **Authentication → URL Configuration** içinde Site URL'yi `https://kaemlak.com` yapın ve Redirect URLs listesine `https://kaemlak.com/yonetim` ekleyin (şifre yenileme bağlantısı için).
-6. Google Search Console'da **Domain** türünde `kaemlak.com` mülkü açın (DNS TXT kaydıyla doğrulanır; kayıt Cloudflare DNS'e eklenir). Site haritası: `https://kaemlak.com/sitemap.xml`. `kaemlak.com.tr` için ayrı mülk açıp **Adres değişikliği** aracını kullanmaya gerek yoktur; yönlendirme yeterlidir.
+6. Google Search Console'da **Domain** türünde `kaemlak.com` mülkü açın (DNS TXT kaydıyla doğrulanır; kayıt Cloudflare DNS'e eklenir). Site haritası: `https://kaemlak.com/sitemap.xml`.
 
 ## Arama motoru (SEO) yapısı
 

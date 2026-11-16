@@ -622,3 +622,20 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .contact-strip-actions { width: 100%; flex-direction: column; }
   .contact-strip-actions .button { width: 100%; }
 }
+
+/* Ana sayfa ilan şeridi: kaydırarak gezilir, kendiliğinden kaymaz. Masaüstünde 3, tablette 2 kart; telefonda bir sonraki kartın kenarı görünür. */
+.carousel { position: relative; }
+.carousel-track { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 2 * 28px) / 3); gap: 28px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 0; scrollbar-width: none; padding-bottom: 4px; }
+.carousel-track::-webkit-scrollbar { display: none; }
+.carousel-track:focus-visible { outline: 2px solid var(--forest); outline-offset: 6px; border-radius: var(--radius-sm); }
+.carousel-item { position: relative; scroll-snap-align: start; min-width: 0; }
+.carousel-controls { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+.carousel-button { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--forest); cursor: pointer; transition: border-color .2s, opacity .2s; }
+.carousel-button:hover:not(:disabled) { border-color: var(--forest); }
+.carousel-button:disabled { opacity: .35; cursor: default; }
+[dir="rtl"] .carousel-button svg { transform: scaleX(-1); }
+@media (max-width: 1024px) { .carousel-track { grid-auto-columns: calc((100% - 24px) / 2); gap: 24px; } }
+@media (max-width: 760px) {
+  .carousel-track { grid-auto-columns: 84%; gap: 16px; }
+  .carousel-controls { display: none; }
+}

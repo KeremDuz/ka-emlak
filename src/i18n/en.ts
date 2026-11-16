@@ -35,6 +35,7 @@ export const en: Dictionary = {
     heroAlt: 'Konyaaltı beach and the Beydağları mountains at sunset',
     heroTitle: 'Property for sale and rent in Antalya',
     featured: 'Featured listings',
+    carouselPrev: 'Previous listings', carouselNext: 'Next listings',
     allListings: 'All listings ({n})',
     unavailable: 'Listings cannot be loaded right now.',
     unavailableLink: 'Give us a call.',

@@ -15,7 +15,7 @@ const CSP_REPORT_ONLY=[
   "frame-ancestors 'none'",
 ].join('; ');
 
-// Tek asıl adres: SITE_URL (astro.config site). Başka bir adresten (kaemlak.com.tr, www., workers.dev) gelen istek
+// Tek asıl adres: SITE_URL (astro.config site). Başka bir adresten (www., workers.dev) gelen istek
 // aynı yola kalıcı olarak yönlendirilir; Google tek adresi dizinler. Yerel geliştirmede yönlendirme yapılmaz.
 const canonical=(()=>{try{return new URL(import.meta.env.SITE);}catch{return null;}})();
 

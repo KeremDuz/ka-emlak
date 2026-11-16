@@ -36,6 +36,7 @@ export const tr = {
     heroAlt: 'Gün batımında Konyaaltı sahili ve Beydağları',
     heroTitle: 'Antalya’da satılık ve kiralık gayrimenkul',
     featured: 'Öne çıkan ilanlar',
+    carouselPrev: 'Önceki ilanlar', carouselNext: 'Sonraki ilanlar',
     allListings: 'Tüm ilanlar ({n})',
     unavailable: 'İlanlar şu an yüklenemiyor.',
     unavailableLink: 'Bizi arayın.',

@@ -2,6 +2,7 @@
 import SiteLayout from '../../../layouts/SiteLayout.astro';
 import HeroSearch from '../HeroSearch';
 import { ListingGrid } from '../PropertyCard';
+import ListingCarousel from '../ListingCarousel';
 import { getPublicData } from '../../../lib/server/data';
 import { catalogOptions } from '../../../lib/listing-helpers';
 import { isSeasonal, numberLabel, phoneLabel, whatsappUrl } from '../../../lib/format';
@@ -19,10 +20,9 @@ const newest = (a: typeof published[number], b: typeof published[number]) => b.c
 const seasonalAll = published.filter(isSeasonal);
 const seasonal = [...seasonalAll].sort((a, b) => Number(b.featured) - Number(a.featured) || newest(a, b)).slice(0, 3);
 const others = published.filter(l => !isSeasonal(l));
-const featured = others.filter(l => l.featured).slice(0, 3);
-const displayed = featured.length ? featured : [...others].sort(newest).slice(0, 3);
-// Öne çıkanların altında, onlarla çakışmayan en yeni ilanlar.
-const latest = others.filter(l => !displayed.includes(l)).sort(newest).slice(0, 3);
+// Şerit: dönemlikler dışındaki bütün ilanlar; öne çıkarılanlar başta, sonra en yeniler.
+// Kart için gereksiz uzun metinler (açıklama, özellikler) sayfaya gömülmez.
+const displayed = [...others].sort((a, b) => Number(b.featured) - Number(a.featured) || newest(a, b)).map(l => ({ ...l, description: '', features: [], translations: l.translations && Object.fromEntries(Object.entries(l.translations).map(([key, value]) => [key, value && { ...value, description: '', features: [] }])) }));
 const { districts } = catalogOptions(published);
 // Bölgeler yayındaki ilanlardan sayılır; ilanı kalmayan bölge listeden kendiliğinden düşer.
 const districtCounts = [...published.reduce((counts, l) => counts.set(l.district, (counts.get(l.district) ?? 0) + 1), new Map<string, number>())].filter(([name]) => name).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'tr'));
@@ -54,7 +54,7 @@ const aboutText = locale === 'tr' ? settings.about || t.advisor.about : t.adviso
       {!available
         ? <div class="status-banner">{t.home.unavailable} <a href={href('/iletisim')}>{t.home.unavailableLink}</a></div>
         : displayed.length
-          ? <ListingGrid listings={displayed} priority locale={locale} t={t.card} client:load/>
+          ? <ListingCarousel listings={displayed} locale={locale} t={t.card} label={t.home.featured} prev={t.home.carouselPrev} next={t.home.carouselNext} client:load/>
           : <div class="empty-state"><h2>{t.home.emptyTitle}</h2><p>{t.home.emptyText}</p><a class="button" href={href('/iletisim')}>{t.home.emptyAction}</a></div>}
     </div>
   </section>
@@ -75,12 +75,6 @@ const aboutText = locale === 'tr' ? settings.about || t.advisor.about : t.adviso
     </div>
   </section>}
 
-  {latest.length > 0 && <section class="section">
-    <div class="container">
-      <div class="section-head"><h2>{t.home.latest}</h2><a class="heading-link" href={href('/ilanlar')}>{fill(t.home.allListings, { n: numberLabel(published.length, locale) })}</a></div>
-      <ListingGrid listings={latest} locale={locale} t={t.card} client:visible/>
-    </div>
-  </section>}
 
   <section class="container advisor-home" aria-labelledby="advisor-heading">
     <img class="advisor-photo" src="/images/advisor-portrait.webp" alt="" loading="lazy" width="452" height="640"/>

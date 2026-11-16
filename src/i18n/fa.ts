@@ -36,6 +36,7 @@ export const fa: Dictionary = {
     heroAlt: 'ساحل کنیاآلتی و کوه‌های بی‌داغلاری هنگام غروب',
     heroTitle: 'خرید و اجاره ملک در آنتالیا',
     featured: 'آگهی‌های ویژه',
+    carouselPrev: 'آگهی‌های قبلی', carouselNext: 'آگهی‌های بعدی',
     allListings: 'همه آگهی‌ها ({n})',
     unavailable: 'در حال حاضر آگهی‌ها بارگذاری نمی‌شود.',
     unavailableLink: 'با ما تماس بگیرید.',
