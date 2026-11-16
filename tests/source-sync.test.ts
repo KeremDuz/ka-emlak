@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { AdminListing } from '../src/lib/types';
 import { mapSource, type SourceListing } from '../src/lib/source-mapper';
-import { decodeSyncHash, isSyncPayload, planSync, suspiciousRemoval, type SyncPayload } from '../src/lib/source-sync';
+import { decodeSyncHash, isSyncPayload, planSync, type SyncPayload } from '../src/lib/source-sync';
 import { bookmarklet } from '../src/lib/bookmarklet';
 
 const fixture = <T,>(name: string) => JSON.parse(readFileSync(join(__dirname, 'fixtures', name), 'utf8')) as T;
@@ -22,7 +22,7 @@ describe('hepsiemlak office sync plan', () => {
   it('adds listings missing on the site and leaves identical ones alone', () => {
     const plan = planSync(payload([byId('29750-199'), byId('29750-200')]), [site(byId('29750-199'))]);
     expect(plan.add.map(item => item.source.id)).toEqual(['29750-200']);
-    expect(plan).toMatchObject({ update: [], remove: [], unchanged: 1, unread: 0 });
+    expect(plan).toMatchObject({ update: [], unchanged: 1, unread: 0 });
   });
 
   it('reports only the compared fields that changed', () => {
@@ -44,19 +44,20 @@ describe('hepsiemlak office sync plan', () => {
     expect(planSync(payload([byId('29750-199')]), [listing]).unchanged).toBe(1);
   });
 
-  it('removes only published listings of this office that left hepsiemlak', () => {
+  it('never removes listings that are not on hepsiemlak', () => {
     const gone = site(byId('29750-192'));
     const draft = site(byId('29750-189'), { status: 'draft' });
     const sold = site(byId('29750-153'), { status: 'sold' });
     const fromSahibinden = site(sahibinden);
     const plan = planSync(payload([byId('29750-199')]), [site(byId('29750-199')), gone, draft, sold, fromSahibinden]);
-    expect(plan.remove.map(item => item.id)).toEqual([gone.id]);
+    expect(plan).not.toHaveProperty('remove');
+    expect(plan.add).toEqual([]);
   });
 
   it('keeps listings whose page was seen but could not be read', () => {
     const unread = site(byId('29750-192'));
     const plan = planSync(payload([byId('29750-199')], ['29750-199', '29750-192']), [site(byId('29750-199')), unread]);
-    expect(plan).toMatchObject({ remove: [], unread: 1 });
+    expect(plan).toMatchObject({ unread: 1 });
   });
 
   it('matches the same property added from sahibinden instead of adding it twice', () => {
@@ -72,13 +73,6 @@ describe('hepsiemlak office sync plan', () => {
     expect(plan.add).toHaveLength(1);
   });
 
-  it('flags a removal of more than half of the published listings', () => {
-    const listings = [site(byId('29750-199')), site(byId('29750-192')), site(byId('29750-200'))];
-    const plan = planSync(payload([byId('29750-199')]), listings);
-    expect(plan.remove).toHaveLength(2);
-    expect(suspiciousRemoval(plan, listings, '29750')).toBe(true);
-    expect(suspiciousRemoval(planSync(payload([byId('29750-199'), byId('29750-200')]), listings), listings, '29750')).toBe(false);
-  });
 });
 
 describe('sync payload', () => {

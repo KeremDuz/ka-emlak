@@ -25,7 +25,7 @@ export type SyncField = typeof syncFields[number];
 export interface SyncChange { field: SyncField; from: Listing[SyncField]; to: MappedListing[SyncField] }
 export interface SyncAdd { source: SourceListing; mapped: MappedListing }
 export interface SyncUpdate { source: SourceListing; listing: AdminListing; changes: SyncChange[]; likely: boolean }
-export interface SyncPlan { add: SyncAdd[]; update: SyncUpdate[]; remove: AdminListing[]; unchanged: number; unread: number }
+export interface SyncPlan { add: SyncAdd[]; update: SyncUpdate[]; unchanged: number; unread: number }
 
 export const current = (record: AdminListing): Listing => { const { draft, ...listing } = record; return { ...(draft ?? listing), version: record.version }; };
 const sourceOf = (record: AdminListing) => sourceIdOf(record.draft?.sourceUrl ?? record.sourceUrl);
@@ -46,14 +46,14 @@ function changes(listing: Listing, mapped: MappedListing): SyncChange[] {
 
 /**
  * Ofis sayfasındaki ilanları sitedekilerle karşılaştırır: sitede olmayanlar eklenir, karşılaştırılan alanları değişenler
- * güncellenir, hepsiemlak'tan kalkmış yayındaki ilanlar yayından kaldırılır. Çöp kutusundakiler ve
- * sahibinden'den eklenmiş ilanlar kaldırılmaz; satıldı/kiralandı/yayından kaldırıldı işaretleri değiştirilmez.
+ * güncellenir. Sitedeki hiçbir ilan kaldırılmaz: ofisin bütün ilanları portallarda olmayabilir (sahibinden paketleri
+ * aylık ilan sayısını sınırlar). Satıldı/kiralandı/yayından kaldırıldı işaretleri değiştirilmez.
  */
 export function planSync(payload: SyncPayload, listings: AdminListing[]): SyncPlan {
   const active = listings.filter(item => item.status !== 'trash');
   const byId = new Map(active.flatMap(item => { const id = ownId(item, payload.office); return id ? [[id, item] as const] : []; }));
   const others = active.filter(item => !ownId(item, payload.office));
-  const plan: SyncPlan = { add: [], update: [], remove: [], unchanged: 0, unread: payload.seen.filter(id => !payload.listings.some(item => item.id === id)).length };
+  const plan: SyncPlan = { add: [], update: [], unchanged: 0, unread: payload.seen.filter(id => !payload.listings.some(item => item.id === id)).length };
   const claimed = new Set<string>();
   for (const source of payload.listings) {
     const mapped = mapSource(source);
@@ -66,15 +66,7 @@ export function planSync(payload: SyncPayload, listings: AdminListing[]): SyncPl
     const found = changes(current(listing), mapped);
     if (found.length) plan.update.push({ source, listing, changes: found, likely: !exact }); else plan.unchanged++;
   }
-  const seen = new Set(payload.seen);
-  for (const [id, listing] of byId) if (!seen.has(id) && listing.status === 'published') plan.remove.push(listing);
   return plan;
-}
-
-/** Yayındaki hepsiemlak ilanlarının yarısından fazlası kalkacaksa sayfa eksik okunmuş olabilir. */
-export function suspiciousRemoval(plan: SyncPlan, listings: AdminListing[], office: string) {
-  const published = listings.filter(item => item.status === 'published' && ownId(item, office)).length;
-  return plan.remove.length > 0 && plan.remove.length * 2 > published;
 }
 
 /** Yer imi veriyi gzip'leyip base64url olarak adresin # kısmında getirir. */

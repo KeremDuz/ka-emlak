@@ -11,7 +11,7 @@ import { clearRecovery, readRecovery, writeRecovery, type Recovery } from '../..
 import { antalyaDistricts, roomsRequired, formatPriceInput, parsePrice, roomOptions, suggestDescription, suggestTitle } from '../../lib/listing-helpers';
 import { isSourceListing, likelySame, mapSource, sameSource, sourceLabels, sourcePhotos, type SourceListing } from '../../lib/source-mapper';
 import { bookmarklet } from '../../lib/bookmarklet';
-import { decodeSyncHash, isSyncPayload, planSync, suspiciousRemoval, type SyncField, type SyncPayload } from '../../lib/source-sync';
+import { decodeSyncHash, isSyncPayload, planSync, type SyncField, type SyncPayload } from '../../lib/source-sync';
 import { pendingLocales } from '../../lib/server/translation-source';
 import TranslationsField, { notConfiguredText } from './Translations';
 import './admin.css';
@@ -314,7 +314,7 @@ function SourceImportHint() {
   useEffect(() => { link.current?.setAttribute('href', bookmarklet(location.origin)); }, [hidden]);
   const toggle = (next: boolean) => { setHidden(next); try { if (next) localStorage.setItem(sourceHintKey, '1'); else localStorage.removeItem(sourceHintKey); } catch { /* yerel saklama kapalı */ } };
   if (hidden) return <button className="ad-text-button ad-source-reopen" onClick={() => toggle(false)}><ArrowDownToLine size={15} />hepsiemlak’tan aktarma düğmesi</button>;
-  return <div className="ad-source-hint"><span className="ad-install-icon"><ArrowDownToLine size={20} /></span><div><strong>hepsiemlak ve sahibinden’den tek tıkla aktarın</strong><p>{clicked ? 'Bu düğmeye burada tıklamayın; tutup tarayıcınızın yer imleri çubuğuna sürükleyin.' : 'Sağdaki düğmeyi bir kez tarayıcınızın yer imleri çubuğuna sürükleyin. Sonra hepsiemlak veya sahibinden’de ilanınızı açıp yer imindeki “KA Emlak’a ekle”ye tıklayın; ilan fotoğraflarıyla birlikte buraya gelir. hepsiemlak’taki ofis sayfanızda tıklarsanız bütün ilanlarınız tek seferde eşitlenir: yeniler eklenir, değişen fiyatlar güncellenir, kalkanlar siteden kaldırılır. Düğmeyi daha önce sürüklediyseniz eskisini silip yenisini sürükleyin.'}</p></div><div className="ad-inline-actions"><a ref={link} className="ad-bookmarklet" draggable onClick={event => { event.preventDefault(); setClicked(true); }}>KA Emlak’a ekle</a><button className="ad-icon-button" aria-label="Kurulum kartını gizle" onClick={() => toggle(true)}><X size={17} /></button></div></div>;
+  return <div className="ad-source-hint"><span className="ad-install-icon"><ArrowDownToLine size={20} /></span><div><strong>hepsiemlak ve sahibinden’den tek tıkla aktarın</strong><p>{clicked ? 'Bu düğmeye burada tıklamayın; tutup tarayıcınızın yer imleri çubuğuna sürükleyin.' : 'Sağdaki düğmeyi bir kez tarayıcınızın yer imleri çubuğuna sürükleyin. Sonra hepsiemlak veya sahibinden’de siteye eklemek istediğiniz ilanı açıp yer imindeki “KA Emlak’a ekle”ye tıklayın; ilan fotoğraflarıyla birlikte buraya gelir. Sitedeki ilanlarınız portallarda olmasa da silinmez. Düğmeyi daha önce sürüklediyseniz eskisini silip yenisini sürükleyin.'}</p></div><div className="ad-inline-actions"><a ref={link} className="ad-bookmarklet" draggable onClick={event => { event.preventDefault(); setClicked(true); }}>KA Emlak’a ekle</a><button className="ad-icon-button" aria-label="Kurulum kartını gizle" onClick={() => toggle(true)}><X size={17} /></button></div></div>;
 }
 
 type ImportResult = { listing: AdminListing; created: boolean; published: boolean; failedPhotos: number; error?: string };
@@ -344,18 +344,17 @@ const syncValue = (field: SyncField, value: unknown) => {
 
 /**
  * hepsiemlak ofis sayfasından gelen bütün ilanları sitedekilerle karşılaştırır. Ofis neyin değişeceğini görüp
- * istemediği satırın işaretini kaldırır; onaylayınca yeni ilanlar eklenip yayınlanır, değişen alanlar güncellenir,
- * hepsiemlak'tan kalkan ilanlar yayından kaldırılır.
+ * istediği yeni ilanları işaretler; onaylayınca işaretli ilanlar eklenip yayınlanır, değişen alanlar güncellenir.
+ * hepsiemlak'ta olmayan ilanlara dokunulmaz (ofisin bütün ilanları portallarda olmayabilir).
  */
 function SyncDialog({ payload, listings, onClose, onDone }: { payload: SyncPayload; listings: AdminListing[]; onClose: () => void; onDone: (changed: AdminListing[], summary: string) => void }) {
   const [plan] = useState(() => planSync(payload, listings));
-  const warn = useMemo(() => suspiciousRemoval(plan, listings, payload.office), [plan, listings, payload.office]);
-  const [selected, setSelected] = useState(() => new Set([...plan.add.map(item => `add:${item.source.id}`), ...plan.update.map(item => `update:${item.listing.id}`), ...(warn ? [] : plan.remove.map(item => `remove:${item.id}`))]));
+  const [selected, setSelected] = useState(() => new Set(plan.update.map(item => `update:${item.listing.id}`)));
   const toggle = (key: string) => setSelected(previous => { const next = new Set(previous); if (next.has(key)) next.delete(key); else next.add(key); return next; });
   const [busy, setBusy] = useState(false); const [progress, setProgress] = useState('');
-  const total = plan.add.length + plan.update.length + plan.remove.length;
+  const total = plan.add.length + plan.update.length;
   const run = async () => {
-    setBusy(true); const changed: AdminListing[] = []; let added = 0, updated = 0, removed = 0, failed = 0, drafts = 0;
+    setBusy(true); const changed: AdminListing[] = []; let added = 0, updated = 0, failed = 0, drafts = 0;
     const adds = plan.add.filter(item => selected.has(`add:${item.source.id}`));
     for (const [index, item] of adds.entries()) {
       try {
@@ -375,23 +374,16 @@ function SyncDialog({ payload, listings, onClose, onDone }: { payload: SyncPaylo
         changed.push(latest); updated++;
       } catch { failed++; }
     }
-    const removes = plan.remove.filter(item => selected.has(`remove:${item.id}`));
-    for (const [index, item] of removes.entries()) {
-      setProgress(`Yayından kaldırılıyor ${index + 1}/${removes.length}`);
-      try { changed.push((await adminApi.action(item, 'archive')).listing); removed++; } catch { failed++; }
-    }
-    const parts = [added && `${added} yeni ilan eklendi`, updated && `${updated} ilan güncellendi`, removed && `${removed} ilan yayından kaldırıldı`].filter(Boolean);
+    const parts = [added && `${added} yeni ilan eklendi`, updated && `${updated} ilan güncellendi`].filter(Boolean);
     const notes = [drafts && `${drafts} yeni ilan eksik bilgi nedeniyle taslakta kaldı`, failed && `${failed} işlem yapılamadı, tekrar deneyin`].filter(Boolean);
     onDone(changed, `${parts.length ? parts.join(', ') : 'Değişiklik yapılmadı'}.${notes.length ? ` ${notes.join('; ')}.` : ''}`);
   };
   const row = (key: string, title: string, detail: ReactNode) => <label key={key} className="ad-sync-item"><input type="checkbox" checked={selected.has(key)} disabled={busy} onChange={() => toggle(key)} /><span><strong>{title}</strong>{detail}</span></label>;
   return <Modal open onClose={() => { if (!busy) onClose(); }} title="hepsiemlak ile eşitle" description={`Ofis sayfanızdaki ${payload.seen.length} ilan sitedekilerle karşılaştırıldı.`} wide>
-    {plan.unread > 0 && <div className="ad-banner ad-banner-warning"><CircleAlert size={18} /><span>{plan.unread} ilanın sayfası okunamadı. Bu ilanlar değiştirilmeyecek ve yayından kaldırılmayacak.</span></div>}
-    {warn && <div className="ad-banner ad-banner-warning"><CircleAlert size={18} /><span>Yayındaki hepsiemlak ilanlarınızın yarısından fazlası kaldırılacak görünüyor. Sayfa eksik okunmuş olabilir; kaldırılacakların işaretleri bu yüzden kapalı.</span></div>}
+    {plan.unread > 0 && <div className="ad-banner ad-banner-warning"><CircleAlert size={18} /><span>{plan.unread} ilanın sayfası okunamadı. Bu ilanlar değiştirilmeyecek.</span></div>}
     {total === 0 ? <p className="ad-confirm-item">Sitedeki ilanlarınız hepsiemlak ile aynı. Yapılacak bir şey yok.</p> : <div className="ad-sync-list">
-      {plan.add.length > 0 && <section><h3>Yeni ilanlar <span>{plan.add.length}</span></h3><p>Fotoğraflarıyla eklenip yayınlanır.</p>{plan.add.map(item => row(`add:${item.source.id}`, item.mapped.title, <small>{transactionLabels[item.mapped.transaction]} {propertyLabels[item.mapped.propertyType]} · {[item.mapped.neighborhood, item.mapped.district].filter(Boolean).join(', ')} · {priceLabel(item.mapped)}</small>))}</section>}
+      {plan.add.length > 0 && <section><h3>Yeni ilanlar <span>{plan.add.length}</span></h3><p>Siteye eklemek istediklerinizi işaretleyin; fotoğraflarıyla eklenip yayınlanır.</p>{plan.add.map(item => row(`add:${item.source.id}`, item.mapped.title, <small>{transactionLabels[item.mapped.transaction]} {propertyLabels[item.mapped.propertyType]} · {[item.mapped.neighborhood, item.mapped.district].filter(Boolean).join(', ')} · {priceLabel(item.mapped)}</small>))}</section>}
       {plan.update.length > 0 && <section><h3>Değişen ilanlar <span>{plan.update.length}</span></h3><p>Yalnız gösterilen alanlar değişir; başlık, açıklama ve fotoğraflar korunur.</p>{plan.update.map(item => row(`update:${item.listing.id}`, editData(item.listing).title || 'Başlıksız ilan', <small>{item.likely && 'sahibinden’den eklenen aynı mülk · '}{item.changes.map(change => `${syncLabels[change.field]}: ${syncValue(change.field, change.from)} → ${syncValue(change.field, change.to)}`).join(' · ')}</small>))}</section>}
-      {plan.remove.length > 0 && <section><h3>hepsiemlak’tan kalkanlar <span>{plan.remove.length}</span></h3><p>Siteden kaldırılır; bilgiler ve fotoğraflar saklanır, “Yeniden yayınla” ile geri getirilebilir.</p>{plan.remove.map(item => row(`remove:${item.id}`, editData(item).title || 'Başlıksız ilan', <small>{[item.neighborhood, item.district].filter(Boolean).join(', ')} · {priceLabel(item)}</small>))}</section>}
     </div>}
     {plan.unchanged > 0 && <p className="ad-sync-note">{plan.unchanged} ilan zaten güncel.</p>}
     {busy && <div className="ad-bulk-progress" role="status"><Spinner label={progress || 'Hazırlanıyor…'} /></div>}
