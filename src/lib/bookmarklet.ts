@@ -3,7 +3,7 @@
 // kullanıcının kendi tarayıcı oturumunda sırayla okunur ve panelde eşitleme özeti açılır. sahibinden ilan sayfaları
 // bot denetimine takılmamak için aralıklarla okunur; okunamayanlar panelde "aç ve ekle" bağlantısı olarak listelenir.
 // Portallar başka sitelere istek göndermeye izin vermediği için veri, panel adresinin # kısmında taşınır;
-// # kısmı sunucuya gitmez, yalnız paneldeki sayfa okur.
+// # kısmı sunucuya gitmez, yalnız paneldeki sayfa okur. Panel hep aynı adlı sekmede açılır; her tıklamada yeni sekme açılmaz.
 const source = String.raw`(function(){
 var d=document,host=location.hostname,data;
 function t(e){return e?e.textContent.replace(/\s+/g,' ').trim():'';}
@@ -14,7 +14,7 @@ function sh(doc,path){var sid=(path.match(/-(\d{6,12})\/detay\/?$/)||[])[1];if(!
 var s={};doc.querySelectorAll('.classifiedInfoList .classifiedInfoItem, .classifiedInfoList li').forEach(function(r){var k=t(r.querySelector('dt,strong'));if(k)s[k]=t(r.querySelector('dd,span'));});
 var price=t(doc.querySelector('.classifiedPriceValue, .classifiedInfo h3'));
 return {source:'sahibinden',url:'https://www.sahibinden.com'+path.replace(/\/$/,''),id:sid,title:t(doc.querySelector('.classifiedDetailTitle h1')),price:(price.match(/[\d.,]+\s*(TL|EUR|USD|GBP|€|\$)/)||[price])[0].slice(0,80),breadcrumb:Array.prototype.map.call(doc.querySelectorAll('.classifiedLocation a, .classifiedInfo h2 a'),t),specs:s,description:lines(doc.querySelector('#classifiedDescription')),photos:attrs(doc.querySelector('.classifiedDetailPhotos')||doc,/shbdn\.com\/photos\//)};}
-function open(target){var w=window.open(target,'_blank');if(!w)location.href=target;}
+function open(target){var w=window.open(target,'ka-emlak-panel');if(w)w.focus();else location.href=target;}
 function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function get(u){return fetch(u,{credentials:'include'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();}).then(function(h){return new DOMParser().parseFromString(h,'text/html');});}
 function panel(){var box=d.createElement('div');box.style.cssText='position:fixed;z-index:2147483647;top:16px;right:16px;max-width:340px;padding:16px 18px;background:#123d34;color:#fff;font:15px/1.45 system-ui,sans-serif;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.3)';d.body.appendChild(box);return box;}

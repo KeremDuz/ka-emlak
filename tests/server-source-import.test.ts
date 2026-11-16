@@ -40,4 +40,11 @@ describe('portal import on the server', () => {
     expect(await repo.listings()).toHaveLength(count);
     await expect(prepareSourceListing(repo, sahibinden, 'yok')).rejects.toMatchObject({ status: 404 });
   });
+  it('keeps a daily price when the other portal lists the property monthly', async () => {
+    const sahibinden = await fixture<SourceListing>('sahibinden-sample.json');
+    const listing = await repo.create();
+    const daily = await repo.save(listing.id, { ...listing, title: 'Günlük kiralık depo', transaction: 'rent', period: 'day', price: 7000, propertyType: 'warehouse', grossArea: 2000, floor: 'Zemin' }, listing.version);
+    const result = await prepareSourceListing(repo, { ...sahibinden, targetId: daily.id }, daily.id);
+    expect(result.listing).toMatchObject({ price: 7000, period: 'day', floor: 'Zemin' });
+  });
 });

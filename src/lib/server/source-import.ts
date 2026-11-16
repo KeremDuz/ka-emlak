@@ -48,7 +48,16 @@ export async function prepareSourceListing(repo: Repository, value: unknown, tar
     // Öteki portaldan eşleştirilen ilanın kaynak adresi korunur; böylece kendi portalındaki numarasıyla eşleşmeye devam eder.
     const data = current(existing);
     const next: Listing = { ...data, needsReview: false, sourceUrl: target ? data.sourceUrl ?? source.url : source.url };
-    for (const key of updatable) Object.assign(next, { [key]: mapped[key] });
+    // Portalda boş bırakılan alan sitedeki bilgiyi silmez. Günlük/haftalık kiralanan ilan öteki portalda aylık fiyatla
+    // girilmiş olabilir; dönem tutmuyorsa fiyat, para birimi ve dönem korunur.
+    const seasonal = (period: Listing['period']) => period === 'day' || period === 'week';
+    const otherTerms = data.period !== mapped.period && (seasonal(data.period) || seasonal(mapped.period));
+    for (const key of updatable) {
+      const value = mapped[key];
+      if (otherTerms && (key === 'price' || key === 'currency' || key === 'period')) continue;
+      if ((value === null || value === '' || value === 0) && !(key === 'price' && mapped.transaction === 'exchange')) continue;
+      Object.assign(next, { [key]: value });
+    }
     const saved = await repo.save(existing.id, editable(next), existing.version);
     return { listing: saved, created: false, photos: data.photos.length ? [] : photos };
   }

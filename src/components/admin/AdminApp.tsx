@@ -126,6 +126,9 @@ export default function AdminApp() {
     setDataLoading(false);
   }, []);
   useEffect(() => { if (session) void load(); }, [session, load]);
+  // Yer imi paneli hep aynı sekmede açar; panel zaten açıksa yalnız adresin # kısmı değişir, sayfa yenilenmez.
+  const [hashTick, setHashTick] = useState(0);
+  useEffect(() => { const onHash = () => setHashTick(tick => tick + 1); window.addEventListener('hashchange', onHash); return () => window.removeEventListener('hashchange', onHash); }, []);
   useEffect(() => {
     if (!session || !location.hash.startsWith('#esitle=')) return;
     const hash = location.hash.slice(8);
@@ -134,15 +137,15 @@ export default function AdminApp() {
       if (isSyncPayload(payload)) setSyncPayload(payload);
       else throw new Error('invalid');
     }).catch(() => notify('Portaldaki ilanlar okunamadı. Yer imine hepsiemlak ofis sayfanızda ya da sahibinden mağaza listenizde yeniden tıklayın.', 'error'));
-  }, [session, notify]);
+  }, [session, notify, hashTick]);
   useEffect(() => {
     if (!session || !location.hash.startsWith('#aktar=')) return;
     let payload: unknown = null;
     try { payload = JSON.parse(decodeURIComponent(location.hash.slice(7))); } catch { /* aşağıda bildirilir */ }
     if (isSourceListing(payload)) setSourcePayload(payload);
-    else notify('hepsiemlak ilanı okunamadı. Yer imine hepsiemlak’ta ilanın kendi sayfasındayken tıklayın.', 'error');
+    else notify('İlan okunamadı. Yer imine hepsiemlak ya da sahibinden’de ilanın kendi sayfasındayken tıklayın.', 'error');
     history.replaceState(null, '', location.pathname);
-  }, [session, notify]);
+  }, [session, notify, hashTick]);
   const performAction = async (item: AdminListing, action: ListingAction, price?: number | null) => {
     setBusy(item.id);
     try {
