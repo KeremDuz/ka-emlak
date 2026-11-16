@@ -52,6 +52,10 @@ Aynı yer imine hepsiemlak’taki **ofis sayfasındayken** (`/emlak-ofisi/ka-eml
 - **Değişen ilanlar**: yalnız işlem türü, fiyat, para birimi, fiyat dönemi, brüt/net m², oda ve banyo karşılaştırılır; her değişiklik eski → yeni olarak gösterilir. Başlık, açıklama, fotoğraflar, kat ve bina yaşı korunur. hepsiemlak’ta boş bırakılmış alan sitedeki bilgiyi silmez. Yayındaki ilan güncellenince yeniden yayınlanır.
 - **Sitedeki hiçbir ilan kaldırılmaz.** Ofisin bütün ilanları portallarda olmayabilir (sahibinden paketleri aylık ilan sayısını sınırlar); portalda olmayan ilan sitede kalır. İlan siteden yalnız panelden elle kaldırılır.
 - Her satır ayrı ayrı işaretlenip çıkarılabilir; hiçbir şey ofis “Seçilenleri uygula” demeden değişmez.
+
+### Mağaza listesinden toplu aktarma (sahibinden)
+
+Aynı yer imi sahibinden’de mağazanın ilan listesinde de çalışır (mağazanın paylaşım bağlantısı `www.sahibinden.com/arama?storeId=…` sayfasını açar). Yer imi listedeki bütün ilanları (sonraki sayfalar dahil) toplar, sonra her ilanın sayfasını 2,5–4 saniye arayla okur; sahibinden art arda istekte bot denetimi gösterdiği için yavaş ilerler (10 ilan için yaklaşık yarım dakika). Bir ilan okunamazsa (ör. denetim çıkarsa) okumayı bırakır; o ana kadar okunanlar panelde hepsiemlak’taki gibi “Yeni ilanlar / Değişen ilanlar” olarak gelir, okunamayan ve sitede olmayanlar ise “Sayfası okunamayanlar” altında bağlantı olarak listelenir: ofis ilanı açıp yer imine basar. Siteye hepsiemlak’tan eklenmiş aynı mülk tür, ilçe, mahalle ve m²’den (±%3) bulunur. Günlük/haftalık kiralanan ilan portalda aylık fiyatla girilmiş olabileceğinden dönemi tutmayan fiyatlar karşılaştırılmaz.
 - Veri gzip’lenip `#esitle=` ile taşınır. Panel yalnız aynı ofis numarasıyla başlayan hepsiemlak ilanlarını kabul eder. Portföy yüklenmeden ya da yüklenirken hata varken eşitleme penceresi açılmaz.
 - Daha önce sürüklenen eski yer imi bu özelliği içermez; düğme yeniden sürüklenmelidir. Eşitleme canlı hepsiemlak ofis sayfasında henüz denenmedi; panel tarafı yerel önizlemede örnek veriyle denendi.
 

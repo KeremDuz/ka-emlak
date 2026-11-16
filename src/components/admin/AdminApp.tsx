@@ -133,7 +133,7 @@ export default function AdminApp() {
     decodeSyncHash(hash).then(payload => {
       if (isSyncPayload(payload)) setSyncPayload(payload);
       else throw new Error('invalid');
-    }).catch(() => notify('hepsiemlak ilanları okunamadı. Yer imine ofis sayfanızdayken yeniden tıklayın.', 'error'));
+    }).catch(() => notify('Portaldaki ilanlar okunamadı. Yer imine hepsiemlak ofis sayfanızda ya da sahibinden mağaza listenizde yeniden tıklayın.', 'error'));
   }, [session, notify]);
   useEffect(() => {
     if (!session || !location.hash.startsWith('#aktar=')) return;
@@ -343,9 +343,10 @@ const syncValue = (field: SyncField, value: unknown) => {
 };
 
 /**
- * hepsiemlak ofis sayfasından gelen bütün ilanları sitedekilerle karşılaştırır. Ofis neyin değişeceğini görüp
- * istediği yeni ilanları işaretler; onaylayınca işaretli ilanlar eklenip yayınlanır, değişen alanlar güncellenir.
- * hepsiemlak'ta olmayan ilanlara dokunulmaz (ofisin bütün ilanları portallarda olmayabilir).
+ * hepsiemlak ofis sayfasından ya da sahibinden mağaza listesinden gelen bütün ilanları sitedekilerle karşılaştırır. Ofis neyin
+ * değişeceğini görüp istediği yeni ilanları işaretler; onaylayınca işaretli ilanlar eklenip yayınlanır, değişen alanlar güncellenir.
+ * Portalda olmayan ilanlara dokunulmaz (ofisin bütün ilanları portallarda olmayabilir). sahibinden'de sayfası okunamayan
+ * ve sitede olmayan ilanlar bağlantı olarak listelenir; ofis açıp yer imiyle tek tek ekler.
  */
 function SyncDialog({ payload, listings, onClose, onDone }: { payload: SyncPayload; listings: AdminListing[]; onClose: () => void; onDone: (changed: AdminListing[], summary: string) => void }) {
   const [plan] = useState(() => planSync(payload, listings));
@@ -379,11 +380,14 @@ function SyncDialog({ payload, listings, onClose, onDone }: { payload: SyncPaylo
     onDone(changed, `${parts.length ? parts.join(', ') : 'Değişiklik yapılmadı'}.${notes.length ? ` ${notes.join('; ')}.` : ''}`);
   };
   const row = (key: string, title: string, detail: ReactNode) => <label key={key} className="ad-sync-item"><input type="checkbox" checked={selected.has(key)} disabled={busy} onChange={() => toggle(key)} /><span><strong>{title}</strong>{detail}</span></label>;
-  return <Modal open onClose={() => { if (!busy) onClose(); }} title="hepsiemlak ile eşitle" description={`Ofis sayfanızdaki ${payload.seen.length} ilan sitedekilerle karşılaştırıldı.`} wide>
-    {plan.unread > 0 && <div className="ad-banner ad-banner-warning"><CircleAlert size={18} /><span>{plan.unread} ilanın sayfası okunamadı. Bu ilanlar değiştirilmeyecek.</span></div>}
-    {total === 0 ? <p className="ad-confirm-item">Sitedeki ilanlarınız hepsiemlak ile aynı. Yapılacak bir şey yok.</p> : <div className="ad-sync-list">
+  const portal = sourceLabels[payload.source], other = payload.source === 'hepsiemlak' ? 'sahibinden' : 'hepsiemlak';
+  const pending = plan.unread - plan.unreadRows.length;
+  return <Modal open onClose={() => { if (!busy) onClose(); }} title={`${portal} ile eşitle`} description={`${payload.source === 'sahibinden' ? 'Mağazanızdaki' : 'Ofis sayfanızdaki'} ${payload.seen.length} ilan sitedekilerle karşılaştırıldı.`} wide>
+    {pending > 0 && <div className="ad-banner ad-banner-warning"><CircleAlert size={18} /><span>{pending} ilanın sayfası okunamadı. Bu ilanlar değiştirilmeyecek.</span></div>}
+    {plan.unreadRows.length > 0 && <div className="ad-sync-list"><section><h3>Sayfası okunamayanlar <span>{plan.unreadRows.length}</span></h3><p>sahibinden art arda sayfa açılmasına izin vermedi. Sitede olmayan bu ilanları tek tek açıp yer imindeki “KA Emlak’a ekle”ye basın.</p><ul className="ad-sync-links">{plan.unreadRows.map(row => <li key={row.id}><a href={row.url} target="_blank" rel="noopener noreferrer">{row.title || `İlan ${row.id}`}<ExternalLink size={14} aria-hidden="true" /></a><small>{row.price}</small></li>)}</ul></section></div>}
+    {total === 0 ? (plan.unreadRows.length === 0 && <p className="ad-confirm-item">Sitedeki ilanlarınız {portal} ile aynı. Yapılacak bir şey yok.</p>) : <div className="ad-sync-list">
       {plan.add.length > 0 && <section><h3>Yeni ilanlar <span>{plan.add.length}</span></h3><p>Siteye eklemek istediklerinizi işaretleyin; fotoğraflarıyla eklenip yayınlanır.</p>{plan.add.map(item => row(`add:${item.source.id}`, item.mapped.title, <small>{transactionLabels[item.mapped.transaction]} {propertyLabels[item.mapped.propertyType]} · {[item.mapped.neighborhood, item.mapped.district].filter(Boolean).join(', ')} · {priceLabel(item.mapped)}</small>))}</section>}
-      {plan.update.length > 0 && <section><h3>Değişen ilanlar <span>{plan.update.length}</span></h3><p>Yalnız gösterilen alanlar değişir; başlık, açıklama ve fotoğraflar korunur.</p>{plan.update.map(item => row(`update:${item.listing.id}`, editData(item.listing).title || 'Başlıksız ilan', <small>{item.likely && 'sahibinden’den eklenen aynı mülk · '}{item.changes.map(change => `${syncLabels[change.field]}: ${syncValue(change.field, change.from)} → ${syncValue(change.field, change.to)}`).join(' · ')}</small>))}</section>}
+      {plan.update.length > 0 && <section><h3>Değişen ilanlar <span>{plan.update.length}</span></h3><p>Yalnız gösterilen alanlar değişir; başlık, açıklama ve fotoğraflar korunur.</p>{plan.update.map(item => row(`update:${item.listing.id}`, editData(item.listing).title || 'Başlıksız ilan', <small>{item.likely && `${sourceFrom[other]} eklenen aynı mülk · `}{item.changes.map(change => `${syncLabels[change.field]}: ${syncValue(change.field, change.from)} → ${syncValue(change.field, change.to)}`).join(' · ')}</small>))}</section>}
     </div>}
     {plan.unchanged > 0 && <p className="ad-sync-note">{plan.unchanged} ilan zaten güncel.</p>}
     {busy && <div className="ad-bulk-progress" role="status"><Spinner label={progress || 'Hazırlanıyor…'} /></div>}

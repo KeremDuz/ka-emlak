@@ -75,6 +75,43 @@ describe('hepsiemlak office sync plan', () => {
 
 });
 
+describe('sahibinden store sync plan', () => {
+  const store = (listings: SourceListing[], rows: SyncPayload['rows'] = [], seen = [...listings.map(item => item.id), ...(rows ?? []).map(row => row.id)]): SyncPayload => ({ source: 'sahibinden', office: '936699', seen, listings, rows });
+  const row = (id: string, title = 'Kiralık villa') => ({ id, url: `https://www.sahibinden.com/ilan/emlak-konut-kiralik-villa-${id}/detay`, title, price: '80.000 TL' });
+
+  it('matches a listing added from hepsiemlak and updates only its price', () => {
+    const existing = site(sahibinden, { sourceUrl: byId('29750-189').url, price: 350000 });
+    const plan = planSync(store([sahibinden]), [existing]);
+    expect(plan.add).toEqual([]);
+    expect(plan.update[0]).toMatchObject({ likely: true, listing: { id: existing.id }, changes: [{ field: 'price', from: 350000, to: 375000 }] });
+  });
+
+  it('matches its own sahibinden number exactly', () => {
+    const plan = planSync(store([sahibinden]), [site(sahibinden)]);
+    expect(plan).toMatchObject({ add: [], update: [], unchanged: 1 });
+  });
+
+  it('does not compare a daily price with a monthly one', () => {
+    const daily = site(sahibinden, { sourceUrl: byId('29750-189').url, period: 'day', price: 7000 });
+    const plan = planSync(store([sahibinden]), [daily]);
+    expect(plan).toMatchObject({ update: [], unchanged: 1 });
+  });
+
+  it('lists unread store rows that are not on the site as links', () => {
+    const onSite = site(sahibinden, { sourceUrl: row('1337530327').url });
+    const plan = planSync(store([], [row('1337530327'), row('1340575405', 'Kiralık dükkan')]), [onSite]);
+    expect(plan.unread).toBe(2);
+    expect(plan.unreadRows.map(item => item.id)).toEqual(['1340575405']);
+  });
+
+  it('accepts a store payload and rejects foreign links', () => {
+    expect(isSyncPayload(store([sahibinden], [row('1340575405')]))).toBe(true);
+    expect(isSyncPayload(store([sahibinden], [{ ...row('1340575405'), url: 'https://kotu.example/ilan/x-1340575405/detay' }]))).toBe(false);
+    expect(isSyncPayload(store([byId('29750-199')]))).toBe(false);
+    expect(isSyncPayload({ ...payload([byId('29750-199')]), rows: [row('1340575405')] })).toBe(false);
+  });
+});
+
 describe('sync payload', () => {
   it('accepts the office own listings only', () => {
     expect(isSyncPayload(payload([byId('29750-199')]))).toBe(true);
