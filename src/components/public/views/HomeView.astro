@@ -9,11 +9,17 @@ import { isSeasonal, numberLabel, phoneLabel, whatsappUrl } from '../../../lib/f
 import { dictionary, fill, intlLocales, localePath, plural } from '../../../i18n';
 import type { Locale } from '../../../lib/types';
 import { MessageCircle, Phone } from 'lucide-react';
+import InstagramIcon from '../InstagramIcon.astro';
+import { officeSettings } from '../../../lib/seed';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const t = dictionary(locale);
 const href = (to: string) => localePath(locale, to);
 const { listings, settings, mode, available } = await getPublicData(Astro.locals);
+// Panelde Instagram adresi boş bırakılırsa ofisin hesabı gösterilir.
+const instagram = settings.instagram || officeSettings.instagram;
+// Hizmet kartları sözlükteki sırayla bu sayfalara bağlanır.
+const serviceLinks = ['/satilik', '/kiralik', '/kat-karsiligi', '/arsa-degerleme'];
 const published = listings.filter(l => l.status === 'published');
 const newest = (a: typeof published[number], b: typeof published[number]) => b.createdAt.localeCompare(a.createdAt);
 // Günlük ve haftalık kiralıklar kendi bölümünde gösterilir (öne çıkarılanlar başta); aynı ilan sayfada iki kez yer almaz.
@@ -27,7 +33,7 @@ const { districts } = catalogOptions(published);
 // Bölgeler yayındaki ilanlardan sayılır; ilanı kalmayan bölge listeden kendiliğinden düşer.
 const districtCounts = [...published.reduce((counts, l) => counts.set(l.district, (counts.get(l.district) ?? 0) + 1), new Map<string, number>())].filter(([name]) => name).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'tr'));
 const origin = Astro.site || Astro.url.origin;
-const agent = { '@context': 'https://schema.org', '@type': 'RealEstateAgent', name: settings.name || 'KA EMLAK', ...(settings.advisor ? { founder: { '@type': 'Person', name: settings.advisor } } : {}), ...(settings.licenseNumber ? { identifier: settings.licenseNumber } : {}), areaServed: ['Antalya', 'Konyaaltı', 'Muratpaşa', 'Kepez', 'Döşemealtı', 'Aksu'].map(name => ({ '@type': 'Place', name })), knowsLanguage: ['tr', 'en', 'fa'], sameAs: ['https://www.hepsiemlak.com/emlak-ofisi/ka-emlak-29750', ...(settings.instagram ? [settings.instagram] : [])], url: new URL(href('/'), origin).href, image: new URL('/images/og-default.png', Astro.url.origin).href, ...(settings.phone ? { telephone: settings.phone } : {}), ...(settings.email ? { email: settings.email } : {}), address: { '@type': 'PostalAddress', addressLocality: 'Konyaaltı', addressRegion: 'Antalya', addressCountry: 'TR', ...(settings.address ? { streetAddress: settings.address } : {}) }, areaServed: { '@type': 'City', name: 'Antalya' }, ...(settings.advisor ? { employee: { '@type': 'Person', name: settings.advisor } } : {}) };
+const agent = { '@context': 'https://schema.org', '@type': 'RealEstateAgent', name: settings.name || 'KA EMLAK', ...(settings.advisor ? { founder: { '@type': 'Person', name: settings.advisor } } : {}), ...(settings.licenseNumber ? { identifier: settings.licenseNumber } : {}), areaServed: ['Antalya', 'Konyaaltı', 'Muratpaşa', 'Kepez', 'Döşemealtı', 'Aksu'].map(name => ({ '@type': 'Place', name })), knowsLanguage: ['tr', 'en', 'fa'], sameAs: ['https://www.hepsiemlak.com/emlak-ofisi/ka-emlak-29750', ...(instagram ? [instagram] : [])], url: new URL(href('/'), origin).href, image: new URL('/images/og-default.png', Astro.url.origin).href, ...(settings.phone ? { telephone: settings.phone } : {}), ...(settings.email ? { email: settings.email } : {}), address: { '@type': 'PostalAddress', addressLocality: 'Konyaaltı', addressRegion: 'Antalya', addressCountry: 'TR', ...(settings.address ? { streetAddress: settings.address } : {}) }, areaServed: { '@type': 'City', name: 'Antalya' }, ...(settings.advisor ? { employee: { '@type': 'Person', name: settings.advisor } } : {}) };
 // WebSite: Google'a sitenin adını ve dillerini bildirir.
 const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'KA EMLAK', url: new URL(href('/'), origin).href, inLanguage: locale };
 const websiteJson = JSON.stringify(website).replaceAll('<', '\\u003c');
@@ -86,8 +92,19 @@ const aboutText = locale === 'tr' ? settings.about || t.advisor.about : t.adviso
       <div class="advisor-actions">
         {settings.phone && <a class="button" href={`tel:${settings.phone}`}><Phone size={17}/><bdi dir="ltr">{phoneLabel(settings.phone)}</bdi></a>}
         <a class="button outline" href={whatsappUrl(settings.whatsapp, t.whatsapp.general)} target="_blank" rel="noreferrer"><MessageCircle size={17}/>{t.advisor.whatsapp}</a>
+        {instagram && <a class="button outline" href={instagram} target="_blank" rel="noreferrer"><InstagramIcon/>Instagram</a>}
       </div>
     </div>
+  </section>
+
+  <section class="container services" aria-labelledby="services-heading">
+    <div class="services-head"><h2 id="services-heading">{t.services.title}</h2><p>{t.services.intro}</p></div>
+    <ul class="services-grid">
+      {t.services.items.map((item, index) => <li><a class="service" href={href(serviceLinks[index])}>
+        <span class="service-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        <h3>{item.title}</h3><p>{item.text}</p><span class="service-link">{item.link}</span>
+      </a></li>)}
+    </ul>
   </section>
 
   <section class="container contact-strip">

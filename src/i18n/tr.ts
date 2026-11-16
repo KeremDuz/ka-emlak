@@ -61,6 +61,16 @@ export const tr = {
     whatsapp: 'WhatsApp’tan yazın',
     seeListings: 'İlanları görün',
   },
+  services: {
+    title: 'Neler yapıyoruz',
+    intro: 'Alım, satım ve kiralamada ilk görüşmeden tapuya kadar aynı danışmanla ilerlersiniz.',
+    items: [
+      { title: 'Satış', text: 'Evinizi, arsanızı ya da iş yerinizi bölgedeki gerçek satışlara göre fiyatlar, fotoğraflı ilanla alıcısına ulaştırırız.', link: 'Satılık ilanlar' },
+      { title: 'Kiralama', text: 'Uzun dönem kiralamada kiracı bulur, sözleşmeyi hazırlarız. Yazlık ve villalarda günlük ve haftalık kiralama da yaparız.', link: 'Kiralık ilanlar' },
+      { title: 'Kat karşılığı ve kentsel dönüşüm', text: 'Arsanız ya da eski binanız için müteahhitle görüşmeleri yürütür, anlaşmayı adım adım takip ederiz.', link: 'Kat karşılığı' },
+      { title: 'Değerleme', text: 'Bölgedeki benzer ilan ve satışlara bakarak mülkünüz ya da arsanız için gerçekçi bir fiyat aralığı çıkarırız.', link: 'Değerini öğrenin' },
+    ],
+  },
   search: {
     aria: 'İlan türü', seasonalTab: 'Dönemlik', district: 'Bölge', allDistricts: 'Tüm bölgeler', type: 'Tür', allTypes: 'Tüm türler',
     max: 'En çok', any: 'Fark etmez', upTo: '{n} TL’ye kadar', submit: 'İlanları göster',

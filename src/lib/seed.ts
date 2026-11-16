@@ -138,7 +138,7 @@ export const officeSettings: OfficeSettings = {
   phone: '+905322247658', whatsapp: '+905322247658', email: '',
   address: 'Konyaaltı / Antalya', hours: '',
   about: 'KA EMLAK, İshak Kahraman danışmanlığında Antalya’da konut, villa, arsa ve iş yeri portföyleri sunar. Konyaaltı, Kepez, Döşemealtı, Muratpaşa ve Kemer bölgelerinde alım, satım, kiralama ve kat karşılığı görüşmeleri için bizimle iletişime geçebilirsiniz.',
-  heroImage: '', instagram: '', licenseNumber: '0702648',
+  heroImage: '', instagram: 'https://www.instagram.com/ka_emlak/', licenseNumber: '0702648',
 };
 
 export const defaultSettings = officeSettings;

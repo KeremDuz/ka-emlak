@@ -639,3 +639,22 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .carousel-track { grid-auto-columns: 84%; gap: 16px; }
   .carousel-controls { display: none; }
 }
+
+/* ---------- Hizmetler (ana sayfa, danışmanın altında) ---------- */
+/* Kutu yerine ince üst çizgili sütunlar: masaüstünde dört, tablette iki, telefonda tek sütun. */
+.services { padding-bottom: 84px; }
+.services-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); align-items: end; gap: 12px 56px; margin-bottom: 32px; }
+.services-head h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); }
+.services-head p { color: var(--muted); }
+.services-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; }
+.services-grid li { border-top: 1px solid var(--line); }
+.service { display: flex; flex-direction: column; gap: 10px; height: 100%; padding: 24px 0 8px; color: inherit; text-decoration: none; }
+.service-number { color: var(--bronze-text); font-size: .875rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.service h3 { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; letter-spacing: -.015em; line-height: 1.25; }
+.service p { flex: 1; color: var(--muted); font-size: 1rem; }
+.service-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--forest); font-size: .95rem; font-weight: 700; text-decoration: underline; text-decoration-color: var(--line); text-decoration-thickness: 2px; text-underline-offset: 6px; transition: text-decoration-color .2s; }
+.service:hover .service-link, .service:focus-visible .service-link { text-decoration-color: currentColor; }
+.services-grid li:has(.service:hover) { border-top-color: var(--forest); }
+@media (max-width: 1000px) { .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .services-head { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .services { padding-bottom: 60px; } .services-grid { grid-template-columns: 1fr; } .service { padding-top: 20px; } }
+@media (prefers-reduced-motion: reduce) { .service-link { transition: none; } }

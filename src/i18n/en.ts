@@ -60,6 +60,16 @@ export const en: Dictionary = {
     whatsapp: 'Message on WhatsApp',
     seeListings: 'View listings',
   },
+  services: {
+    title: 'What we do',
+    intro: 'Whether you buy, sell or rent, you work with the same advisor from the first meeting to the title deed.',
+    items: [
+      { title: 'Sales', text: 'We price your home, land or shop against real sales in the area and bring it to buyers with a well-photographed listing.', link: 'Properties for sale' },
+      { title: 'Rentals', text: 'We find tenants for long-term rentals and prepare the contract. Holiday homes and villas can also be rented by the day or week.', link: 'Properties for rent' },
+      { title: 'Land-for-flats and urban renewal', text: 'We handle the talks with the contractor for your land or old building and follow the agreement step by step.', link: 'Land-for-flats' },
+      { title: 'Valuation', text: 'We look at similar listings and sales nearby to give a realistic price range for your property or land.', link: 'Get a valuation' },
+    ],
+  },
   search: {
     aria: 'Listing type', seasonalTab: 'Short-term', district: 'District', allDistricts: 'All districts', type: 'Type', allTypes: 'All types',
     max: 'Maximum', any: 'No limit', upTo: 'Up to {n} TL', submit: 'Show listings',
