@@ -20,8 +20,9 @@ export async function supabase<T>(locals:ServerLocals,path:string,init:RequestIn
     console.error(JSON.stringify({event:'supabase_failure',status:response.status,code:error.code}));
     throw new HttpError(503,'Kayıt servisi şu anda kullanılamıyor. Verileriniz değiştirilmedi.','DATABASE_UNAVAILABLE');
   }
-  if(response.status===204)return undefined as T;
-  return response.json() as Promise<T>;
+  // "return=minimal" ile yapılan kayıtlar 201 ve boş gövde döner; boş yanıt JSON olarak okunmaz.
+  const body=await response.text();
+  return (body?JSON.parse(body):undefined) as T;
 }
 export function rpc<T>(locals:ServerLocals,name:string,payload:Record<string,unknown>){return supabase<T>(locals,`/rest/v1/rpc/${name}`,{method:'POST',body:JSON.stringify(payload)});}
 export async function storageRequest(locals:ServerLocals,path:string,init:RequestInit={}) {
