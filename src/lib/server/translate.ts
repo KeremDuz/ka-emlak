@@ -97,12 +97,14 @@ async function translateOne(source: TranslationSource, locale: TranslatedLocale,
   const messages = [{ role: 'system', content: systemPrompt(locale) }, { role: 'user', content: userPrompt(source, locale) }];
   const deadline = Date.now() + (options.timeoutMs ?? 25_000); const fetcher = options.fetcher ?? fetch;
   let reason = 'config';
+  // Yedek (Workers AI) varsa ona süre bırakılır; asıl sağlayıcı takılırsa çeviri yine de yapılabilsin.
+  const primaryEnd = options.ai ? deadline - 8000 : deadline;
   if (secureUrl(config.url)) {
-    let attempt = await callProvider(config, messages, fetcher, Math.max(1, deadline - Date.now()));
+    let attempt = await callProvider(config, messages, fetcher, Math.max(1, primaryEnd - Date.now()));
     // 429 ve 5xx çoğunlukla geçicidir: süre kaldıysa bir kez daha denenir.
-    if ('error' in attempt && attempt.retry && deadline - Date.now() > 3000) {
+    if ('error' in attempt && attempt.retry && primaryEnd - Date.now() > 3000) {
       await new Promise(resolve => setTimeout(resolve, options.retryDelayMs ?? 800));
-      attempt = await callProvider(config, messages, fetcher, Math.max(1, deadline - Date.now()));
+      attempt = await callProvider(config, messages, fetcher, Math.max(1, primaryEnd - Date.now()));
     }
     if ('content' in attempt) return parseAnswer(attempt.content, source, locale);
     reason = attempt.error;
