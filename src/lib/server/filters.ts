@@ -5,8 +5,8 @@ export function filterListings(listings: Listing[], filters: ListingFilters = {}
   let filtered = listings.filter(item => item.status === 'published');
   for (const field of ['transaction','propertyType','district','neighborhood','rooms','currency','period'] as const) {
     const value = filters[field]; if (!value || value === 'all') continue;
-    // period=short: günlük ve haftalık kiralananlar (dönemlik kiralık bölümü).
-    filtered = field === 'period' && value === 'short' ? filtered.filter(isSeasonal) : filtered.filter(item => item[field] === value);
+    // period=short: günlük ve haftalık kiralananlar (dönemlik kiralık bölümü); period=long: geri kalanlar (kiralık sayfası).
+    filtered = field === 'period' && value === 'short' ? filtered.filter(isSeasonal) : field === 'period' && value === 'long' ? filtered.filter(item => !isSeasonal(item)) : filtered.filter(item => item[field] === value);
   }
   if (filters.q?.trim()) { const q = normalize(filters.q.trim()); filtered = filtered.filter(item => normalize([item.title,item.city,item.district,item.neighborhood,item.description].join(' ')).includes(q)); }
   if (filters.featured === 'true') filtered = filtered.filter(item => item.featured);

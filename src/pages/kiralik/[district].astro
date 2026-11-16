@@ -1,0 +1,6 @@
+---
+import ListingsView from '../../components/public/views/ListingsView.astro';
+import { districtExists } from '../../components/public/views/district-lookup';
+if (!(await districtExists(Astro.locals, 'rent', Astro.params.district))) return Astro.rewrite('/404');
+---
+<ListingsView locale="tr" kind="rent" district={Astro.params.district}/>

@@ -15,7 +15,15 @@ const CSP_REPORT_ONLY=[
   "frame-ancestors 'none'",
 ].join('; ');
 
+// Tek asıl adres: SITE_URL (astro.config site). Başka bir adresten (kaemlak.com.tr, www., workers.dev) gelen istek
+// aynı yola kalıcı olarak yönlendirilir; Google tek adresi dizinler. Yerel geliştirmede yönlendirme yapılmaz.
+const canonical=(()=>{try{return new URL(import.meta.env.SITE);}catch{return null;}})();
+
 export const onRequest=defineMiddleware(async(context,next)=>{
+  if(canonical&&!isLoopback(canonical)&&!isLoopback(context.url)&&context.url.host!==canonical.host){
+    const target=new URL(context.url.pathname+context.url.search,canonical.origin);
+    return new Response(null,{status:context.request.method==='GET'||context.request.method==='HEAD'?301:308,headers:{Location:target.href,'Cache-Control':'public, max-age=3600'}});
+  }
   const locals=context.locals as ServerLocals;
   try {const platform=await import('cloudflare:workers');locals.env=platform.env as Record<string,unknown>;}catch{locals.env={};}
   locals.preview=import.meta.env.DEV&&isLoopback(context.url)&&setting(locals,'DEV_PREVIEW')!=='off'&&!databaseReady(locals);

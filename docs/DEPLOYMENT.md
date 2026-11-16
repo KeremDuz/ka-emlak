@@ -114,3 +114,22 @@ Onay ve olaylar:
 - Gerçek yöneticiyle giriş, şifre sıfırlama, bir taslak oluşturma/yayınlama/arşivleme, fotoğraf yükleme, ikinci tarayıcıdan okuma ve export/import denemesi yapılır. Hesaplar bağlanana kadar bu canlı kontroller tamamlanmış sayılmaz.
 
 Kaynaklar: [Workers limitleri](https://developers.cloudflare.com/workers/platform/limits/), [Supabase Free](https://supabase.com/pricing), [Supabase duraklatma](https://supabase.com/docs/guides/platform/free-project-pausing), [Firebase Spark](https://firebase.google.com/docs/projects/billing/firebase-pricing-plans), [ID token doğrulama](https://firebase.google.com/docs/auth/admin/verify-id-tokens).
+
+## Alan adları: kaemlak.com ve kaemlak.com.tr
+
+Asıl adres `kaemlak.com`'dur. `kaemlak.com.tr`, `www.` adresleri ve `ka-emlak.kaemlak.workers.dev` aynı sayfaya kalıcı (301) yönlendirilir. Yönlendirme `src/middleware.ts` içindedir ve asıl adresi `SITE_URL` değişkeninden alır. `SITE_URL` değişmeden hiçbir yönlendirme yapılmaz.
+
+1. Cloudflare panelinde **Add a domain** ile `kaemlak.com` ve `kaemlak.com.tr` alanlarını ücretsiz planla ekleyin.
+2. Cloudflare'ın verdiği iki ad sunucusunu (nameserver) alan adını aldığınız firmanın panelinde iki alan adına da yazın. Etkinleşmesi birkaç saat sürebilir.
+3. İki alan adı da "Active" olunca Cloudflare panelinde **Workers & Pages → ka-emlak → Settings → Domains & Routes → Add → Custom domain** ile şu dört adresi ekleyin: `kaemlak.com`, `www.kaemlak.com`, `kaemlak.com.tr`, `www.kaemlak.com.tr`.
+4. GitHub'da `SITE_URL` değişkenini `https://kaemlak.com` yapın ve Yayınla iş akışını yeniden çalıştırın. Bundan sonra öteki adresler kaemlak.com'a yönlenir; kalıcı bağlantılar, site haritası ve hreflang yeni adresi kullanır.
+5. Supabase → **Authentication → URL Configuration** içinde Site URL'yi `https://kaemlak.com` yapın ve Redirect URLs listesine `https://kaemlak.com/yonetim` ekleyin (şifre yenileme bağlantısı için).
+6. Google Search Console'da **Domain** türünde `kaemlak.com` mülkü açın (DNS TXT kaydıyla doğrulanır; kayıt Cloudflare DNS'e eklenir). Site haritası: `https://kaemlak.com/sitemap.xml`. `kaemlak.com.tr` için ayrı mülk açıp **Adres değişikliği** aracını kullanmaya gerek yoktur; yönlendirme yeterlidir.
+
+## Arama motoru (SEO) yapısı
+
+- Arama sayfaları: `/satilik`, `/kiralik` (aylık/yıllık), `/donemlik-kiralik` (günlük/haftalık) ve ilçe sayfaları `/satilik/konyaalti`, `/kiralik/muratpasa` gibi. İlçe sayfası o ilçede yayında ilan varken açılır, yoksa 404 verir. Üç dilde de vardır (`/en/satilik`, `/fa/kiralik/...`).
+- Başlık ve açıklamalar `src/i18n/{tr,en,fa}.ts` içinde `pages.sale`, `pages.rent`, `pages.seasonal` altındadır.
+- Site haritası bu sayfaları, ilanları (son güncellenme tarihiyle) ve üç dil karşılığını içerir.
+- Yapısal veri: ana sayfada RealEstateAgent (hizmet bölgeleri, diller, portal sayfası) ve WebSite; ilan sayfasında RealEstateListing + Offer ve BreadcrumbList.
+- Yerel aramada en etkili adım Google İşletme Profili'dir (Google Haritalar). Ofis adına açılıp siteye bağlanmalı ve müşteri yorumları orada toplanmalıdır.

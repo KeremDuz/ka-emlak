@@ -22,6 +22,9 @@ describe('seasonal rentals', () => {
     expect(filterListings(listings, { transaction: 'rent', period: 'short', propertyType: 'villa' }).map(item => item.id)).toEqual(['daily-villa']);
     expect(filterListings(listings, { period: 'month' }).map(item => item.id)).toEqual(['monthly-flat']);
   });
+  it('lists long-term rentals without the seasonal ones with period=long (Kiralık sayfası)', () => {
+    expect(filterListings(listings, { transaction: 'rent', period: 'long' }).map(item => item.id)).toEqual(['monthly-flat']);
+  });
   it('names the period on the card label', () => {
     expect(transactionLabel(listings[0])).toBe('Günlük kiralık');
     expect(transactionLabel(listings[1])).toBe('Haftalık kiralık');

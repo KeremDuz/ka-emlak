@@ -4,25 +4,39 @@ import Catalog from '../Catalog';
 import { getPublicData, publicPageSize } from '../../../lib/server/data';
 import { filterListings } from '../../../lib/server/filters';
 import { catalogOptions } from '../../../lib/listing-helpers';
-import { dictionary } from '../../../i18n';
-import type { Locale } from '../../../lib/types';
-// İlanlar sayfası (kind="all") ve Dönemlik kiralık sayfası (kind="seasonal"): ikincisi sabit bir filtreyle aynı listeyi gösterir.
-interface Props { locale: Locale; kind?: 'all' | 'seasonal'; }
-const { locale, kind = 'all' } = Astro.props;
+import { slugify } from '../../../lib/format';
+import { listingBase } from './district-lookup';
+import { dictionary, fill, localePath } from '../../../i18n';
+import type { ListingFilters, Locale } from '../../../lib/types';
+// İlanlar (all), Dönemlik kiralık (seasonal), Satılık (sale) ve Kiralık (rent) sayfaları aynı listeyi sabit bir filtreyle gösterir.
+// Satılık ve kiralık sayfalarının ilçe alt sayfaları vardır (/satilik/konyaalti); Google'da "Konyaaltı satılık" gibi aramalar için.
+interface Props { locale: Locale; kind?: 'all' | 'seasonal' | 'sale' | 'rent'; district?: string; }
+const { locale, kind = 'all', district: districtSlug } = Astro.props;
 const t = dictionary(locale);
-// Panelde "Kiralık" + kiralama dönemi "Günlük" ya da "Haftalık" seçilen ilan kendiliğinden dönemlik sayfasında görünür.
-const fixed = kind === 'seasonal' ? { transaction: 'rent', period: 'short' } : {};
 const data = await getPublicData(Astro.locals);
+const base: ListingFilters = kind === 'seasonal' ? { transaction: 'rent', period: 'short' } : kind === 'sale' || kind === 'rent' ? listingBase(kind) : {};
+// İlçe adresi yayındaki ilanların ilçelerinden çözülür; ilanı olmayan ilçe sayfa dosyasında 404'e gider (district-lookup).
+const district = districtSlug ? catalogOptions(filterListings(data.listings, base)).districts.find(name => slugify(name) === districtSlug) : undefined;
+const fixed: ListingFilters = district ? { ...base, district } : base;
 const filters = Object.fromEntries(Astro.url.searchParams);
 const filtered = filterListings(data.listings, { ...filters, ...fixed });
-const options = catalogOptions(filterListings(data.listings, fixed));
+const allOptions = catalogOptions(filterListings(data.listings, fixed));
+// İlçe sayfasında ilçe seçimi gizlenir (sabit filtre).
+const options = district ? { ...allOptions, districts: [] } : allOptions;
+const page = kind === 'sale' || kind === 'rent' ? t.pages[kind] : undefined;
+const text = kind === 'seasonal' ? { ...t.pages.seasonal, compact: false }
+  : page && district ? { title: fill(page.districtTitle, { district }), description: fill(page.districtDescription, { district }), h1: fill(page.districtH1, { district }), intro: page.intro, compact: false }
+  : page ? { ...page, compact: false }
+  : { title: t.pages.listings.title, description: t.pages.listings.description, h1: t.pages.listings.h1, intro: '', compact: true };
+// Satılık/kiralık sayfasında ilçe bağlantıları: hem ziyaretçiye kısayol hem Google'a ilçe sayfalarının yolu.
+const parent = kind === 'sale' ? '/satilik' : '/kiralik';
+const districtLinks = page && !district ? catalogOptions(filterListings(data.listings, base)).districts.map(name => ({ name, href: localePath(locale, `${parent}/${slugify(name)}`), n: filterListings(data.listings, { ...base, district: name }).length })) : [];
 ---
-{kind === 'seasonal'
-  ? <SiteLayout locale={locale} title={t.pages.seasonal.title} description={t.pages.seasonal.description} settings={data.settings} mode={data.mode}>
-      <section class="page-intro"><div class="container"><h1>{t.pages.seasonal.h1}</h1><p>{t.pages.seasonal.intro}</p></div></section>
-      <Catalog initialListings={filtered.slice(0, publicPageSize)} initialTotal={filtered.length} initialFilters={filters} options={options} available={data.available} fixed={fixed} locale={locale} t={t.catalog} card={t.card} mapText={t.map} client:load/>
-    </SiteLayout>
-  : <SiteLayout locale={locale} title={t.pages.listings.title} description={t.pages.listings.description} settings={data.settings} mode={data.mode}>
-      <section class="page-intro page-intro-compact"><div class="container"><h1>{t.pages.listings.h1}</h1></div></section>
-      <Catalog initialListings={filtered.slice(0, publicPageSize)} initialTotal={filtered.length} initialFilters={filters} options={options} available={data.available} locale={locale} t={t.catalog} card={t.card} mapText={t.map} client:load/>
-    </SiteLayout>}
+<SiteLayout locale={locale} title={text.title} description={text.description} settings={data.settings} mode={data.mode}>
+  <section class={`page-intro ${text.compact ? 'page-intro-compact' : ''}`}><div class="container">
+    {page && district && <nav class="breadcrumbs" aria-label={t.listing.breadcrumbAria}><a href={localePath(locale, '/')}>{t.nav.home}</a><span aria-hidden="true">/</span><a href={localePath(locale, parent)}>{page.h1}</a></nav>}
+    <h1>{text.h1}</h1>{text.intro && <p>{text.intro}</p>}
+    {districtLinks.length > 0 && <ul class="district-chips">{districtLinks.map(link => <li><a href={link.href} dir="auto">{link.name} <span>{link.n}</span></a></li>)}</ul>}
+  </div></section>
+  <Catalog initialListings={filtered.slice(0, publicPageSize)} initialTotal={filtered.length} initialFilters={filters} options={options} available={data.available} fixed={kind === 'all' ? undefined : fixed} locale={locale} t={t.catalog} card={t.card} mapText={t.map} client:load/>
+</SiteLayout>

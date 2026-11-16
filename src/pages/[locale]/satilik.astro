@@ -1,0 +1,7 @@
+---
+import ListingsView from '../../components/public/views/ListingsView.astro';
+import { routeLocale } from '../../i18n/config';
+const locale = routeLocale(Astro.params.locale);
+if (!locale) return Astro.rewrite('/404');
+---
+<ListingsView locale={locale} kind="sale"/>
