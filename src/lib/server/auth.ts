@@ -33,12 +33,13 @@ export async function verifySupabaseToken(token:string, settings:AuthSettings, f
   if(!response.ok)throw new HttpError(503,'Giriş doğrulama servisine erişilemiyor.','AUTH_UNAVAILABLE');
   const user=await response.json().catch(()=>null) as {id?:unknown}|null;
   if(!user||typeof user.id!=='string'||!user.id)throw new HttpError(401,'Oturumunuz sona erdi. Lütfen tekrar giriş yapın.','AUTH_INVALID');
-  if(user.id!==settings.adminUid)throw new HttpError(403,'Bu hesabın yönetici yetkisi yok.','FORBIDDEN');
+  // ADMIN_UID virgülle ayrılmış birden çok kullanıcı kimliği olabilir (ör. iki yetkili).
+  if(!settings.adminUid.split(',').map(uid=>uid.trim()).filter(Boolean).includes(user.id))throw new HttpError(403,'Bu hesabın yönetici yetkisi yok.','FORBIDDEN');
   if(verified.size>200)verified.clear();
   verified.set(key,{uid:user.id,expires,until:now+CACHE_MS});
   return {uid:user.id,expires};
 }
-const authSettings=(locals:ServerLocals):AuthSettings=>({url:setting(locals,'SUPABASE_URL'),publishableKey:setting(locals,'SUPABASE_PUBLISHABLE_KEY'),adminUid:setting(locals,'ADMIN_UID')});
+const authSettings=(locals:ServerLocals):AuthSettings=>({url:setting(locals,'SUPABASE_URL'),publishableKey:setting(locals,'SUPABASE_PUBLISHABLE_KEY'),adminUid:[setting(locals,'ADMIN_UID'),setting(locals,'ADMIN_UID2')].filter(Boolean).join(',')});
 
 export async function requireAdmin(context:Pick<APIContext,'request'|'cookies'|'locals'>) {
   const locals=context.locals as ServerLocals;

@@ -61,7 +61,7 @@ Aynı yer imine hepsiemlak’taki **ofis sayfasındayken** (`/emlak-ofisi/ka-eml
 
 - `TRANSLATE_API_URL`: `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions` (Google AI Studio, OpenAI uyumlu tam adres)
 - `TRANSLATE_API_KEY`: AI Studio'dan aldığınız anahtar
-- `TRANSLATE_MODEL`: `gemini-4-hydrogen`
+- `TRANSLATE_MODEL`: `gemini-3.8-flash` (Kasım 2026'da güncel kararlı Flash modeli; Google modeli emekliye ayırırsa yalnız bu değer değişir)
 
 Üçünden biri eksikse çeviri yapılmaz, ilanlar Türkçe yayında kalır ve panelde bunu belirten bir not görünür. Sağlayıcı yanıt vermezse (ör. bölge kısıtı, kota) `wrangler.jsonc`'taki `AI` (Workers AI) bağlaması varsa çeviri otomatik olarak oradan denenir; ek ayar gerekmez. Panelde elle düzelttiğiniz çeviriye sonradan dokunulmaz. Türkçe metin değişince çeviri "eski" sayılır ve ilan yeniden yayınlanınca ya da ilan listesindeki "Eksik çevirileri tamamla" ile yenilenir. Veritabanında ek bir SQL gerekmez.
 

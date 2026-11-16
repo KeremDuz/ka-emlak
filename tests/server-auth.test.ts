@@ -30,6 +30,13 @@ describe('Supabase single-office authorization', () => {
     await expect(verifySupabaseToken(await token(), settings, supabase(500, {}))).rejects.toMatchObject({ status: 503 });
     await expect(verifySupabaseToken(await token(), settings, vi.fn(async () => { throw new Error('offline'); }))).rejects.toMatchObject({ status: 503 });
   });
+  it('accepts every admin in a comma-separated list, and nobody else', async () => {
+    const two = { ...settings, adminUid: 'office-admin, second-admin' };
+    await expect(verifySupabaseToken(await token(), two, supabase(200, { id: 'second-admin' }))).resolves.toMatchObject({ uid: 'second-admin' });
+    await expect(verifySupabaseToken(await token(), two, supabase(200, { id: 'office-admin' }))).resolves.toMatchObject({ uid: 'office-admin' });
+    await expect(verifySupabaseToken(await token(), two, supabase(200, { id: 'admin' }))).rejects.toMatchObject({ status: 403 });
+    await expect(verifySupabaseToken(await token(), { ...settings, adminUid: ' , ' }, supabase(200, { id: '' }))).rejects.toMatchObject({ status: 401 });
+  });
   it('refuses to work until the admin is configured', async () => {
     await expect(verifySupabaseToken(await token(), { ...settings, adminUid: '' }, supabase(200, { id: 'office-admin' }))).rejects.toMatchObject({ status: 503 });
   });
