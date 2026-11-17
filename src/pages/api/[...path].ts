@@ -13,6 +13,7 @@ import { importSourcePhoto, prepareSourceListing } from '../../lib/server/source
 import { extractFromText } from '../../lib/server/source-ai';
 import { aiBinding, ensureTranslations, translateTexts, translationConfig } from '../../lib/server/translate';
 import { sourceHash } from '../../lib/server/translation-source';
+import { notifyInquiry } from '../../lib/server/notify';
 
 export const prerender=false;
 const translateSource=z.object({title:z.string().max(180),description:z.string().max(12000),features:z.array(z.string().max(100)).max(50)});
@@ -33,9 +34,12 @@ async function route(context:APIContext):Promise<Response>{
     const ip=request.headers.get('CF-Connecting-IP')??'local';
     const hashed=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`inquiry:${ip}`))),x=>x.toString(16).padStart(2,'0')).join('');
     await repo.rateLimit(hashed,5,3600);
-    if(input.listingId&&!(await repo.listings(true)).some(item=>item.id===input.listingId))throw new HttpError(404,'İlan artık yayında değil.','NOT_FOUND');
+    const listing=input.listingId?(await repo.listings(true)).find(item=>item.id===input.listingId):undefined;
+    if(input.listingId&&!listing)throw new HttpError(404,'İlan artık yayında değil.','NOT_FOUND');
     const details=Object.entries(input.details??{}).map(([key,value])=>[key.trim(),value.trim()]).filter(([key,value])=>key&&value);
-    await repo.saveInquiry({id:crypto.randomUUID(),name:input.name,phone:input.phone,message:input.message,listingId:input.listingId,kind:input.kind,...(details.length?{details:Object.fromEntries(details)}:{}),...(input.locale?{locale:input.locale}:{}),status:'new',createdAt:new Date().toISOString()});
+    const inquiry=await repo.saveInquiry({id:crypto.randomUUID(),name:input.name,phone:input.phone,message:input.message,listingId:input.listingId,kind:input.kind,...(details.length?{details:Object.fromEntries(details)}:{}),...(input.locale?{locale:input.locale}:{}),status:'new',createdAt:new Date().toISOString()});
+    // Talep kaydedildikten sonra ofise e-posta; gitmezse ziyaretçiye hata gösterilmez.
+    await notifyInquiry(locals,(await repo.settings().catch(()=>({email:''}))).email,inquiry,listing,url.origin);
     return json({ok:true},201);
   }
   if(path[0]!=='admin')throw new HttpError(404,'Adres bulunamadı.','NOT_FOUND');

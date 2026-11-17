@@ -140,3 +140,13 @@ Asıl ve tek adres `kaemlak.com`'dur (kaemlak.com.tr alınmadı). `www.kaemlak.c
 - Site haritası bu sayfaları, ilanları (son güncellenme tarihiyle) ve üç dil karşılığını içerir.
 - Yapısal veri: ana sayfada RealEstateAgent (hizmet bölgeleri, diller, portal sayfası) ve WebSite; ilan sayfasında RealEstateListing + Offer ve BreadcrumbList.
 - Yerel aramada en etkili adım Google İşletme Profili'dir (Google Haritalar). Ofis adına açılıp siteye bağlanmalı ve müşteri yorumları orada toplanmalıdır.
+
+## Yeni talep e-posta bildirimi
+
+Ziyaretçi bir form gönderince talep panele kaydedilir ve ofise e-posta gider (`src/lib/server/notify.ts`). Alıcı `NOTIFY_EMAIL` değişkeni, yoksa panelde "Ofis bilgileri"ndeki e-posta. Bildirim gitmezse form yine başarılı olur.
+
+kaemlak.com'un posta kutusu Türkticaret'tedir (kök MX `mx.turkticaret.net`). Cloudflare Email Routing kök MX kayıtlarını ister, açılırsa bu posta kutusu çalışmaz; bu yüzden kullanılmaz. Gönderim Resend ücretsiz katmanıyla yapılır (ayda 3.000, günde 100 e-posta):
+
+1. resend.com'da hesap açın. Domains → Add Domain → `kaemlak.com`. Resend'in istediği kayıtlar yalnız `send.kaemlak.com` ve `resend._domainkey.kaemlak.com` adlarındadır; kök MX'e dokunmaz. Kayıtları Cloudflare DNS'e ekleyin (Resend'in "Cloudflare ile otomatik" düğmesi de olur), Verify'a basın.
+2. API Keys → Create API Key (yalnız "Sending access", alan adı kaemlak.com).
+3. Cloudflare → Workers → ka-emlak → Settings → Variables and Secrets: `RESEND_API_KEY` (Secret). İsteğe bağlı: `NOTIFY_EMAIL` (alıcı), `NOTIFY_FROM` (gönderen, varsayılan `bildirim@kaemlak.com`). Deploy.
