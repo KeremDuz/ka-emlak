@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { ArrowDownToLine, ArrowLeft, ArrowRight, ArrowUpFromLine, Building2, Check, CheckCheck, ChevronLeft, ChevronRight, CircleAlert, CloudCheck, Copy, Ellipsis, ExternalLink, Eye, EyeOff, FolderArchive, Home, ImagePlus, Languages, LayoutGrid, LoaderCircle, LogOut, Mail, MapPin, MessageSquare, Pencil, Phone, Plus, RefreshCw, Save, Search, Settings2, ShieldCheck, Smartphone, Sparkles, Star, Trash2, Upload, WifiOff, X } from 'lucide-react';
@@ -49,7 +49,37 @@ function SelectField({ name, label, value, onChange, options, required, error }:
   return <div className={`ad-field ${error ? 'ad-field-invalid' : ''}`}><label htmlFor={name}>{label}{required && <span aria-hidden="true"> *</span>}</label><select id={name} value={value} onChange={e => onChange(e.target.value)} required={required} aria-invalid={!!error} aria-describedby={error ? `${name}-error` : undefined}>{Object.entries(options).map(([key, text]) => <option key={key} value={key}>{text}</option>)}</select>{error && <small className="ad-field-error" id={`${name}-error`}>{error}</small>}</div>;
 }
 
-export default function AdminApp() {
+/**
+ * Panelde beklenmeyen bir hata olursa ekran bembeyaz kalmasın: hata yazılır, yeniden yükleme ve bu cihazdaki
+ * panel kayıtlarını (oturum, taslak yedekleri, ipucu tercihleri) temizleme düğmeleri gösterilir.
+ */
+class PanelBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  componentDidCatch(error: Error) { console.error('Panel hatası', error); }
+  reset = () => {
+    for (const store of [localStorage, sessionStorage]) {
+      try { for (const key of Object.keys(store)) if (key.startsWith('ka-') || key.startsWith('ka:') || key.startsWith('sb-')) store.removeItem(key); } catch { /* depolama kapalı olabilir */ }
+    }
+    location.replace('/yonetim');
+  };
+  render() {
+    if (!this.state.error) return this.props.children;
+    return <main style={{ maxWidth: 560, margin: '12vh auto', padding: 24, color: '#1d2a24', font: '16px/1.6 system-ui, sans-serif' }}>
+      <h1 style={{ fontSize: 24, margin: '0 0 8px' }}>Panel açılırken bir sorun oldu</h1>
+      <p style={{ margin: '0 0 16px' }}>Önce yeniden yüklemeyi deneyin. Düzelmezse ikinci düğme bu cihazdaki panel kayıtlarını temizler; yeniden giriş yapmanız gerekir. İlanlarınız etkilenmez.</p>
+      <p style={{ margin: '0 0 20px', fontSize: 13, color: '#5c6860', overflowWrap: 'anywhere' }}>Hata: {this.state.error.message || this.state.error.name}</p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+        <button onClick={() => location.reload()} style={{ minHeight: 44, padding: '0 18px', border: 0, borderRadius: 8, background: '#123d34', color: '#fff', font: '600 15px system-ui, sans-serif', cursor: 'pointer' }}>Yeniden yükle</button>
+        <button onClick={this.reset} style={{ minHeight: 44, padding: '0 18px', border: '1px solid #c9d1cb', borderRadius: 8, background: '#fff', color: '#123d34', font: '600 15px system-ui, sans-serif', cursor: 'pointer' }}>Kayıtları temizle ve yeniden yükle</button>
+      </div>
+    </main>;
+  }
+}
+
+export default function AdminApp() { return <PanelBoundary><AdminPanel /></PanelBoundary>; }
+
+function AdminPanel() {
   const [config, setConfig] = useState<ClientConfig | null>(null);
   const [bootError, setBootError] = useState('');
   const [session, setSession] = useState(false);
