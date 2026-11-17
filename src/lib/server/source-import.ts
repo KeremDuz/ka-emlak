@@ -5,7 +5,7 @@ import { HttpError } from './http';
 import { Repository } from './repository';
 import { storePhoto } from './uploads';
 import { suggestTitle } from '../listing-helpers';
-import { editable } from './validation';
+import { editable, imageKind } from './validation';
 import { incomplete, type AiField } from './source-ai';
 import { MAX_FEATURES } from '../limits';
 
@@ -117,7 +117,7 @@ async function download(url: string): Promise<Uint8Array<ArrayBuffer>> {
  * Yalnız portalların fotoğraf sunucusundaki ilan galerisinden indirir. Büyük boy 3 MB'yi aşarsa ya da portalda
  * bulunmuyorsa (sahibinden afiş gibi küçük yüklenen görsellerin büyük boyunu üretmez) bir küçük boyu dener.
  */
-export async function importSourcePhoto(repo: Repository, listingId: string, url: string): Promise<Photo> {
+export async function fetchSourcePhoto(url: string): Promise<Uint8Array<ArrayBuffer>> {
   if (!isSourcePhoto(url)) throw new HttpError(422, 'Yalnız hepsiemlak ve sahibinden ilan fotoğrafları aktarılabilir.', 'SOURCE_PHOTO');
   let data: Uint8Array<ArrayBuffer>;
   try { data = await download(url); }
@@ -126,5 +126,11 @@ export async function importSourcePhoto(repo: Repository, listingId: string, url
     if (smaller === url || !(error instanceof HttpError && (error.code === 'TOO_LARGE' || error.code === 'SOURCE_PHOTO'))) throw error;
     data = await download(smaller);
   }
-  return storePhoto(repo, listingId, data);
+  if (!imageKind(data)) throw new HttpError(415, 'Portal fotoğrafı tanınmayan biçimde.', 'IMAGE_TYPE');
+  return data;
+}
+
+/** Portal fotoğrafını olduğu gibi saklar (eski panel sürümleri için; panel artık photo-file ile alıp WebP yükler). */
+export async function importSourcePhoto(repo: Repository, listingId: string, url: string): Promise<Photo> {
+  return storePhoto(repo, listingId, await fetchSourcePhoto(url));
 }

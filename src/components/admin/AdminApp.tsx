@@ -352,6 +352,16 @@ function SourceImportHint() {
   return <div className="kp-source-hint"><span className="kp-install-icon"><ArrowDownToLine size={20} /></span><div><strong>hepsiemlak ve sahibinden’den tek tıkla aktarın</strong><p>{clicked ? 'Bu düğmeye burada tıklamayın; tutup tarayıcınızın yer imleri çubuğuna sürükleyin.' : 'Sağdaki düğmeyi bir kez tarayıcınızın yer imleri çubuğuna sürükleyin. Sonra hepsiemlak veya sahibinden’de siteye eklemek istediğiniz ilanı açıp yer imindeki “KA Emlak’a ekle”ye tıklayın; ilan fotoğraflarıyla birlikte buraya gelir. Sitedeki ilanlarınız portallarda olmasa da silinmez. Düğmeyi daha önce sürüklediyseniz eskisini silip yenisini sürükleyin.'}</p></div><div className="kp-inline-actions"><a ref={link} className="kp-bookmarklet" draggable onClick={event => { event.preventDefault(); setClicked(true); }}>KA Emlak’a ekle</a><button className="kp-icon-button" aria-label="Kurulum kartını gizle" onClick={() => toggle(true)}><X size={17} /></button></div></div>;
 }
 
+/**
+ * Portal fotoğrafı elle yüklenenler gibi tarayıcıda WebP'ye (en çok 1600 px) çevrilir; depoda yaklaşık yarı yer kaplar.
+ * Çeviri başarısız olur ya da büyütürse portal dosyası olduğu gibi yüklenir.
+ */
+async function sourcePhotoForUpload(url: string): Promise<File> {
+  const original = await adminApi.sourcePhotoFile(url);
+  try { const converted = await preparePhoto(original); return converted.size < original.size ? converted : original; }
+  catch { return original; }
+}
+
 type ImportResult = { listing: AdminListing; created: boolean; published: boolean; failedPhotos: number; error?: string; aiFilled?: boolean };
 /** Portal ilanını oluşturur ya da günceller, fotoğrafları tek tek aktarır ve istenirse yayınlar. */
 async function importFromSource(payload: SourceListing & { targetId?: string }, publish: boolean, onProgress: (text: string) => void): Promise<ImportResult> {
@@ -359,7 +369,7 @@ async function importFromSource(payload: SourceListing & { targetId?: string }, 
   let latest = prepared.listing; const added: Photo[] = []; let failedPhotos = 0;
   for (const [index, url] of prepared.photos.entries()) {
     onProgress(`Fotoğraflar aktarılıyor ${index + 1}/${prepared.photos.length}`);
-    try { added.push((await adminApi.sourcePhoto(latest.id, url)).photo); } catch { failedPhotos++; }
+    try { added.push((await adminApi.upload(latest.id, await sourcePhotoForUpload(url))).photo); } catch { failedPhotos++; }
   }
   if (added.length) { const data = editData(latest); latest = (await adminApi.save(latest.id, { ...data, photos: [...data.photos, ...added] }, latest.version)).listing; }
   // Bilgilerin bir kısmı yapay zekâyla sayfa metninden tamamlandıysa ilan ofis kontrol edene kadar taslakta kalır.

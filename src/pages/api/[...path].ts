@@ -4,12 +4,12 @@ import { clientConfig, type ServerLocals } from '../../lib/server/env';
 import { HttpError, apiError, bodyJson, json, requestVersion, sameOrigin } from '../../lib/server/http';
 import { requireAdmin, startSession, endSession } from '../../lib/server/auth';
 import { Repository } from '../../lib/server/repository';
-import { editable, inquirySchema, office } from '../../lib/server/validation';
+import { editable, imageKind, inquirySchema, office } from '../../lib/server/validation';
 import { filterListings } from '../../lib/server/filters';
 import { clearPublicDataCache, publicListing, publicPageSize } from '../../lib/server/data';
 import { uploadPhoto } from '../../lib/server/uploads';
 import { exportBackup, importBackup } from '../../lib/server/backup';
-import { importSourcePhoto, prepareSourceListing } from '../../lib/server/source-import';
+import { fetchSourcePhoto, importSourcePhoto, prepareSourceListing } from '../../lib/server/source-import';
 import { extractFromText } from '../../lib/server/source-ai';
 import { aiBinding, ensureTranslations, translateTexts, translationConfig } from '../../lib/server/translate';
 import { sourceHash } from '../../lib/server/translation-source';
@@ -81,6 +81,8 @@ async function route(context:APIContext):Promise<Response>{
   }
   if(path[1]==='source'&&method==='POST'){
     if(path[2]==='listing'){const body=await bodyJson(request,200_000);const targetId=z.string().min(1).max(100).optional().parse((body as {targetId?:unknown}|null)?.targetId);const config=translationConfig(locals),ai=aiBinding(locals);return json(await prepareSourceListing(repo,body,targetId,config||ai?text=>extractFromText(text,config,ai):undefined));}
+    // Panel fotoğrafı buradan alıp tarayıcıda WebP'ye (en çok 1600 px) çevirir, sonra normal yüklemeyle saklar.
+    if(path[2]==='photo-file'){const body=z.object({url:z.string().max(800)}).parse(await bodyJson(request));const data=await fetchSourcePhoto(body.url);return new Response(data,{headers:{'Content-Type':imageKind(data)!,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
     if(path[2]==='photo'){const body=z.object({listingId:z.string().min(1).max(100),url:z.string().max(800)}).parse(await bodyJson(request));return json({photo:await importSourcePhoto(repo,body.listingId,body.url)},201);}
   }
   if(path[1]==='export'&&method==='GET')return json(await exportBackup(repo),200,{'Content-Disposition':`attachment; filename="ka-emlak-yedek-${new Date().toISOString().slice(0,10)}.json"`});

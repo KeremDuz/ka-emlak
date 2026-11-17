@@ -49,6 +49,15 @@ export const adminApi = {
   removePhoto: (id: string) => request(`/api/admin/upload/${encodeURIComponent(id)}`, json('DELETE')),
   export: () => request<Record<string, unknown>>('/api/admin/export'),
   sourceListing: (source: unknown) => request<{ listing: AdminListing; created: boolean; photos: string[]; aiFilled?: string[] }>('/api/admin/source/listing', json('POST', source)),
+  sourcePhotoFile: async (url: string) => {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    const token = await tokenProvider?.(); if (token) headers.set('Authorization', `Bearer ${token}`);
+    const response = await fetch('/api/admin/source/photo-file', { method: 'POST', headers, body: JSON.stringify({ url }), credentials: 'same-origin', cache: 'no-store' });
+    const type = response.headers.get('content-type') || '';
+    if (!response.ok || !type.startsWith('image/')) throw new ApiError('Fotoğraf portaldan alınamadı.', response.status);
+    const blob = await response.blob();
+    return new File([blob], `portal.${type.split('/')[1]}`, { type });
+  },
   sourcePhoto: (listingId: string, url: string) => request<{ photo: Photo }>('/api/admin/source/photo', json('POST', { listingId, url })),
   import: (data: unknown) => request<{ imported?: number; count?: number }>('/api/admin/import', json('POST', data)),
 };
