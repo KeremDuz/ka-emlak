@@ -36,22 +36,22 @@ export default function TranslationsField({ listingId, form, onChange }: { listi
     } catch { setMessage({ text: 'Çeviri şu anda yapılamadı. Bağlantınızı kontrol edip yeniden deneyin.', error: true }); }
     finally { setBusy(false); }
   };
-  return <div className="ad-full">
-    <button type="button" className="ad-advanced-toggle" aria-expanded={open} aria-controls="translation-fields" onClick={() => setOpen(!open)}><Languages size={17} /><span>Çeviriler (İngilizce ve Farsça)</span><small>{summary}</small></button>
-    {open && <div id="translation-fields" className="ad-advanced-fields ad-translations">
-      <p className="ad-help">İlanı yayınladığınızda İngilizce ve Farsça çevirisi kendiliğinden hazırlanır; bir şey yapmanız gerekmez. İsterseniz çeviriyi buradan okuyup düzeltebilirsiniz. Düzelttiğiniz çeviriye sonradan dokunulmaz.</p>
+  return <div className="kp-full">
+    <button type="button" className="kp-advanced-toggle" aria-expanded={open} aria-controls="translation-fields" onClick={() => setOpen(!open)}><Languages size={17} /><span>Çeviriler (İngilizce ve Farsça)</span><small>{summary}</small></button>
+    {open && <div id="translation-fields" className="kp-advanced-fields kp-translations">
+      <p className="kp-help">İlanı yayınladığınızda İngilizce ve Farsça çevirisi kendiliğinden hazırlanır; bir şey yapmanız gerekmez. İsterseniz çeviriyi buradan okuyup düzeltebilirsiniz. Düzelttiğiniz çeviriye sonradan dokunulmaz.</p>
       {translatedLocales.map((locale, index) => {
         const value = form.translations?.[locale]; const rtl = locale === 'fa';
-        return <section className="ad-translation" key={locale} aria-label={`${localeNames[locale]} çeviri`}>
-          <div className="ad-translation-heading"><h4>{localeNames[locale]}</h4><span className={`ad-translation-state ad-translation-${states[index]}`}>{stateLabels[states[index]]}</span></div>
-          <div className="ad-field"><label htmlFor={`translation-${locale}-title`}>{localeNames[locale]} başlık</label><input id={`translation-${locale}-title`} value={value?.title ?? ''} maxLength={180} lang={locale} dir={rtl ? 'rtl' : 'ltr'} disabled={busy} onChange={event => edit(locale, { title: event.target.value })} /></div>
-          <div className="ad-field"><label htmlFor={`translation-${locale}-description`}>{localeNames[locale]} açıklama</label><textarea id={`translation-${locale}-description`} value={value?.description ?? ''} maxLength={12000} rows={5} lang={locale} dir={rtl ? 'rtl' : 'ltr'} disabled={busy} onChange={event => edit(locale, { description: event.target.value })} /></div>
+        return <section className="kp-translation" key={locale} aria-label={`${localeNames[locale]} çeviri`}>
+          <div className="kp-translation-heading"><h4>{localeNames[locale]}</h4><span className={`kp-translation-state kp-translation-${states[index]}`}>{stateLabels[states[index]]}</span></div>
+          <div className="kp-field"><label htmlFor={`translation-${locale}-title`}>{localeNames[locale]} başlık</label><input id={`translation-${locale}-title`} value={value?.title ?? ''} maxLength={180} lang={locale} dir={rtl ? 'rtl' : 'ltr'} disabled={busy} onChange={event => edit(locale, { title: event.target.value })} /></div>
+          <div className="kp-field"><label htmlFor={`translation-${locale}-description`}>{localeNames[locale]} açıklama</label><textarea id={`translation-${locale}-description`} value={value?.description ?? ''} maxLength={12000} rows={5} lang={locale} dir={rtl ? 'rtl' : 'ltr'} disabled={busy} onChange={event => edit(locale, { description: event.target.value })} /></div>
         </section>;
       })}
-      <div className="ad-translation-actions">
-        {confirming ? <><span className="ad-help">Elle düzelttiğiniz çeviri silinip yeniden hazırlanacak.</span><button type="button" className="ad-button ad-button-small" onClick={() => void run()}>Evet, yeniden çevir</button><button type="button" className="ad-button ad-button-small ad-button-secondary" onClick={() => setConfirming(false)}>Vazgeç</button></>
-          : <button type="button" className="ad-button ad-button-small ad-button-secondary" disabled={busy} onClick={() => states.includes('edited') ? setConfirming(true) : void run()}>{busy ? <><LoaderCircle className="ad-spin" size={15} />Çevriliyor…</> : <><RefreshCw size={15} />{states.every(state => state === 'missing') ? 'Şimdi çevir' : 'Yeniden çevir'}</>}</button>}
-        {message && <span className={message.error ? 'ad-field-error' : 'ad-help'} role="status">{message.text}</span>}
+      <div className="kp-translation-actions">
+        {confirming ? <><span className="kp-help">Elle düzelttiğiniz çeviri silinip yeniden hazırlanacak.</span><button type="button" className="kp-button kp-button-small" onClick={() => void run()}>Evet, yeniden çevir</button><button type="button" className="kp-button kp-button-small kp-button-secondary" onClick={() => setConfirming(false)}>Vazgeç</button></>
+          : <button type="button" className="kp-button kp-button-small kp-button-secondary" disabled={busy} onClick={() => states.includes('edited') ? setConfirming(true) : void run()}>{busy ? <><LoaderCircle className="kp-spin" size={15} />Çevriliyor…</> : <><RefreshCw size={15} />{states.every(state => state === 'missing') ? 'Şimdi çevir' : 'Yeniden çevir'}</>}</button>}
+        {message && <span className={message.error ? 'kp-field-error' : 'kp-help'} role="status">{message.text}</span>}
       </div>
     </div>}
   </div>;

@@ -20,7 +20,8 @@ export async function withPreview<T>(fn:(state:PreviewState)=>T|Promise<T>, writ
   const deadline=Date.now()+5000;
   while(!lock) {
     try { lock=await fs.open(lockPath,'wx'); }
-    catch(error) { if((error as NodeJS.ErrnoException).code!=='EEXIST')throw error;const stat=await fs.stat(lockPath).catch(()=>null);if(stat&&Date.now()-stat.mtimeMs>60000){await fs.unlink(lockPath).catch(()=>undefined);continue;}if(Date.now()>deadline)throw new HttpError(503,'Önizleme meşgul; tekrar deneyin.','BUSY'); await new Promise(resolve=>setTimeout(resolve,20)); }
+    catch(error) { // Windows'ta silinmekte olan kilit dosyası EPERM/EBUSY verir; bu da 'kilit dolu' sayılır.
+      if(!['EEXIST','EPERM','EBUSY'].includes((error as NodeJS.ErrnoException).code??''))throw error;const stat=await fs.stat(lockPath).catch(()=>null);if(stat&&Date.now()-stat.mtimeMs>60000){await fs.unlink(lockPath).catch(()=>undefined);continue;}if(Date.now()>deadline)throw new HttpError(503,'Önizleme meşgul; tekrar deneyin.','BUSY'); await new Promise(resolve=>setTimeout(resolve,20)); }
   }
   try {
     let state:PreviewState;

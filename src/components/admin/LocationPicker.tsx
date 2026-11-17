@@ -45,9 +45,9 @@ export default function LocationPicker({ value, place, onChange }: { value: Poin
   };
   const clear = () => { marker.current?.remove(); marker.current = null; onChange({ latitude: undefined, longitude: undefined }); setMessage(''); };
   const marked = value.latitude !== undefined && value.longitude !== undefined;
-  return <div className="ad-location">
-    <div className="ad-inline-actions"><button type="button" className="ad-button ad-button-small ad-button-secondary" onClick={find} disabled={searching || !place.trim()}>{searching ? <LoaderCircle className="ad-spin" size={15} /> : <LocateFixed size={15} />}Mahalleyi haritada bul</button>{marked && <button type="button" className="ad-text-button" onClick={clear}><Trash2 size={14} />Konumu kaldır</button>}</div>
-    <div ref={container} className="ad-location-map" role="application" aria-label="İlan konumunu seçmek için harita. Konumu işaretlemek için dokunun." />
-    <p className="ad-help" aria-live="polite">{message || (marked ? 'Konum işaretli. Sitede yaklaşık 350 metrelik bir alan olarak gösterilir.' : 'Haritaya dokunarak ilanın bulunduğu bölgeyi işaretleyin. Tam adres sitede gösterilmez.')}</p>
+  return <div className="kp-location">
+    <div className="kp-inline-actions"><button type="button" className="kp-button kp-button-small kp-button-secondary" onClick={find} disabled={searching || !place.trim()}>{searching ? <LoaderCircle className="kp-spin" size={15} /> : <LocateFixed size={15} />}Mahalleyi haritada bul</button>{marked && <button type="button" className="kp-text-button" onClick={clear}><Trash2 size={14} />Konumu kaldır</button>}</div>
+    <div ref={container} className="kp-location-map" role="application" aria-label="İlan konumunu seçmek için harita. Konumu işaretlemek için dokunun." />
+    <p className="kp-help" aria-live="polite">{message || (marked ? 'Konum işaretli. Sitede yaklaşık 350 metrelik bir alan olarak gösterilir.' : 'Haritaya dokunarak ilanın bulunduğu bölgeyi işaretleyin. Tam adres sitede gösterilmez.')}</p>
   </div>;
 }
