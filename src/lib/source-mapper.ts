@@ -1,5 +1,6 @@
 import type { Currency, Listing, Period, PropertyType, Transaction } from './types';
 import { suggestDescription, suggestTitle } from './listing-helpers';
+import { MAX_FEATURES, MAX_PHOTOS } from './limits';
 
 export type SourceName = 'hepsiemlak' | 'sahibinden';
 /** "KA Emlak'a ekle" yer iminin hepsiemlak veya sahibinden ilan sayfasından okuduğu ham veri. */
@@ -16,6 +17,8 @@ export interface SourceListing {
   photos: string[];
   /** Sayfanın düz metni; portal tasarımı değişip bilgiler okunamazsa sunucuda yapay zekâ buradan çıkarır. */
   text?: string;
+  /** sahibinden "Özellikler" sekmesi: başlık → işaretli maddeler (Cephe, İç Özellikler, Muhit, Ulaşım…). */
+  properties?: Record<string, string[]>;
 }
 export type MappedListing = Pick<Listing, 'title' | 'transaction' | 'propertyType' | 'price' | 'currency' | 'period' | 'city' | 'district' | 'neighborhood' | 'grossArea' | 'netArea' | 'rooms' | 'bathrooms' | 'floor' | 'buildingAge' | 'description' | 'features' | 'sourceUrl'>;
 
@@ -36,7 +39,8 @@ export function isSourceListing(value: unknown): value is SourceListing {
     && typeof item.url === 'string' && item.url.startsWith(origins[item.source]) && sourceIdOf(item.url) === item.id
     && typeof item.title === 'string' && typeof item.price === 'string' && typeof item.description === 'string'
     && Array.isArray(item.breadcrumb) && Array.isArray(item.photos) && !!item.specs && typeof item.specs === 'object'
-    && (item.text === undefined || (typeof item.text === 'string' && item.text.length <= 20000));
+    && (item.text === undefined || (typeof item.text === 'string' && item.text.length <= 20000))
+    && (item.properties === undefined || (!!item.properties && typeof item.properties === 'object' && Object.values(item.properties).every(Array.isArray)));
 }
 
 // Fotoğraflar: yalnız portalın fotoğraf sunucusundaki bu ilanın galerisi, en büyük boyda.
@@ -49,7 +53,7 @@ const largest = (url: string) => url.replace(/\/mnresize\/\d+\/\d+\//, '/mnresiz
 export const smallerPhoto = (url: string) => url.replace('/mnresize/1600/1200/', '/mnresize/1200/900/').replace('/x16_', '/big_');
 export function sourcePhotos(source: Pick<SourceListing, 'source' | 'id' | 'photos'>) {
   const own = source.photos.filter(url => source.source === 'hepsiemlak' ? url.includes('/mnresize/') : url.includes(`_${source.id}`));
-  return [...new Set(own.map(largest).filter(isSourcePhoto))].slice(0, 12);
+  return [...new Set(own.map(largest).filter(isSourcePhoto))].slice(0, MAX_PHOTOS);
 }
 
 const digits = (value?: string) => { const found = (value ?? '').replace(/\D/g, ''); return found ? Number(found) : null; };
@@ -57,12 +61,14 @@ const area = (value?: string) => digits((value ?? '').replace(/m2|m²/gi, ''));
 const place = (value?: string) => (value ?? '').replace(/\s+(Kat Karşılığı Satılık|Satılık|Kiralık|Günlük Kiralık)$/i, '').replace(/\s+(Mh\.?|Mah\.?|Mahallesi)$/i, '').trim();
 const spec = (specs: Record<string, string>, name: string) => Object.entries(specs).find(([key]) => key.replace(/\s+/g, ' ').trim().startsWith(name))?.[1]?.trim() ?? '';
 const yes = (value: string) => /^(evet|var)$/i.test(value);
+/** Aynı özellik iki yerden (bilgi listesi ve Özellikler sekmesi) gelirse bir kez yazılır. */
+const unique = (items: string[]) => items.filter((item, index) => items.findIndex(other => other.toLocaleLowerCase('tr-TR') === item.toLocaleLowerCase('tr-TR')) === index);
 
 function homeType(kind: string): PropertyType { return /villa|yazlık|köşk|konak|müstakil|yalı|çiftlik/i.test(kind) ? 'villa' : /bina/i.test(kind) ? 'building' : 'apartment'; }
 function workType(kind: string): PropertyType { return /ofis|büro/i.test(kind) ? 'office' : /depo|antrepo/i.test(kind) ? 'warehouse' : /bina/i.test(kind) ? 'building' : 'commercial'; }
 /** Kaynak metindeki Markdown işaretlerini ve art arda tekrarlanan satırları temizler; sitede düz metin gösterilir. */
 export function cleanDescription(text: string) {
-  const lines = text.replace(/\*\*/g, '').replace(/^#{1,6}\s*/gm, '').replace(/^\s*-{3,}\s*$/gm, '').replace(/^\s*\* /gm, '• ').split('\n').map(line => line.trim());
+  const lines = text.replace(/\*\*/g, '').replace(/^#{1,6}\s*/gm, '').replace(/^\s*-{3,}\s*$/gm, '').replace(/^[ \t]*\*[ \t]+/gm, '• ').split('\n').map(line => line.trim());
   const result: string[] = [];
   for (const line of lines) if (!(line && line.length > 20 && result.includes(line))) result.push(line);
   return result.join('\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, 12000);
@@ -85,6 +91,21 @@ function fields(source: SourceListing) {
       yes(spec(specs, 'Krediye Uygun')) && 'Krediye uygun', spec(specs, 'Kullanım Durumu') === 'Kiracılı' && 'Kiracılı', yes(spec(specs, 'Site İçerisinde')) && 'Site içerisinde',
       yes(spec(specs, 'Balkon')) && 'Balkon', yes(spec(specs, 'Asansör')) && 'Asansör', /açık|kapalı/i.test(spec(specs, 'Otopark')) && 'Otopark',
     ].filter((item): item is string => !!item);
+    // Bilgi listesinde sitede ayrı alanı olmayan bilgiler de özellik olarak korunur; "Belirtilmemiş" atlanır.
+    const given = (name: string) => { const value = spec(specs, name); return value && !/^belirtilmemiş$/i.test(value) ? value : ''; };
+    const aidat = given('Aidat'), floors = given('Kat Sayısı');
+    features.push(...[
+      !/doğalgaz|kombi|klima/i.test(heating) && given('Isıtma') && `Isıtma: ${given('Isıtma')}`,
+      given('Mutfak') && `Mutfak: ${given('Mutfak')}`, floors && `Binada ${floors} kat`,
+      /d/.test(aidat) && `Aidat: ${aidat.replace(/s*TL$/i, '')} TL`, given('Tapu Durumu') && `Tapu: ${given('Tapu Durumu')}`,
+      given('Kullanım Durumu') === 'Boş' && 'Boş', yes(spec(specs, 'Takas')) && 'Takasa uygun',
+      given('Site Adı') && `Site: ${given('Site Adı')}`, given('Enerji Kimlik Belgesi') && `Enerji sınıfı: ${given('Enerji Kimlik Belgesi')}`,
+    ].filter((item): item is string => !!item));
+    // Cephe ve manzara tek satırda, öteki başlıkların her maddesi ayrı özellik.
+    for (const [group, items] of Object.entries(source.properties ?? {})) {
+      if (/^(cephe|manzara)$/i.test(group.trim())) features.push(`${group.trim()}: ${items.join(', ')}`.slice(0, 100));
+      else features.push(...items.map(item => item.slice(0, 100)));
+    }
     return {
       status: spec(specs, 'Durumu') || spec(specs, 'Emlak Tipi') || slugStatus,
       propertyType: category.includes('arsa') ? 'land' as const : /i[şs] ?yeri/.test(category) ? workType(kind) : category.includes('bina') ? 'building' as const : homeType(kind),
@@ -128,7 +149,7 @@ export function mapSource(source: SourceListing): MappedListing {
     rooms: spec(specs, 'Oda Sayısı').match(/(\d+)\s*\+\s*(\d+)/)?.slice(1, 3).join('+') ?? '',
     bathrooms: digits(spec(specs, 'Banyo Sayısı')), floor: spec(specs, 'Bulunduğu Kat'),
     buildingAge: /^(0|sıfır bina)$/i.test(age) ? 'Sıfır bina' : age,
-    description: cleanDescription(source.description), features: f.features, sourceUrl: source.url,
+    description: cleanDescription(source.description), features: unique(f.features).slice(0, MAX_FEATURES), sourceUrl: source.url,
   };
   mapped.title = suggestTitle(mapped).slice(0, 160);
   if (mapped.description.length < 30) mapped.description = suggestDescription(mapped);

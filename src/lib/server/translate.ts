@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { AdminListing, ListingTranslation, TranslatedLocale } from '../types';
 import { setting, type ServerLocals } from './env';
 import { HttpError } from './http';
+import { MAX_FEATURES } from '../limits';
 import type { Repository } from './repository';
 import { pendingLocales, sourceHash, translatedLocales, type TranslationSource } from './translation-source';
 
@@ -64,7 +65,7 @@ export function parseAnswer(content: string, source: TranslationSource, locale: 
   const parsed = answerSchema.safeParse(raw);
   if (!parsed.success) return 'bad_shape';
   const title = clamp(parsed.data.title, 180), description = clamp(parsed.data.description, 12000);
-  const features = parsed.data.features.map(item => clamp(item, 100)).filter(Boolean).slice(0, 50);
+  const features = parsed.data.features.map(item => clamp(item, 100)).filter(Boolean).slice(0, MAX_FEATURES);
   if (!title || source.description.trim() && !description) return 'empty';
   if (locale === 'fa' && !/[؀-ۿ]/.test(title + description)) return 'wrong_script';
   return { title, description, features };

@@ -7,6 +7,7 @@ import { storePhoto } from './uploads';
 import { suggestTitle } from '../listing-helpers';
 import { editable } from './validation';
 import { incomplete, type AiField } from './source-ai';
+import { MAX_FEATURES } from '../limits';
 
 /** Sayfa düz metninden eksik bilgileri çıkaran yapay zekâ (Gemini; yoksa Workers AI). Testlerde verilmez. */
 export type Extractor = (text: string) => Promise<Partial<Pick<MappedListing, AiField>>>;
@@ -24,6 +25,7 @@ export const sourceSchema = z.object({
   specs: z.record(z.string().max(160), z.string().max(400)).refine(value => Object.keys(value).length <= 80),
   description: z.string().max(20000),
   photos: z.array(z.string().max(800)).max(150),
+  properties: z.record(z.string().max(80), z.array(z.string().max(100)).max(80)).refine(value => Object.keys(value).length <= 20).optional(),
 });
 const current = (record: AdminListing): Listing => { const { draft, ...listing } = record; return { ...(draft ?? listing), version: record.version }; };
 
@@ -65,6 +67,9 @@ export async function prepareSourceListing(repo: Repository, value: unknown, tar
       if ((value === null || value === '' || value === 0) && !(key === 'price' && mapped.transaction === 'exchange')) continue;
       Object.assign(next, { [key]: value });
     }
+    // Portalda yeni işaretlenen özellikler eklenir; sitede eklenmiş ya da portalda kaldırılmış özellik silinmez.
+    const known = new Set(data.features.map(item => item.toLocaleLowerCase('tr-TR')));
+    next.features = [...data.features, ...mapped.features.filter(item => !known.has(item.toLocaleLowerCase('tr-TR')))].slice(0, MAX_FEATURES);
     const saved = await repo.save(existing.id, editable(next), existing.version);
     return { listing: saved, created: false, photos: data.photos.length ? [] : photos };
   }

@@ -18,7 +18,9 @@ var price=t(doc.querySelector('.classifiedPriceValue, .classifiedInfo h3'));
 var photos=attrs(doc.querySelector('.classifiedDetailPhotos')||doc,/shbdn\.com\/photos\//);
 // Arka planda indirilen sayfada galeri resimleri henüz yerleşmemiş olabilir; sayfa kaynağındaki (betikler dahil) bu ilana ait bütün fotoğraf adresleri de toplanır.
 ((doc.documentElement?doc.documentElement.innerHTML:'').replace(/\\\//g,'/').match(/https:\/\/i\d*\.shbdn\.com\/photos\/[\d\/]+[a-z0-9]+_\d{6,12}[a-z0-9]*\.(?:jpg|jpeg|avif|webp)/g)||[]).forEach(function(u){if(u.indexOf('_'+sid)>0&&photos.indexOf(u)<0&&photos.length<120)photos.push(u);});
-return {source:'sahibinden',url:'https://www.sahibinden.com'+path.replace(/\/$/,''),id:sid,title:(t(doc.querySelector('.classifiedDetailTitle h1'))||t(doc.querySelector('h1'))||doc.title||'').slice(0,300),price:(price.match(/[\d.,]+\s*(TL|EUR|USD|GBP|€|\$)/)||[price])[0].slice(0,80),breadcrumb:Array.prototype.map.call(doc.querySelectorAll('.classifiedLocation a, .classifiedInfo h2 a'),t),specs:s,description:lines(doc.querySelector('#classifiedDescription')),photos:photos,text:text};}
+return {source:'sahibinden',url:'https://www.sahibinden.com'+path.replace(/\/$/,''),id:sid,title:(t(doc.querySelector('.classifiedDetailTitle h1'))||t(doc.querySelector('h1'))||doc.title||'').slice(0,300),price:(price.match(/[\d.,]+\s*(TL|EUR|USD|GBP|€|\$)/)||[price])[0].slice(0,80),breadcrumb:Array.prototype.map.call(doc.querySelectorAll('.classifiedLocation a, .classifiedInfo h2 a'),t),specs:s,description:lines(doc.querySelector('#classifiedDescription')),photos:photos,text:text,properties:props(doc)};}
+// "Özellikler" sekmesi: başlık (Cephe, İç Özellikler, Muhit…) altında yalnız işaretli maddeler.
+function props(doc){var o={};doc.querySelectorAll('#classifiedProperties h3').forEach(function(h){var k=t(h),list=h.nextElementSibling;if(!k||!list)return;var v=Array.prototype.map.call(list.querySelectorAll('li.selected'),t).filter(Boolean).slice(0,80);if(v.length)o[k.slice(0,80)]=v;});return o;}
 function open(target){var w=window.open(target,'ka-emlak-panel');if(w)w.focus();else location.href=target;}
 function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function get(u){return fetch(u,{credentials:'include'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();}).then(function(h){return new DOMParser().parseFromString(h,'text/html');});}
@@ -43,7 +45,7 @@ say('Ofis sayfaları okunuyor…');collect(d);
 for(var p=2;p<=10;p++){var doc=await get(location.pathname+'?page='+p);if(!collect(doc))break;say('Ofis sayfaları okunuyor… '+seen.length+' ilan');await wait(500);}
 if(!seen.length){say('Bu sayfada ilan bulunamadı.');setTimeout(function(){box.remove();window.__kaSync=0;},5000);return;}
 var out=[];
-for(var i=0;i<seen.length;i++){say('İlanlar okunuyor '+(i+1)+'/'+seen.length);var r=null;try{r=he(await get(seen[i].path),seen[i].path);}catch(e){}if(!r)r=await frame(seen[i].path);if(r){r.photos=r.photos.filter(function(s){var m=s.match(/\/mnresize\/(\d+)\//);return m&&+m[1]>=400;}).slice(0,12);r.description=r.description.slice(0,8000);out.push(r);}await wait(600);}
+for(var i=0;i<seen.length;i++){say('İlanlar okunuyor '+(i+1)+'/'+seen.length);var r=null;try{r=he(await get(seen[i].path),seen[i].path);}catch(e){}if(!r)r=await frame(seen[i].path);if(r){r.photos=r.photos.filter(function(s){var m=s.match(/\/mnresize\/(\d+)\//);return m&&+m[1]>=400;}).slice(0,60);r.description=r.description.slice(0,8000);out.push(r);}await wait(600);}
 await send(box,out.length+'/'+seen.length+' ilan okundu.',{source:'hepsiemlak',office:office,seen:seen.map(function(s){return s.id;}),listings:out});
 }catch(e){say('Okuma yarıda kaldı: '+e.message+'. Sayfayı yenileyip tekrar deneyin.');window.__kaSync=0;}
 })();

@@ -85,3 +85,26 @@ describe('sahibinden listing page mapping', () => {
     expect(isSourceListing({ ...sahibinden, id: '29750-1' })).toBe(false);
   });
 });
+
+describe('a full sahibinden listing arrives complete', () => {
+  const hurma = JSON.parse(readFileSync(join(__dirname, 'fixtures', 'sahibinden-hurma.json'), 'utf8')) as SourceListing;
+  it('keeps every gallery photo in page order', () => {
+    const photos = sourcePhotos(hurma);
+    expect(photos).toHaveLength(26);
+    expect(photos[0]).toBe('https://i0.shbdn.com/photos/64/85/36/x16_1342648536ynb.jpg');
+  });
+  it('reads every field, the whole description and the Özellikler tab', () => {
+    const mapped = mapSource(hurma);
+    expect(mapped).toMatchObject({ transaction: 'sale', propertyType: 'apartment', price: 6500000, district: 'Konyaaltı', neighborhood: 'Hurma', grossArea: 100, netArea: 90, rooms: '2+1', bathrooms: 2, floor: '2', buildingAge: '11-15 arası' });
+    expect(mapped.description).toContain('Taşınmazın tüm detayları');
+    expect(mapped.description).toContain('• 4 katlı binanın 2. katı');
+    expect(mapped.features).toEqual(expect.arrayContaining(['Klima', 'Krediye uygun', 'Balkon', 'Asansör', 'Otopark', 'Mutfak: Açık (Amerikan)', 'Binada 4 kat', 'Tapu: Tapu Kaydı Yok', 'Boş',
+      'Cephe: Batı, Doğu, Kuzey', 'Manzara: Havuz', 'Çelik Kapı', 'Hilton Banyo', 'Kamera Sistemi', 'Market', 'Otobüs Durağı']));
+    // "Belirtilmemiş" ve sitede anlamı olmayan bilgiler (Kimden, Takas: Hayır) eklenmez.
+    expect(mapped.features.join(' ')).not.toMatch(/Belirtilmemiş|Emlak Ofisinden|Takas/);
+    expect(new Set(mapped.features.map(item => item.toLocaleLowerCase('tr-TR'))).size).toBe(mapped.features.length);
+    const listing = { ...newListing(), ...mapped, needsReview: false, photos: sourcePhotos(hurma).map((url, i) => ({ id: `p${i}`, url: `/images/p${i}.webp`, alt: '' })) };
+    expect(listingSchema.safeParse(listing).success).toBe(true);
+    expect(isSourceListing(hurma)).toBe(true);
+  });
+});

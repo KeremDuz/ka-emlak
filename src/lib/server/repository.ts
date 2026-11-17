@@ -1,3 +1,4 @@
+import { MAX_PHOTOS } from '../limits';
 import type { AdminListing, Inquiry, Listing, ListingTranslation, OfficeSettings, Photo, TranslatedLocale } from '../types';
 import { sourceHash } from './translation-source';
 import { isPreview, storageLimit, type ServerLocals } from './env';
@@ -83,7 +84,7 @@ export class Repository {
     const rows=await supabase<{id:string;listing_id:string;path:string;bytes:number;type:string;status:'pending'|'ready';created_at:string}[]>(this.locals,`/rest/v1/media_objects?id=eq.${encodeURIComponent(id)}&select=*&limit=1`);const row=rows[0];return row?{id:row.id,listingId:row.listing_id,path:row.path,bytes:row.bytes,type:row.type,status:row.status,createdAt:row.created_at}:undefined;
   }
   async reserve(media:MediaRecord){
-    if(this.preview)return withPreview(state=>{const current=state.media.reduce((sum,item)=>sum+item.bytes,0);if((current+media.bytes)/storageLimit(this.locals)>=.9)throw new HttpError(413,'Fotoğraf alanının %90 sınırına ulaşıldı.','STORAGE_QUOTA');if(state.media.filter(item=>item.listingId===media.listingId).length>=12)throw new HttpError(422,'Bir ilana en fazla 12 fotoğraf ekleyebilirsiniz.','PHOTO_LIMIT');state.media.push(media);},true);
+    if(this.preview)return withPreview(state=>{const current=state.media.reduce((sum,item)=>sum+item.bytes,0);if((current+media.bytes)/storageLimit(this.locals)>=.9)throw new HttpError(413,'Fotoğraf alanının %90 sınırına ulaşıldı.','STORAGE_QUOTA');if(state.media.filter(item=>item.listingId===media.listingId).length>=MAX_PHOTOS)throw new HttpError(422,`Bir ilana en fazla ${MAX_PHOTOS} fotoğraf ekleyebilirsiniz.`,'PHOTO_LIMIT');state.media.push(media);},true);
     await rpc(this.locals,'ka_reserve_media',{p_id:media.id,p_listing_id:media.listingId,p_path:media.path,p_bytes:media.bytes,p_type:media.type,p_limit:storageLimit(this.locals)});
   }
   async finalize(id:string){if(this.preview)return withPreview(state=>{const item=state.media.find(row=>row.id===id);if(item)item.status='ready';},true);await supabase(this.locals,`/rest/v1/media_objects?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:'ready'})});}

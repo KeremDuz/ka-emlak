@@ -1,3 +1,4 @@
+import { MAX_PHOTOS } from '../limits';
 import type { APIContext } from 'astro';
 import type { Photo } from '../types';
 import type { ServerLocals } from './env';
@@ -23,7 +24,7 @@ export async function storePhoto(repo:Repository,listingId:string,data:Uint8Arra
   if(!type)throw new HttpError(415,'JPEG, PNG veya WebP fotoğraf yükleyin. HEIC fotoğrafı önce JPEG olarak kaydedin.','IMAGE_TYPE');
   const listing=await repo.listing(listingId);
   if(listing.status==='trash')throw new HttpError(409,'Çöp kutusundaki ilana fotoğraf eklenemez.','TRASHED');
-  if((listing.draft??listing).photos.length>=12)throw new HttpError(422,'Bir ilana en fazla 12 fotoğraf ekleyebilirsiniz.','PHOTO_LIMIT');
+  if((listing.draft??listing).photos.length>=MAX_PHOTOS)throw new HttpError(422,`Bir ilana en fazla ${MAX_PHOTOS} fotoğraf ekleyebilirsiniz.`,'PHOTO_LIMIT');
   const id=crypto.randomUUID();const ext=type==='image/jpeg'?'jpg':type==='image/png'?'png':'webp';
   const media={id,listingId,path:`${listingId}/${id}.${ext}`,bytes:data.byteLength,type,status:'pending' as const,createdAt:new Date().toISOString()};
   await repo.reserve(media);

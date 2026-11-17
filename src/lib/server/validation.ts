@@ -1,3 +1,4 @@
+import { MAX_FEATURES, MAX_PHOTOS } from '../limits';
 import { z } from 'zod';
 import type { Listing, OfficeSettings } from '../types';
 import { HttpError } from './http';
@@ -6,7 +7,7 @@ import { roomsRequired } from '../listing-helpers';
 const text = (max: number) => z.string().max(max);
 const safeUrl = z.string().max(1500).refine(value => !value || value.startsWith('/') && !value.startsWith('//') || /^https:\/\//i.test(value), 'Güvenli bir adres girin.');
 export const photoSchema = z.object({ id: text(100), url: safeUrl, thumbnail: safeUrl.optional(), alt: text(200), storagePath: text(500).optional(), bytes: z.number().int().nonnegative().optional() });
-const translationSchema = z.object({ title: text(180), description: text(12000), features: z.array(text(100)).max(50), auto: z.boolean(), sourceHash: text(64).optional() });
+const translationSchema = z.object({ title: text(180), description: text(12000), features: z.array(text(100)).max(MAX_FEATURES), auto: z.boolean(), sourceHash: text(64).optional() });
 const httpsUrl = z.union([z.literal(''), z.string().max(500).regex(/^https:\/\/[^\s<>"']+$/)]);
 export const listingSchema = z.object({
   id: z.string().min(1).max(100), slug: z.string().max(250), title: text(180),
@@ -14,7 +15,7 @@ export const listingSchema = z.object({
   price: z.number().finite().nonnegative().max(1e13).nullable(), currency: z.enum(['TRY','EUR','USD']), period: z.enum(['total','day','week','month','year']),
   city: text(100), district: text(100), neighborhood: text(150), grossArea: z.number().finite().min(0).max(1e9), netArea: z.number().finite().min(0).max(1e9).nullable(),
   rooms: text(30), bathrooms: z.number().int().min(0).max(100).nullable(), floor: text(50), buildingAge: text(50), description: text(12000),
-  features: z.array(text(100)).max(50), photos: z.array(photoSchema).max(12), status: z.enum(['draft','published','sold','rented','archived','trash']), featured: z.boolean(),
+  features: z.array(text(100)).max(MAX_FEATURES), photos: z.array(photoSchema).max(MAX_PHOTOS), status: z.enum(['draft','published','sold','rented','archived','trash']), featured: z.boolean(),
   createdAt: z.string().datetime(), updatedAt: z.string().datetime(), version: z.number().int().positive(), sourceUrl: safeUrl.optional(), needsReview: z.boolean(),
   latitude: z.number().min(-90).max(90).optional(), longitude: z.number().min(-180).max(180).optional(),
   guests: z.number().int().min(1).max(100).nullable().optional(), pool: z.enum(['private', 'shared', 'none']).optional(), minNights: z.number().int().min(1).max(365).nullable().optional(),

@@ -14,9 +14,10 @@ import { extractFromText } from '../../lib/server/source-ai';
 import { aiBinding, ensureTranslations, translateTexts, translationConfig } from '../../lib/server/translate';
 import { sourceHash } from '../../lib/server/translation-source';
 import { notifyInquiry } from '../../lib/server/notify';
+import { MAX_FEATURES } from '../../lib/limits';
 
 export const prerender=false;
-const translateSource=z.object({title:z.string().max(180),description:z.string().max(12000),features:z.array(z.string().max(100)).max(50)});
+const translateSource=z.object({title:z.string().max(180),description:z.string().max(12000),features:z.array(z.string().max(100)).max(MAX_FEATURES)});
 const actions=z.enum(['publish','archive','sold','rented','trash','restore','duplicate','feature','price']);
 async function route(context:APIContext):Promise<Response>{
   const {request}=context;const url=new URL(request.url);const path=(context.params.path??'').split('/').filter(Boolean);const method=request.method;

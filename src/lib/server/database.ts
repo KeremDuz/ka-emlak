@@ -14,7 +14,7 @@ export async function supabase<T>(locals:ServerLocals,path:string,init:RequestIn
     const error=await response.json().catch(()=>({})) as {message?:string;code?:string};
     if(response.status===409||error.message==='VERSION_CONFLICT')throw new HttpError(409,'İlan başka bir sekmede değişti. Son sürümü yeniden yükleyin.','VERSION_CONFLICT');
     if(error.message==='STORAGE_QUOTA')throw new HttpError(413,'Fotoğraf alanının %90 sınırına ulaşıldı. Önce kullanılmayan fotoğrafları silin.','STORAGE_QUOTA');
-    if(error.message==='PHOTO_LIMIT')throw new HttpError(422,'Bir ilana en fazla 12 fotoğraf ekleyebilirsiniz.','PHOTO_LIMIT');
+    if(error.message==='PHOTO_LIMIT')throw new HttpError(422,'Bu ilanın fotoğraf sınırı doldu.','PHOTO_LIMIT');
     if(error.message==='RATE_LIMIT')throw new HttpError(429,'Çok fazla istek gönderildi. Biraz sonra tekrar deneyin.','RATE_LIMIT');
     if(response.status===404)throw new HttpError(404,'Kayıt bulunamadı.','NOT_FOUND');
     console.error(JSON.stringify({event:'supabase_failure',status:response.status,code:error.code}));
