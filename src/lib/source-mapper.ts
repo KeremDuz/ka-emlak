@@ -14,6 +14,8 @@ export interface SourceListing {
   specs: Record<string, string>;
   description: string;
   photos: string[];
+  /** Sayfanın düz metni; portal tasarımı değişip bilgiler okunamazsa sunucuda yapay zekâ buradan çıkarır. */
+  text?: string;
 }
 export type MappedListing = Pick<Listing, 'title' | 'transaction' | 'propertyType' | 'price' | 'currency' | 'period' | 'city' | 'district' | 'neighborhood' | 'grossArea' | 'netArea' | 'rooms' | 'bathrooms' | 'floor' | 'buildingAge' | 'description' | 'features' | 'sourceUrl'>;
 
@@ -33,7 +35,8 @@ export function isSourceListing(value: unknown): value is SourceListing {
   return !!item && (item.source === 'hepsiemlak' || item.source === 'sahibinden') && typeof item.id === 'string' && idPatterns[item.source].test(item.id)
     && typeof item.url === 'string' && item.url.startsWith(origins[item.source]) && sourceIdOf(item.url) === item.id
     && typeof item.title === 'string' && typeof item.price === 'string' && typeof item.description === 'string'
-    && Array.isArray(item.breadcrumb) && Array.isArray(item.photos) && !!item.specs && typeof item.specs === 'object';
+    && Array.isArray(item.breadcrumb) && Array.isArray(item.photos) && !!item.specs && typeof item.specs === 'object'
+    && (item.text === undefined || (typeof item.text === 'string' && item.text.length <= 20000));
 }
 
 // Fotoğraflar: yalnız portalın fotoğraf sunucusundaki bu ilanın galerisi, en büyük boyda.

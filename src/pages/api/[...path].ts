@@ -10,6 +10,7 @@ import { clearPublicDataCache, publicListing, publicPageSize } from '../../lib/s
 import { uploadPhoto } from '../../lib/server/uploads';
 import { exportBackup, importBackup } from '../../lib/server/backup';
 import { importSourcePhoto, prepareSourceListing } from '../../lib/server/source-import';
+import { extractFromText } from '../../lib/server/source-ai';
 import { aiBinding, ensureTranslations, translateTexts, translationConfig } from '../../lib/server/translate';
 import { sourceHash } from '../../lib/server/translation-source';
 
@@ -74,7 +75,7 @@ async function route(context:APIContext):Promise<Response>{
     if(method==='DELETE'&&path[2]){const media=(await repo.media()).find(item=>item.id===path[2]);if(!media)throw new HttpError(404,'Fotoğraf bulunamadı.');const used=(await repo.listings()).some(item=>[...item.photos,...(item.draft?.photos??[])].some(photo=>photo.id===media.id));if(used)throw new HttpError(409,'Önce fotoğrafı ilanlardan çıkarıp değişikliği kaydedin/yayınlayın.','PHOTO_IN_USE');await repo.removeMedia(media);return json({ok:true});}
   }
   if(path[1]==='source'&&method==='POST'){
-    if(path[2]==='listing'){const body=await bodyJson(request,200_000);const targetId=z.string().min(1).max(100).optional().parse((body as {targetId?:unknown}|null)?.targetId);return json(await prepareSourceListing(repo,body,targetId));}
+    if(path[2]==='listing'){const body=await bodyJson(request,200_000);const targetId=z.string().min(1).max(100).optional().parse((body as {targetId?:unknown}|null)?.targetId);const config=translationConfig(locals),ai=aiBinding(locals);return json(await prepareSourceListing(repo,body,targetId,config||ai?text=>extractFromText(text,config,ai):undefined));}
     if(path[2]==='photo'){const body=z.object({listingId:z.string().min(1).max(100),url:z.string().max(800)}).parse(await bodyJson(request));return json({photo:await importSourcePhoto(repo,body.listingId,body.url)},201);}
   }
   if(path[1]==='export'&&method==='GET')return json(await exportBackup(repo),200,{'Content-Disposition':`attachment; filename="ka-emlak-yedek-${new Date().toISOString().slice(0,10)}.json"`});

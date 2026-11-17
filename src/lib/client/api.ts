@@ -48,7 +48,7 @@ export const adminApi = {
   },
   removePhoto: (id: string) => request(`/api/admin/upload/${encodeURIComponent(id)}`, json('DELETE')),
   export: () => request<Record<string, unknown>>('/api/admin/export'),
-  sourceListing: (source: unknown) => request<{ listing: AdminListing; created: boolean; photos: string[] }>('/api/admin/source/listing', json('POST', source)),
+  sourceListing: (source: unknown) => request<{ listing: AdminListing; created: boolean; photos: string[]; aiFilled?: string[] }>('/api/admin/source/listing', json('POST', source)),
   sourcePhoto: (listingId: string, url: string) => request<{ photo: Photo }>('/api/admin/source/photo', json('POST', { listingId, url })),
   import: (data: unknown) => request<{ imported?: number; count?: number }>('/api/admin/import', json('POST', data)),
 };

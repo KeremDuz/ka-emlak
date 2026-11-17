@@ -1,13 +1,20 @@
 import { z } from 'zod';
 import type { AdminListing, Listing, Photo } from '../types';
-import { isSourceListing, isSourcePhoto, mapSource, sameSource, smallerPhoto, sourcePhotos, sourceUpdatable as updatable, type SourceListing } from '../source-mapper';
+import { isSourceListing, isSourcePhoto, mapSource, sameSource, smallerPhoto, sourcePhotos, sourceUpdatable as updatable, type MappedListing, type SourceListing } from '../source-mapper';
 import { HttpError } from './http';
 import { Repository } from './repository';
 import { storePhoto } from './uploads';
+import { suggestTitle } from '../listing-helpers';
 import { editable } from './validation';
+import { incomplete, type AiField } from './source-ai';
+
+/** Sayfa düz metninden eksik bilgileri çıkaran yapay zekâ (Gemini; yoksa Workers AI). Testlerde verilmez. */
+export type Extractor = (text: string) => Promise<Partial<Pick<MappedListing, AiField>>>;
 
 // "KA Emlak'a ekle" yer imi, ofisin kendi hepsiemlak veya sahibinden ilan sayfasından okuduğu veriyi gönderir.
 export const sourceSchema = z.object({
+  // Yer iminin gönderdiği sayfa düz metni: portal tasarımı değişip bilgiler okunamazsa yapay zekâ buradan çıkarır.
+  text: z.string().max(20000).optional(),
   source: z.enum(['hepsiemlak', 'sahibinden']),
   url: z.string().max(500).regex(/^https:\/\/www\.(hepsiemlak|sahibinden)\.com\/[^\s?#]+$/),
   id: z.string().regex(/^\d{1,12}(-\d{1,10})?$/),
@@ -16,7 +23,7 @@ export const sourceSchema = z.object({
   breadcrumb: z.array(z.string().max(160)).max(12),
   specs: z.record(z.string().max(160), z.string().max(400)).refine(value => Object.keys(value).length <= 80),
   description: z.string().max(20000),
-  photos: z.array(z.string().max(800)).max(60),
+  photos: z.array(z.string().max(800)).max(150),
 });
 const current = (record: AdminListing): Listing => { const { draft, ...listing } = record; return { ...(draft ?? listing), version: record.version }; };
 
@@ -34,7 +41,7 @@ async function locate(listing: Pick<Listing, 'neighborhood' | 'district' | 'city
  * İlanı oluşturur ya da sitede zaten varsa yapısal bilgilerini günceller: aynı portal numarası kendiliğinden eşleşir,
  * öteki portaldan gelmiş aynı mülk için panel targetId gönderir. Fotoğraflar ayrı isteklerle eklenir.
  */
-export async function prepareSourceListing(repo: Repository, value: unknown, targetId?: string) {
+export async function prepareSourceListing(repo: Repository, value: unknown, targetId?: string, extract?: Extractor) {
   const source = sourceSchema.parse(value) as SourceListing;
   if (!isSourceListing(source)) throw new HttpError(422, 'İlan numarası sayfa adresiyle uyuşmuyor.', 'SOURCE_MISMATCH');
   const mapped = mapSource(source);
@@ -61,10 +68,24 @@ export async function prepareSourceListing(repo: Repository, value: unknown, tar
     const saved = await repo.save(existing.id, editable(next), existing.version);
     return { listing: saved, created: false, photos: data.photos.length ? [] : photos };
   }
+  // Yeni ilanın önemli bilgileri okunamadıysa (portal tasarımı değişmiş olabilir) sayfa metninden yapay zekâyla tamamlanır.
+  // Yalnız boş alanlar doldurulur; ilan ofis kontrol edene kadar taslakta kalır. Var olan ilanlara yapay zekâ dokunmaz.
+  let filled: AiField[] = [];
+  if (extract && source.text && incomplete(mapped, source.description)) {
+    const found = await extract(source.text).catch((): Partial<Pick<MappedListing, AiField>> => ({}));
+    // Bilgi listesi hiç okunamadıysa (tasarım değişmiş) işlem ve gayrimenkul türü de varsayılandır; yapay zekânınki alınır.
+    const broken = Object.keys(source.specs).length === 0;
+    const blank = (key: AiField) => key === 'description' ? source.description.trim().length < 30
+      : (['transaction', 'propertyType', 'currency', 'period', 'city'] as AiField[]).includes(key) ? broken
+      : mapped[key] === null || mapped[key] === '' || mapped[key] === 0;
+    filled = (Object.keys(found) as AiField[]).filter(blank);
+    for (const key of filled) Object.assign(mapped, { [key]: found[key] });
+    if (filled.length) mapped.title = suggestTitle(mapped).slice(0, 160);
+  }
   const created = await repo.create();
   const coordinates = mapped.transaction === 'exchange' || !mapped.neighborhood ? {} : await locate(mapped);
-  const saved = await repo.save(created.id, editable({ ...current(created), ...mapped, ...coordinates, photos: [], needsReview: false }), created.version);
-  return { listing: saved, created: true, photos };
+  const saved = await repo.save(created.id, editable({ ...current(created), ...mapped, ...coordinates, photos: [], needsReview: filled.length > 0 }), created.version);
+  return { listing: saved, created: true, photos, aiFilled: filled };
 }
 
 async function download(url: string): Promise<Uint8Array<ArrayBuffer>> {

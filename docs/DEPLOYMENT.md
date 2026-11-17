@@ -53,6 +53,10 @@ Aynı yer imine hepsiemlak’taki **ofis sayfasındayken** (`/emlak-ofisi/ka-eml
 - **Sitedeki hiçbir ilan kaldırılmaz.** Ofisin bütün ilanları portallarda olmayabilir (sahibinden paketleri aylık ilan sayısını sınırlar); portalda olmayan ilan sitede kalır. İlan siteden yalnız panelden elle kaldırılır.
 - Her satır ayrı ayrı işaretlenip çıkarılabilir; hiçbir şey ofis “Seçilenleri uygula” demeden değişmez.
 
+### Portal tasarımı değişirse (yapay zekâ yedeği)
+
+Yer imi sahibinden ilan sayfasındaki bilgi listesini bulamazsa (ya da fiyat, m², ilçe, açıklama eksik kalırsa) sayfanın düz metnini de gönderir. Sunucu yeni ilan eklerken eksik alanları çeviride kullanılan Gemini ayarlarıyla (`TRANSLATE_*`, yedek Workers AI) bu metinden çıkarır (`src/lib/server/source-ai.ts`). Yalnız boş alanlar doldurulur, her sayı ve yer adı sayfada yazılı olmalıdır, açıklama yalnız birebir alınır. Böyle eklenen ilan yayınlanmaz; taslakta "kontrol bekliyor" olarak açılır. Var olan ilanların güncellenmesinde yapay zekâ kullanılmaz. Güvenlik doğrulaması sayfası ilan sayılmaz.
+
 ### Mağaza listesinden toplu aktarma (sahibinden)
 
 Aynı yer imi sahibinden’de mağazanın ilan listesinde de çalışır (mağazanın paylaşım bağlantısı `www.sahibinden.com/arama?storeId=…` sayfasını açar). Yer imi listedeki bütün ilanları (sonraki sayfalar dahil) toplar, sonra her ilanın sayfasını 2,5–4 saniye arayla okur; sahibinden art arda istekte bot denetimi gösterdiği için yavaş ilerler (10 ilan için yaklaşık yarım dakika). Bir ilan okunamazsa (ör. denetim çıkarsa) okumayı bırakır; o ana kadar okunanlar panelde hepsiemlak’taki gibi “Yeni ilanlar / Değişen ilanlar” olarak gelir, okunamayan ve sitede olmayanlar ise “Sayfası okunamayanlar” altında bağlantı olarak listelenir: ofis ilanı açıp yer imine basar. Siteye hepsiemlak’tan eklenmiş aynı mülk tür, ilçe, mahalle ve m²’den (±%3) bulunur. Günlük/haftalık kiralanan ilan portalda aylık fiyatla girilmiş olabileceğinden dönemi tutmayan fiyatlar karşılaştırılmaz.

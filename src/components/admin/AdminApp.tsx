@@ -299,7 +299,8 @@ function AdminPanel() {
     {sourcePayload && <SourceImportDialog payload={sourcePayload} listings={listings} notify={notify} onClose={() => setSourcePayload(null)} onDone={(listing, result) => {
       upsert(listing); setSourcePayload(null);
       const photoNote = result.failedPhotos ? ` ${result.failedPhotos} fotoğraf alınamadı.` : '';
-      if (result.published) setNotice({ text: `${result.created ? 'İlan siteye eklendi ve yayında.' : 'İlan güncellendi.'}${photoNote}`, kind: 'success', action: { label: 'Sitede gör', run: () => window.open(`/ilan/${listing.slug}`, '_blank') } });
+      if (result.aiFilled) { notify(`sahibinden sayfası tam okunamadı; eksik bilgiler yapay zekâyla tamamlandı. Yayınlamadan önce kontrol edin.${photoNote}`, 'info'); setCheckEditor(true); setEditor(listing); }
+      else if (result.published) setNotice({ text: `${result.created ? 'İlan siteye eklendi ve yayında.' : 'İlan güncellendi.'}${photoNote}`, kind: 'success', action: { label: 'Sitede gör', run: () => window.open(`/ilan/${listing.slug}`, '_blank') } });
       else if (result.error) { notify(`İlan taslak olarak eklendi; yayınlamak için eksik bilgi var: ${result.error}`, 'info'); setCheckEditor(true); setEditor(listing); }
       else notify(`İlan taslak olarak eklendi.${photoNote}`);
     }} />}
@@ -350,7 +351,7 @@ function SourceImportHint() {
   return <div className="kp-source-hint"><span className="kp-install-icon"><ArrowDownToLine size={20} /></span><div><strong>hepsiemlak ve sahibinden’den tek tıkla aktarın</strong><p>{clicked ? 'Bu düğmeye burada tıklamayın; tutup tarayıcınızın yer imleri çubuğuna sürükleyin.' : 'Sağdaki düğmeyi bir kez tarayıcınızın yer imleri çubuğuna sürükleyin. Sonra hepsiemlak veya sahibinden’de siteye eklemek istediğiniz ilanı açıp yer imindeki “KA Emlak’a ekle”ye tıklayın; ilan fotoğraflarıyla birlikte buraya gelir. Sitedeki ilanlarınız portallarda olmasa da silinmez. Düğmeyi daha önce sürüklediyseniz eskisini silip yenisini sürükleyin.'}</p></div><div className="kp-inline-actions"><a ref={link} className="kp-bookmarklet" draggable onClick={event => { event.preventDefault(); setClicked(true); }}>KA Emlak’a ekle</a><button className="kp-icon-button" aria-label="Kurulum kartını gizle" onClick={() => toggle(true)}><X size={17} /></button></div></div>;
 }
 
-type ImportResult = { listing: AdminListing; created: boolean; published: boolean; failedPhotos: number; error?: string };
+type ImportResult = { listing: AdminListing; created: boolean; published: boolean; failedPhotos: number; error?: string; aiFilled?: boolean };
 /** Portal ilanını oluşturur ya da günceller, fotoğrafları tek tek aktarır ve istenirse yayınlar. */
 async function importFromSource(payload: SourceListing & { targetId?: string }, publish: boolean, onProgress: (text: string) => void): Promise<ImportResult> {
   const prepared = await adminApi.sourceListing(payload);
@@ -360,7 +361,9 @@ async function importFromSource(payload: SourceListing & { targetId?: string }, 
     try { added.push((await adminApi.sourcePhoto(latest.id, url)).photo); } catch { failedPhotos++; }
   }
   if (added.length) { const data = editData(latest); latest = (await adminApi.save(latest.id, { ...data, photos: [...data.photos, ...added] }, latest.version)).listing; }
-  if (!publish) return { listing: latest, created: prepared.created, published: false, failedPhotos };
+  // Bilgilerin bir kısmı yapay zekâyla sayfa metninden tamamlandıysa ilan ofis kontrol edene kadar taslakta kalır.
+  const aiFilled = !!prepared.aiFilled?.length;
+  if (!publish || aiFilled) return { listing: latest, created: prepared.created, published: false, failedPhotos, aiFilled };
   onProgress('Yayınlanıyor…');
   try { return { listing: (await adminApi.action(latest, 'publish')).listing, created: prepared.created, published: true, failedPhotos }; }
   catch (error) { return { listing: latest, created: prepared.created, published: false, failedPhotos, error: errorMessage(error) }; }
@@ -435,7 +438,7 @@ const sourceFrom = { hepsiemlak: 'hepsiemlak’tan', sahibinden: 'sahibinden’d
 const sourceAt = { hepsiemlak: 'hepsiemlak’taki', sahibinden: 'sahibinden’deki' } as const;
 
 /** Yer iminden gelen hepsiemlak veya sahibinden ilanını önizler; onaylanınca ilanı oluşturur, fotoğrafları tek tek aktarır ve yayınlar. */
-function SourceImportDialog({ payload, listings, onClose, onDone, notify }: { payload: SourceListing; listings: AdminListing[]; onClose: () => void; onDone: (listing: AdminListing, result: { created: boolean; published: boolean; failedPhotos: number; error?: string }) => void; notify: (text: string, kind?: Notice['kind']) => void }) {
+function SourceImportDialog({ payload, listings, onClose, onDone, notify }: { payload: SourceListing; listings: AdminListing[]; onClose: () => void; onDone: (listing: AdminListing, result: ImportResult) => void; notify: (text: string, kind?: Notice['kind']) => void }) {
   const mapped = useMemo(() => mapSource(payload), [payload]);
   const photos = useMemo(() => sourcePhotos(payload), [payload]);
   const active = listings.filter(item => item.status !== 'trash');

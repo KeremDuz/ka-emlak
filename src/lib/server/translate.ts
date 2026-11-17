@@ -70,17 +70,17 @@ export function parseAnswer(content: string, source: TranslationSource, locale: 
   return { title, description, features };
 }
 
-function contentOf(body: unknown): string {
+export function contentOf(body: unknown): string {
   const content = (body as { choices?: { message?: { content?: unknown } }[] } | null)?.choices?.[0]?.message?.content;
   if (typeof content === 'string') return content;
   if (Array.isArray(content)) return content.map(part => typeof (part as { text?: unknown })?.text === 'string' ? (part as { text: string }).text : '').join('');
   return '';
 }
-function secureUrl(value: string): boolean {
+export function secureUrl(value: string): boolean {
   try { const url = new URL(value); return url.protocol === 'https:' || import.meta.env.DEV && url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname); } catch { return false; }
 }
-type Attempt = { content: string } | { error: string; retry: boolean };
-async function callProvider(config: TranslateConfig, messages: { role: string; content: string }[], fetcher: typeof fetch, timeoutMs: number): Promise<Attempt> {
+export type Attempt = { content: string } | { error: string; retry: boolean };
+export async function callProvider(config: TranslateConfig, messages: { role: string; content: string }[], fetcher: typeof fetch, timeoutMs: number): Promise<Attempt> {
   let response: Response;
   try {
     response = await fetcher(config.url, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${config.key}` }, body: JSON.stringify({ model: config.model, messages, temperature: 0.2, reasoning_effort: 'low' }), signal: AbortSignal.timeout(timeoutMs) });
