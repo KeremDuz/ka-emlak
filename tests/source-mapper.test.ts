@@ -63,6 +63,9 @@ describe('sahibinden listing page mapping', () => {
   });
   it('takes each gallery photo once at the largest JPEG size and skips other listings', () => {
     expect(sourcePhotos(sahibinden)).toEqual(['dz2', '0fv', 'ltf'].map(suffix => `https://i0.shbdn.com/photos/53/62/75/x16_1337536275${suffix}.jpg`));
+    // Liste küçük resimleri (lthmb) ve başka boy önekleri de aynı galeri fotoğrafının büyük boyuna çevrilir.
+    expect(sourcePhotos({ source: 'sahibinden', id: '1337530327', photos: ['https://i0.shbdn.com/photos/53/03/27/lthmb_1337530327okm.avif', 'https://i0.shbdn.com/photos/53/03/27/mthmb_1337530327okm.jpg', 'https://i0.shbdn.com/photos/53/03/27/x5_1336000000abc.jpg'] }))
+      .toEqual(['https://i0.shbdn.com/photos/53/03/27/x16_1337530327okm.jpg']);
   });
   it('spots the same property already imported from the other portal', () => {
     const fromHepsiemlak = { ...byId('29750-189'), sourceUrl: samples.find(item => item.id === '29750-189')!.url };

@@ -13,7 +13,10 @@ function he(doc,path){var id=(path.match(/(\d+-\d+)\/?$/)||[])[1];if(!id||!doc.q
 function sh(doc,path){var sid=(path.match(/-(\d{6,12})\/detay\/?$/)||[])[1];if(!sid||!doc.querySelector('.classifiedInfoList'))return null;
 var s={};doc.querySelectorAll('.classifiedInfoList .classifiedInfoItem, .classifiedInfoList li').forEach(function(r){var k=t(r.querySelector('dt,strong'));if(k)s[k]=t(r.querySelector('dd,span'));});
 var price=t(doc.querySelector('.classifiedPriceValue, .classifiedInfo h3'));
-return {source:'sahibinden',url:'https://www.sahibinden.com'+path.replace(/\/$/,''),id:sid,title:t(doc.querySelector('.classifiedDetailTitle h1')),price:(price.match(/[\d.,]+\s*(TL|EUR|USD|GBP|€|\$)/)||[price])[0].slice(0,80),breadcrumb:Array.prototype.map.call(doc.querySelectorAll('.classifiedLocation a, .classifiedInfo h2 a'),t),specs:s,description:lines(doc.querySelector('#classifiedDescription')),photos:attrs(doc.querySelector('.classifiedDetailPhotos')||doc,/shbdn\.com\/photos\//)};}
+var photos=attrs(doc.querySelector('.classifiedDetailPhotos')||doc,/shbdn\.com\/photos\//);
+// Arka planda indirilen sayfada galeri resimleri henüz yerleşmemiş olabilir; sayfa kaynağındaki (betikler dahil) bu ilana ait bütün fotoğraf adresleri de toplanır.
+((doc.documentElement?doc.documentElement.innerHTML:'').replace(/\\\//g,'/').match(/https:\/\/i\d*\.shbdn\.com\/photos\/[\d\/]+[a-z0-9]+_\d{6,12}[a-z0-9]*\.(?:jpg|jpeg|avif|webp)/g)||[]).forEach(function(u){if(u.indexOf('_'+sid)>0&&photos.indexOf(u)<0&&photos.length<120)photos.push(u);});
+return {source:'sahibinden',url:'https://www.sahibinden.com'+path.replace(/\/$/,''),id:sid,title:t(doc.querySelector('.classifiedDetailTitle h1')),price:(price.match(/[\d.,]+\s*(TL|EUR|USD|GBP|€|\$)/)||[price])[0].slice(0,80),breadcrumb:Array.prototype.map.call(doc.querySelectorAll('.classifiedLocation a, .classifiedInfo h2 a'),t),specs:s,description:lines(doc.querySelector('#classifiedDescription')),photos:photos};}
 function open(target){var w=window.open(target,'ka-emlak-panel');if(w)w.focus();else location.href=target;}
 function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function get(u){return fetch(u,{credentials:'include'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text();}).then(function(h){return new DOMParser().parseFromString(h,'text/html');});}
@@ -57,7 +60,7 @@ var next=d.querySelector('a.prevNextBut[title="Sonraki"]');
 for(var p=0;next&&p<10;p++){var u=new URL(next.getAttribute('href'),location.href);if(u.origin!==location.origin)break;await wait(1500);var nd=await get(u.href);if(!collectRows(nd))break;ssay('Mağaza sayfaları okunuyor… '+rows.length+' ilan');next=nd.querySelector('a.prevNextBut[title="Sonraki"]');}
 // İlan sayfaları yalnız www.sahibinden.com'dan okunabilir. Biri okunamazsa (ör. bot denetimi) sahibinden'e yüklenmemek için durulur.
 var out=[],stop=location.hostname!=='www.sahibinden.com';
-for(var i=0;i<rows.length&&!stop;i++){ssay('İlanlar okunuyor '+(i+1)+'/'+rows.length+'. sahibinden’e yük olmamak için yavaş ilerliyor.');var r=null;try{r=sh(await get(rows[i].path),rows[i].path);}catch(e){}if(r){r.photos=r.photos.slice(0,40);r.description=r.description.slice(0,8000);out.push(r);}else stop=true;if(i<rows.length-1)await wait(2500+Math.random()*1500);}
+for(var i=0;i<rows.length&&!stop;i++){ssay('İlanlar okunuyor '+(i+1)+'/'+rows.length+'. sahibinden’e yük olmamak için yavaş ilerliyor.');var r=null;try{r=sh(await get(rows[i].path),rows[i].path);}catch(e){}if(r){r.photos=r.photos.slice(0,120);r.description=r.description.slice(0,8000);out.push(r);}else stop=true;if(i<rows.length-1)await wait(2500+Math.random()*1500);}
 await send(sbox,out.length+'/'+rows.length+' ilan okundu.'+(out.length<rows.length?' Okunamayanlar panelde bağlantı olarak listelenecek.':''),{source:'sahibinden',office:store,seen:rows.map(function(x){return x.id;}),rows:rows.map(function(x){return {id:x.id,url:x.url,title:x.title,price:x.price};}),listings:out});
 }catch(e){ssay('Okuma yarıda kaldı: '+e.message+'. Sayfayı yenileyip tekrar deneyin.');window.__kaSync=0;}
 })();

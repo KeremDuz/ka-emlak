@@ -41,7 +41,7 @@ export function isSourceListing(value: unknown): value is SourceListing {
 const hepsiemlakPhoto = (url: URL) => /^hecdn[a-z0-9]*\.hemlak\.com$/.test(url.hostname) && /^\/mnresize\/\d+\/\d+\/ds01\//.test(url.pathname);
 const sahibindenPhoto = (url: URL) => /^i\d*\.shbdn\.com$/.test(url.hostname) && /^\/photos\/\d+\/\d+\/\d+\/(x16|big|x5|thmb)_\d{6,12}[a-z0-9]*\.jpg$/.test(url.pathname);
 export const isSourcePhoto = (value: string) => { try { const url = new URL(value); return url.protocol === 'https:' && (hepsiemlakPhoto(url) || sahibindenPhoto(url)); } catch { return false; } };
-const largest = (url: string) => url.replace(/\/mnresize\/\d+\/\d+\//, '/mnresize/1600/1200/').replace(/\/(thmb|x5|big|x16)_(\d+[a-z0-9]*)\.(?:jpg|jpeg|avif|webp)$/, '/x16_$2.jpg');
+const largest = (url: string) => url.replace(/\/mnresize\/\d+\/\d+\//, '/mnresize/1600/1200/').replace(/\/[a-z0-9]+_(\d{6,12}[a-z0-9]*)\.(?:jpg|jpeg|avif|webp)$/, '/x16_$1.jpg');
 /** Büyük boy 3 MB'yi aşarsa denenecek bir küçük boy. */
 export const smallerPhoto = (url: string) => url.replace('/mnresize/1600/1200/', '/mnresize/1200/900/').replace('/x16_', '/big_');
 export function sourcePhotos(source: Pick<SourceListing, 'source' | 'id' | 'photos'>) {
