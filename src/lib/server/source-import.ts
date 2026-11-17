@@ -89,8 +89,11 @@ export async function prepareSourceListing(repo: Repository, value: unknown, tar
 }
 
 async function download(url: string): Promise<Uint8Array<ArrayBuffer>> {
-  const response = await fetch(url, { redirect: 'error', headers: { Accept: 'image/jpeg,image/png,image/webp' }, signal: AbortSignal.timeout(20000) });
-  if (!response.ok || !response.body) throw new HttpError(502, 'Fotoğraf portaldan alınamadı.', 'SOURCE_PHOTO');
+  // Cloudflare Workers redirect:'error' desteklemez (TypeError verir); yönlendirme 'manual' ile alınıp başarısız sayılır.
+  let response: Response;
+  try { response = await fetch(url, { redirect: 'manual', headers: { Accept: 'image/jpeg,image/png,image/webp' }, signal: AbortSignal.timeout(20000) }); }
+  catch { throw new HttpError(502, 'Fotoğraf portaldan alınamadı.', 'SOURCE_PHOTO'); }
+  if (response.status !== 200 || !response.body) throw new HttpError(502, 'Fotoğraf portaldan alınamadı.', 'SOURCE_PHOTO');
   const declared = Number(response.headers.get('Content-Length') || 0);
   if (declared > 3_000_000) throw new HttpError(413, 'Fotoğraf çok büyük.', 'TOO_LARGE');
   const reader = response.body.getReader(); const chunks: Uint8Array[] = []; let size = 0;

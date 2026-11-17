@@ -301,7 +301,7 @@ function AdminPanel() {
       const photoNote = result.failedPhotos ? ` ${result.failedPhotos} fotoğraf alınamadı.` : '';
       if (result.aiFilled) { notify(`sahibinden sayfası tam okunamadı; eksik bilgiler yapay zekâyla tamamlandı. Yayınlamadan önce kontrol edin.${photoNote}`, 'info'); setCheckEditor(true); setEditor(listing); }
       else if (result.published) setNotice({ text: `${result.created ? 'İlan siteye eklendi ve yayında.' : 'İlan güncellendi.'}${photoNote}`, kind: 'success', action: { label: 'Sitede gör', run: () => window.open(`/ilan/${listing.slug}`, '_blank') } });
-      else if (result.error) { notify(`İlan taslak olarak eklendi; yayınlamak için eksik bilgi var: ${result.error}`, 'info'); setCheckEditor(true); setEditor(listing); }
+      else if (result.error) { notify(`İlan taslak olarak eklendi; yayınlamak için eksik bilgi var: ${result.error}${photoNote}`, 'info'); setCheckEditor(true); setEditor(listing); }
       else notify(`İlan taslak olarak eklendi.${photoNote}`);
     }} />}
     {/* Portföy yüklenmeden karşılaştırılırsa her ilan "yeni" görünür; yükleme bitmeden ya da hatalıyken açılmaz. */}
