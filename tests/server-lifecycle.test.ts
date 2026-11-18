@@ -33,7 +33,7 @@ describe('public filters and input boundaries',()=>{
  });
  it('rejects hostile URLs, negative prices, too many photos and spoofed image extensions',()=>{
   const listing=complete();expect(listingSchema.safeParse({...listing,price:-1}).success).toBe(false);
-  expect(listingSchema.safeParse({...listing,photos:Array(51).fill(listing.photos[0])}).success).toBe(false);
+  expect(listingSchema.safeParse({...listing,photos:Array(13).fill(listing.photos[0])}).success).toBe(false);
   expect(listingSchema.safeParse({...listing,photos:[{id:'x',url:'javascript:alert(1)',alt:''}]}).success).toBe(false);
   expect(imageKind(new TextEncoder().encode('<svg onload="alert(1)">'))).toBeNull();expect(imageKind(new Uint8Array([0xff,0xd8,0xff,0]))).toBe('image/jpeg');
  });

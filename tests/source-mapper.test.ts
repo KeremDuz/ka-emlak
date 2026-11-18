@@ -1,3 +1,4 @@
+import { MAX_PHOTOS } from '../src/lib/limits';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -88,9 +89,9 @@ describe('sahibinden listing page mapping', () => {
 
 describe('a full sahibinden listing arrives complete', () => {
   const hurma = JSON.parse(readFileSync(join(__dirname, 'fixtures', 'sahibinden-hurma.json'), 'utf8')) as SourceListing;
-  it('keeps every gallery photo in page order', () => {
+  it('takes the first gallery photos in page order, up to the limit', () => {
     const photos = sourcePhotos(hurma);
-    expect(photos).toHaveLength(26);
+    expect(photos).toHaveLength(MAX_PHOTOS);
     expect(photos[0]).toBe('https://i0.shbdn.com/photos/64/85/36/x16_1342648536ynb.jpg');
   });
   it('reads every field, the whole description and the Özellikler tab', () => {
