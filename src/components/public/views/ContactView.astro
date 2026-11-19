@@ -6,8 +6,9 @@ import InquiryForm from '../InquiryForm';
 import { getPublicData } from '../../../lib/server/data';
 import { dictionary } from '../../../i18n';
 import type { Locale } from '../../../lib/types';
-import { ArrowUpRight, Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
+import { ArrowUpRight, Clock, Globe, Mail, MapPin, MessageCircle, Phone, Users } from 'lucide-react';
 import { phoneLabel, whatsappUrl } from '../../../lib/format';
+import { directionsUrl, officeLinks, officeMapEmbed } from '../../../lib/office-links';
 interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const t = dictionary(locale);
@@ -25,11 +26,14 @@ const kind = Astro.url.searchParams.get('talep') === 'valuation' ? 'valuation' :
       <ul class="contact-methods">
         {settings.phone && <li class="contact-method"><Phone size={22} aria-hidden="true"/><div><strong>{t.pages.contact.phone}</strong><a href={`tel:${settings.phone}`} dir="ltr" class="contact-phone">{phoneLabel(settings.phone)}</a></div></li>}
         <li class="contact-method"><MessageCircle size={22} aria-hidden="true"/><div><strong>WhatsApp</strong><a href={whatsappUrl(settings.whatsapp, t.whatsapp.general)} target="_blank" rel="noreferrer">{t.pages.contact.whatsappSend} <ArrowUpRight size={16} aria-hidden="true"/></a></div></li>
-        <li class="contact-method"><MapPin size={22} aria-hidden="true"/><div><strong>{t.pages.contact.office}</strong><p>{settings.address || t.site.defaultAddress}</p><a class="minor" href="https://maps.google.com/?cid=14958480179694899845" target="_blank" rel="noreferrer">{t.pages.contact.directions} <ArrowUpRight size={15} aria-hidden="true"/></a></div></li>
+        <li class="contact-method"><MapPin size={22} aria-hidden="true"/><div><strong>{t.pages.contact.office}</strong><p>{settings.address || t.site.defaultAddress}</p><a class="minor" href={directionsUrl} target="_blank" rel="noreferrer">{t.pages.contact.directions} <ArrowUpRight size={15} aria-hidden="true"/></a><a class="minor" href={officeLinks.maps} target="_blank" rel="noreferrer">{t.pages.contact.viewOnMaps} <ArrowUpRight size={15} aria-hidden="true"/></a></div></li>
+        <li class="contact-method"><Users size={22} aria-hidden="true"/><div><strong>{t.pages.contact.follow}</strong><a href={officeLinks.whatsappChannel} target="_blank" rel="noreferrer">{t.pages.contact.whatsappChannel} <ArrowUpRight size={16} aria-hidden="true"/></a><a href={officeLinks.whatsappGroup} target="_blank" rel="noreferrer">{t.pages.contact.whatsappGroup} <ArrowUpRight size={16} aria-hidden="true"/></a><a href={officeLinks.facebook} target="_blank" rel="noreferrer">Facebook <ArrowUpRight size={16} aria-hidden="true"/></a></div></li>
         {instagram && <li class="contact-method"><InstagramIcon size={22}/><div><strong>Instagram</strong><a href={instagram} target="_blank" rel="noreferrer" dir="ltr">@{instagramHandle} <ArrowUpRight size={16} aria-hidden="true"/></a></div></li>}
         {settings.email && <li class="contact-method"><Mail size={22} aria-hidden="true"/><div><strong>{t.pages.contact.email}</strong><a href={`mailto:${settings.email}`} dir="ltr" class="contact-phone">{settings.email}</a></div></li>}
+        <li class="contact-method"><Globe size={22} aria-hidden="true"/><div><strong>{t.pages.contact.portals}</strong><a href={officeLinks.sahibinden} target="_blank" rel="noreferrer">sahibinden.com <ArrowUpRight size={16} aria-hidden="true"/></a><a href={officeLinks.hepsiemlak} target="_blank" rel="noreferrer">hepsiemlak <ArrowUpRight size={16} aria-hidden="true"/></a><a href={officeLinks.emlakjet} target="_blank" rel="noreferrer">emlakjet <ArrowUpRight size={16} aria-hidden="true"/></a></div></li>
         {settings.hours && <li class="contact-method"><Clock size={22} aria-hidden="true"/><div><strong>{t.pages.contact.hours}</strong><p>{settings.hours}</p></div></li>}
       </ul>
+      <div class="office-map"><iframe src={officeMapEmbed} title={t.pages.contact.mapTitle} loading="lazy" referrerpolicy="no-referrer"></iframe></div>
     </div>
     <InquiryForm kind={kind} heading="h2" locale={locale} t={t.form} client:load/>
   </section>

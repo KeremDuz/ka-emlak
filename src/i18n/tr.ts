@@ -169,7 +169,7 @@ export const tr = {
     about: { title: 'Hakkımızda', description: 'KA EMLAK, İshak Kahraman danışmanlığında Antalya’da konut, villa, arsa ve iş yeri alım, satım ve kiralama işlerine bakar.', h1: 'Hakkımızda' },
     contact: {
       title: 'İletişim', description: 'KA EMLAK’a telefon, WhatsApp ya da form ile ulaşın. Ofisimiz Konyaaltı, Antalya’dadır.', h1: 'İletişim',
-      phone: 'Telefon', whatsappSend: 'Mesaj gönderin', office: 'Ofis', directions: 'Yol tarifi alın', email: 'E-posta', hours: 'Çalışma saatleri',
+      phone: 'Telefon', whatsappSend: 'Mesaj gönderin', office: 'Ofis', directions: 'Yol tarifi alın', viewOnMaps: 'Google Haritalar’da görün ve yorum yapın', mapTitle: 'KA EMLAK ofisinin haritadaki yeri', follow: 'Bizi takip edin', whatsappChannel: 'WhatsApp kanalımız', whatsappGroup: 'Fırsat ilanları WhatsApp grubu', portals: 'Portallardaki ilanlarımız', email: 'E-posta', hours: 'Çalışma saatleri',
     },
     privacy: {
       title: 'Gizlilik ve aydınlatma',

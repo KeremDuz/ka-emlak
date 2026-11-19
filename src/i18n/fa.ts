@@ -167,7 +167,7 @@ export const fa: Dictionary = {
     about: { title: 'درباره ما', description: 'KA EMLAK با مشاوره İshak Kahraman، خرید، فروش و اجاره آپارتمان، ویلا، زمین و املاک تجاری را در آنتالیا انجام می‌دهد.', h1: 'درباره ما' },
     contact: {
       title: 'تماس با ما', description: 'از طریق تلفن، واتس‌اپ یا فرم با KA EMLAK در تماس باشید. دفتر ما در کنیاآلتی آنتالیا است.', h1: 'تماس با ما',
-      phone: 'تلفن', whatsappSend: 'پیام بدهید', office: 'دفتر', directions: 'مسیریابی', email: 'ایمیل', hours: 'ساعات کاری',
+      phone: 'تلفن', whatsappSend: 'پیام بدهید', office: 'دفتر', directions: 'مسیریابی', viewOnMaps: 'ما را در نقشه گوگل ببینید و نظر بدهید', mapTitle: 'موقعیت دفتر KA EMLAK روی نقشه', follow: 'ما را دنبال کنید', whatsappChannel: 'کانال واتس‌اپ ما', whatsappGroup: 'گروه واتس‌اپ فرصت‌های ملکی', portals: 'آگهی‌های ما در سایت‌های املاک', email: 'ایمیل', hours: 'ساعات کاری',
     },
     privacy: {
       title: 'حریم خصوصی',

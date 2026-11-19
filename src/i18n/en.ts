@@ -166,7 +166,7 @@ export const en: Dictionary = {
     about: { title: 'About us', description: 'KA EMLAK, led by consultant İshak Kahraman, handles the sale, purchase and letting of homes, villas, land and commercial property in Antalya.', h1: 'About us' },
     contact: {
       title: 'Contact', description: 'Reach KA EMLAK by phone, WhatsApp or the contact form. Our office is in Konyaaltı, Antalya.', h1: 'Contact',
-      phone: 'Phone', whatsappSend: 'Send a message', office: 'Office', directions: 'Get directions', email: 'Email', hours: 'Opening hours',
+      phone: 'Phone', whatsappSend: 'Send a message', office: 'Office', directions: 'Get directions', viewOnMaps: 'See us on Google Maps and leave a review', mapTitle: 'Location of the KA EMLAK office on the map', follow: 'Follow us', whatsappChannel: 'Our WhatsApp channel', whatsappGroup: 'WhatsApp group for listing deals', portals: 'Our listings on property portals', email: 'Email', hours: 'Opening hours',
     },
     privacy: {
       title: 'Privacy notice',
