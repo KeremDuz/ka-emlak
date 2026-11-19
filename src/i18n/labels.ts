@@ -1,6 +1,6 @@
 import type { Currency, Locale, Period, Pool, PropertyType, Transaction } from '../lib/types';
 
-/** İlan verisindeki sabit değerlerin (tür, dönem, havuz…) üç dildeki karşılıkları.
+/** İlan verisindeki sabit değerlerin (tür, dönem, havuz…) her dildeki karşılıkları.
     src/lib/format.ts bu tabloyu kullanır; yönetim paneli de format.ts'i yüklediği için dosya küçük tutulur. */
 export interface LabelSet {
   transaction: Record<Transaction, string>;
@@ -37,6 +37,36 @@ export const labelSets: Record<Locale, LabelSet> = {
     priceAsk: 'Price on request',
     currency: { TRY: '', EUR: '', USD: '' },
     area: '{n} m²',
+  },
+  de: {
+    transaction: { sale: 'Zum Kauf', rent: 'Zur Miete', exchange: 'Grundstück gegen Wohnungen' },
+    seasonal: { day: 'Tagesmiete', week: 'Wochenmiete' },
+    property: { apartment: 'Wohnung', villa: 'Villa', land: 'Grundstück', office: 'Büro', commercial: 'Gewerbefläche', building: 'Gebäude', warehouse: 'Lager' },
+    period: { total: '', day: '/ Tag', week: '/ Woche', month: '/ Monat', year: '/ Jahr' },
+    pool: { private: 'Privater Pool', shared: 'Gemeinschaftspool', none: 'Kein Pool' },
+    priceAsk: 'Preis auf Anfrage',
+    currency: { TRY: '', EUR: '', USD: '' },
+    area: '{n} m²',
+  },
+  ru: {
+    transaction: { sale: 'Продажа', rent: 'Аренда', exchange: 'Земля за квартиры' },
+    seasonal: { day: 'Посуточная аренда', week: 'Понедельная аренда' },
+    property: { apartment: 'Квартира', villa: 'Вилла', land: 'Земельный участок', office: 'Офис', commercial: 'Коммерческое помещение', building: 'Здание', warehouse: 'Склад' },
+    period: { total: '', day: '/ сутки', week: '/ неделя', month: '/ месяц', year: '/ год' },
+    pool: { private: 'Собственный бассейн', shared: 'Общий бассейн', none: 'Без бассейна' },
+    priceAsk: 'Цена по запросу',
+    currency: { TRY: '', EUR: '', USD: '' },
+    area: '{n} м²',
+  },
+  ar: {
+    transaction: { sale: 'للبيع', rent: 'للإيجار', exchange: 'أرض مقابل شقق' },
+    seasonal: { day: 'إيجار يومي', week: 'إيجار أسبوعي' },
+    property: { apartment: 'شقة', villa: 'فيلا', land: 'أرض', office: 'مكتب', commercial: 'محل تجاري', building: 'مبنى', warehouse: 'مستودع' },
+    period: { total: '', day: '/ يوم', week: '/ أسبوع', month: '/ شهر', year: '/ سنة' },
+    pool: { private: 'مسبح خاص', shared: 'مسبح مشترك', none: 'بدون مسبح' },
+    priceAsk: 'السعر عند الطلب',
+    currency: { TRY: '', EUR: '', USD: '' },
+    area: '{n} م²',
   },
   fa: {
     transaction: { sale: 'فروشی', rent: 'اجاره‌ای', exchange: 'مشارکت در ساخت' },

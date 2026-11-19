@@ -1,4 +1,7 @@
 import type { InvestmentContent, Localized } from './types';
+import { de } from './locales/de';
+import { ru } from './locales/ru';
+import { ar } from './locales/ar';
 
 export const yatirim: Localized<InvestmentContent> = {
   tr: {
@@ -48,4 +51,8 @@ export const yatirim: Localized<InvestmentContent> = {
       'مقررات مربوط به تابعیت، اجازهٔ اقامت، مالیات و مالکیت اتباع خارجی تغییر می‌کند. پیش از تصمیم‌گیری، وضعیت روز را از یک وکیل بپرسید.',
     ],
   },
+  // Almanca, Rusça ve Arapça metinler src/content/locales/ altındadır.
+  de: de.yatirim,
+  ru: ru.yatirim,
+  ar: ar.yatirim,
 };

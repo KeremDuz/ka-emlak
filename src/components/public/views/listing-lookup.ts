@@ -3,7 +3,7 @@ import type { ServerLocals } from '../../../lib/server/env';
 import { listingUrl } from '../../../lib/format';
 import type { Locale } from '../../../lib/types';
 
-/** İlan sayfasının üç dildeki rotası aynı aramayı kullanır. Yönlendirme ve durum kodu sayfa dosyasında verilir
+/** İlan sayfasının bütün dillerdeki rotası aynı aramayı kullanır. Yönlendirme ve durum kodu sayfa dosyasında verilir
     (bir bileşen akış başladıktan sonra yanıt kodunu değiştiremez), bu yüzden arama bileşenin dışında yapılır. */
 export async function lookupListing(locals: unknown, slug: string | undefined, locale: Locale) {
   const data = await getPublicData(locals as ServerLocals);

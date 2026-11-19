@@ -65,7 +65,7 @@ Aynı yer imi sahibinden’de mağazanın ilan listesinde de çalışır (mağaz
 
 ## Otomatik çeviri (isteğe bağlı)
 
-İlan yayınlanınca başlık, açıklama ve özellikler İngilizce ve Farsçaya kendiliğinden çevrilir. Üç değer gerekir; Cloudflare Worker secret olarak siz girersiniz (sohbete ya da koda yazmayın):
+İlan yayınlanınca başlık, açıklama ve özellikler İngilizce, Almanca, Rusça, Arapça ve Farsçaya kendiliğinden çevrilir. Üç değer gerekir; Cloudflare Worker secret olarak siz girersiniz (sohbete ya da koda yazmayın):
 
 - `TRANSLATE_API_URL`: `https://generativelanguage.googleapis.com/v1beta/openai/chat/completions` (Google AI Studio, OpenAI uyumlu tam adres)
 - `TRANSLATE_API_KEY`: AI Studio'dan aldığınız anahtar
@@ -108,7 +108,7 @@ Onay ve olaylar:
 - Yeni bir form başarı ya da başarısızlıkta şunu gönderir (onay yoksa olay sessizce atılır):
   `window.dispatchEvent(new CustomEvent('ka:track', { detail: { name: 'form_submit', params: { form: 'land', success: true } } }))`
   Kod içinden aynısı: `import { track } from '../../lib/analytics'; track('form_submit', { form: 'land', success: true })`.
-- Yasal metinler `src/content/legal.ts` içindedir (`/kvkk`, `/gizlilik`, `/cerezler`; üç dilde). Bunlar taslaktır: yer tutucular ([VERİ SORUMLUSU UNVANI], [ADRES], [E-POSTA], [VERGİ/MERSİS NO], `PLACEHOLDER_DATE`) doldurulmalı ve metin yayından önce avukata gösterilmelidir.
+- Yasal metinler `src/content/legal.ts` içindedir (`/kvkk`, `/gizlilik`, `/cerezler`; altı dilde). Bunlar taslaktır: yer tutucular ([VERİ SORUMLUSU UNVANI], [ADRES], [E-POSTA], [VERGİ/MERSİS NO], `PLACEHOLDER_DATE`) doldurulmalı ve metin yayından önce avukata gösterilmelidir.
 - `Content-Security-Policy-Report-Only` başlığı gönderilir (engellemez). Tarayıcı konsolunda ihlal görünmüyorsa ileride `Content-Security-Policy` olarak zorlanabilir.
 
 ## Yayın öncesi kontroller
@@ -137,7 +137,7 @@ Asıl ve tek adres `kaemlak.com`'dur (kaemlak.com.tr alınmadı). `www.kaemlak.c
 
 - Arama sayfaları: `/satilik`, `/kiralik` (aylık/yıllık), `/donemlik-kiralik` (günlük/haftalık) ve ilçe sayfaları `/satilik/konyaalti`, `/kiralik/muratpasa` gibi. İlçe sayfası o ilçede yayında ilan varken açılır, yoksa 404 verir. Üç dilde de vardır (`/en/satilik`, `/fa/kiralik/...`).
 - Başlık ve açıklamalar `src/i18n/{tr,en,fa}.ts` içinde `pages.sale`, `pages.rent`, `pages.seasonal` altındadır.
-- Site haritası bu sayfaları, ilanları (son güncellenme tarihiyle) ve üç dil karşılığını içerir.
+- Site haritası bu sayfaları, ilanları (son güncellenme tarihiyle) ve altı dil karşılığını içerir.
 - Yapısal veri: ana sayfada RealEstateAgent (hizmet bölgeleri, diller, portal sayfası) ve WebSite; ilan sayfasında RealEstateListing + Offer ve BreadcrumbList.
 - Yerel aramada en etkili adım Google İşletme Profili'dir (Google Haritalar). Ofis adına açılıp siteye bağlanmalı ve müşteri yorumları orada toplanmalıdır.
 

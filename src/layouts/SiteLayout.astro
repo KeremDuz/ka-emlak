@@ -25,8 +25,10 @@ const navigation = [['/', t.nav.home], ['/ilanlar', t.nav.listings], ['/donemlik
 // İlan sayfalarında da "İlanlar" menüsü seçili görünür.
 const current = (to: string) => to === '/' ? path === '/' : path === to || path.startsWith(to === '/ilanlar' ? '/ilan' : `${to}/`);
 const phoneHref = settings.phone ? `tel:${settings.phone}` : href('/iletisim');
-// Farsça yazı tipi yalnız Farsça sayfalarda yüklenir.
-const fonts = `https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400&family=Manrope:wght@400..800${locale === 'fa' ? '&family=Vazirmatn:wght@400..800' : ''}&display=swap`;
+// Farsça (Vazirmatn) ve Arapça (Noto Naskh Arabic + Noto Sans Arabic) yazı tipleri yalnız o dilin sayfalarında yüklenir.
+// Lora ve Manrope Kiril harflerini de içerir; Rusça için ek yazı tipi gerekmez.
+const scriptFonts: Partial<Record<Locale, string>> = { fa: '&family=Vazirmatn:wght@400..800', ar: '&family=Noto+Naskh+Arabic:wght@400..700&family=Noto+Sans+Arabic:wght@400..800' };
+const fonts = `https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..600;1,400&family=Manrope:wght@400..800${scriptFonts[locale] ?? ''}&display=swap`;
 // Ölçüm kodu ve Search Console doğrulaması derleme sırasında PUBLIC_ değişkenlerinden gelir; boşsa hiçbir şey eklenmez.
 const gaId = validMeasurementId(import.meta.env.PUBLIC_GA_MEASUREMENT_ID);
 const siteVerification = (import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '').trim();

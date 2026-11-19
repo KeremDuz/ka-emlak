@@ -1,4 +1,7 @@
 import type { CareerContent, Localized } from './types';
+import { de } from './locales/de';
+import { ru } from './locales/ru';
+import { ar } from './locales/ar';
 
 // Ofisin Instagram'daki danışman alımı duyurusundan (5 Kasım 2026). Başvuru telefonla ya da WhatsApp'tan alınır; formu yoktur.
 const PHONE = '0532 224 76 58';
@@ -99,4 +102,8 @@ export const kariyer: Localized<CareerContent> = {
     whatsappLabel: 'پیام در واتس‌اپ',
     whatsappMessage: 'سلام، می‌خواهم برای موقعیت مشاور املاک درخواست بدهم.',
   },
+  // Almanca, Rusça ve Arapça metinler src/content/locales/ altındadır.
+  de: de.kariyer,
+  ru: ru.kariyer,
+  ar: ar.kariyer,
 };

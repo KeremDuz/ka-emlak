@@ -1,4 +1,7 @@
 import type { LandFormContent, Localized } from './types';
+import { de } from './locales/de';
+import { ru } from './locales/ru';
+import { ar } from './locales/ar';
 
 export const arsaFormu: Localized<LandFormContent> = {
   tr: {
@@ -238,4 +241,8 @@ export const arsaFormu: Localized<LandFormContent> = {
       tooMany: 'در زمانی کوتاه بیش از اندازه تلاش شده است. کمی بعد دوباره امتحان کنید.',
     },
   },
+  // Almanca, Rusça ve Arapça metinler src/content/locales/ altındadır.
+  de: de.arsaFormu,
+  ru: ru.arsaFormu,
+  ar: ar.arsaFormu,
 };

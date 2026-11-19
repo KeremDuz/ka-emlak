@@ -18,13 +18,13 @@ export const listingSchema = z.object({
   createdAt: z.string().datetime(), updatedAt: z.string().datetime(), version: z.number().int().positive(), sourceUrl: safeUrl.optional(), needsReview: z.boolean(),
   latitude: z.number().min(-90).max(90).optional(), longitude: z.number().min(-180).max(180).optional(),
   guests: z.number().int().min(1).max(100).nullable().optional(), pool: z.enum(['private', 'shared', 'none']).optional(), minNights: z.number().int().min(1).max(365).nullable().optional(),
-  translations: z.object({ en: translationSchema.optional(), fa: translationSchema.optional() }).optional(),
+  translations: z.object({ en: translationSchema.optional(), de: translationSchema.optional(), ru: translationSchema.optional(), ar: translationSchema.optional(), fa: translationSchema.optional() }).optional(),
   videoUrl: httpsUrl.optional(), tourUrl: httpsUrl.optional(), investment: z.boolean().optional(),
 });
 export const settingsSchema = z.object({ name: text(100), advisor: text(100), phone: text(50), whatsapp: text(50), email: z.union([z.literal(''),z.string().email().max(200)]), address: text(400), hours: text(200), about: text(4000), heroImage: safeUrl, instagram: safeUrl, licenseNumber: text(100) });
 // Arsa ve kentsel dönüşüm başvurularının ek alanları; sınırlar depolamayı ve paneli korur.
 const inquiryDetails = z.record(z.string().min(1).max(40), z.string().max(300)).refine(value => Object.keys(value).length <= 12, 'En fazla 12 ek bilgi gönderilebilir.');
-export const inquirySchema =z.object({ name: z.string().trim().min(2).max(100), phone: z.string().trim().min(10).max(30).regex(/^[+\d\s()-]+$/), message: text(2000).default(''), listingId: text(100).optional(), kind: z.enum(['callback','valuation','land','renewal']), details: inquiryDetails.optional(), locale: z.enum(['tr','en','fa']).optional(), website: text(1000).optional(), startedAt: z.number().optional(), consent: z.literal(true) });
+export const inquirySchema =z.object({ name: z.string().trim().min(2).max(100), phone: z.string().trim().min(10).max(30).regex(/^[+\d\s()-]+$/), message: text(2000).default(''), listingId: text(100).optional(), kind: z.enum(['callback','valuation','land','renewal']), details: inquiryDetails.optional(), locale: z.enum(['tr','en','de','ru','ar','fa']).optional(), website: text(1000).optional(), startedAt: z.number().optional(), consent: z.literal(true) });
 export const editable = (value: unknown): Listing => listingSchema.parse(value);
 export const office = (value: unknown): OfficeSettings => settingsSchema.parse(value);
 export function assertPublishable(listing: Listing) {

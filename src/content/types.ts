@@ -1,6 +1,6 @@
 // Site içerikleri için ortak tipler. Yalnız düz veri; uygulamadan içe aktarma yok.
 
-export type Locale = 'tr' | 'en' | 'fa';
+export type Locale = 'tr' | 'en' | 'de' | 'ru' | 'ar' | 'fa';
 
 /** Her dilde aynı yapıda içerik. */
 export type Localized<T> = Record<Locale, T>;
@@ -139,4 +139,14 @@ export interface LegalContent {
   kvkk: LegalDocument;
   privacy: LegalDocument;
   cookies: CookieDocument;
+}
+
+/** Bir dildeki bütün sayfa metinleri. Türkçe, İngilizce ve Farsça kendi dosyalarında; sonradan eklenen diller (de, ru, ar) `locales/` altında tek dosyadadır. */
+export interface PageContents {
+  katKarsiligi: OwnerPageContent;
+  kentselDonusum: OwnerPageContent;
+  yatirim: InvestmentContent;
+  arsaFormu: LandFormContent;
+  kariyer: CareerContent;
+  legal: LegalContent;
 }

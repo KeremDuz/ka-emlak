@@ -1,4 +1,7 @@
 import type { LegalContent, Localized } from './types';
+import { de } from './locales/de';
+import { ru } from './locales/ru';
+import { ar } from './locales/ar';
 
 // TASLAK: Bu metinler yayından önce bir avukat tarafından gözden geçirilmelidir.
 // Doldurulacak yer tutucular: [VERİ SORUMLUSU UNVANI], [ADRES], [E-POSTA], [VERGİ/MERSİS NO], PLACEHOLDER_DATE.
@@ -10,7 +13,7 @@ const PHONE = '0532 224 76 58';
 const PHONE_FA = `⁦${PHONE}⁩`;
 
 const NOTE_TR =
-  'Bu metnin İngilizce ve Farsça çevirileri bilgi amaçlıdır. Metinler arasında fark olursa Türkçe metin esas alınır.';
+  'Bu metnin başka dillerdeki çevirileri bilgi amaçlıdır. Metinler arasında fark olursa Türkçe metin esas alınır.';
 const NOTE_EN =
   'This English text is a courtesy translation. If there is any difference between the versions, the Turkish text prevails.';
 const NOTE_FA =
@@ -672,4 +675,8 @@ export const legal: Localized<LegalContent> = {
       },
     },
   },
+  // Almanca, Rusça ve Arapça metinler src/content/locales/ altındadır.
+  de: de.legal,
+  ru: ru.legal,
+  ar: ar.legal,
 };

@@ -20,7 +20,7 @@ export default function PropertyCard({ listing, priority = false, locale, t }: {
       </div>
       <div className="property-body">
         <p className="property-location"><MapPin size={15} aria-hidden="true" />{[listing.neighborhood, listing.district].filter(Boolean).join(', ')}</p>
-        {/* Çevirisi olmayan başlık Türkçe kalır; dir="auto" Farsça sayfada Latin başlığı soldan başlatır. */}
+        {/* Çevirisi olmayan başlık Türkçe kalır; dir="auto" Farsça ve Arapça sayfada Latin başlığı soldan başlatır. */}
         <h3 className="property-title" dir="auto">{title}</h3>
         <div className="property-price">{priceLabel(listing, locale)}{suffix && <small>{suffix}</small>}</div>
         <div className="property-details">

@@ -1,5 +1,6 @@
 import type { Inquiry, Listing } from '../types';
 import { setting, type ServerLocals } from './env';
+import { localeNamesTr } from '../../i18n/config';
 
 /**
  * Yeni talep gelince ofise e-posta bildirimi. Alıcı NOTIFY_EMAIL ya da paneldeki ofis e-postasıdır.
@@ -9,7 +10,7 @@ import { setting, type ServerLocals } from './env';
 export interface EmailBinding { send(message: { from: { email: string; name?: string } | string; to: string; subject: string; text: string; html?: string }): Promise<unknown> }
 
 const kinds: Record<Inquiry['kind'], string> = { callback: 'Sizi arayalım', valuation: 'Değerleme', land: 'Arsa / kat karşılığı', renewal: 'Kentsel dönüşüm' };
-const languages: Record<string, string> = { tr: 'Türkçe', en: 'İngilizce', fa: 'Farsça' };
+const languages: Record<string, string> = localeNamesTr;
 const escape = (value: string) => value.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]!);
 const oneLine = (value: string) => value.replace(/[\r\n]+/g, ' ').trim();
 

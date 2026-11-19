@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { isEventName, parseConsent, scrubParams, validMeasurementId } from '../src/lib/analytics';
 import { legal } from '../src/content/legal';
+import { locales } from '../src/i18n/config';
 
 describe('onay kaydı', () => {
   it('geçerli kaydı okur, bozuk ya da eksik kaydı "seçim yok" sayar', () => {
@@ -25,7 +26,7 @@ describe('olay parametreleri', () => {
     expect(JSON.stringify(out)).not.toMatch(/Ali|0532|merhaba|@/);
   });
   it('izin verilen anahtarda bile kalıba uymayan değeri atar', () => {
-    expect(scrubParams({ placement: 'Ali Veli', form: 'x', success: 'true', locale: 'de', listing_id: 'a b', transaction: 'Satılık 5 000' })).toEqual({});
+    expect(scrubParams({ placement: 'Ali Veli', form: 'x', success: 'true', locale: 'xx', listing_id: 'a b', transaction: 'Satılık 5 000' })).toEqual({});
   });
   it('nesne olmayan girdide boş döner', () => {
     expect(scrubParams(null)).toEqual({});
@@ -39,8 +40,8 @@ describe('olay parametreleri', () => {
 });
 
 describe('yasal metinler', () => {
-  it('üç dilde KVKK, gizlilik, çerez metni ve afiş metinleri vardır', () => {
-    for (const locale of ['tr', 'en', 'fa'] as const) {
+  it('her dilde KVKK, gizlilik, çerez metni ve afiş metinleri vardır', () => {
+    for (const locale of locales) {
       for (const kind of ['kvkk', 'privacy', 'cookies'] as const) {
         expect(legal[locale][kind].sections.length).toBeGreaterThan(0);
         expect(legal[locale][kind].metaDescription.length).toBeGreaterThan(20);

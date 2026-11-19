@@ -1,6 +1,6 @@
 ---
 import NotFoundView from '../components/public/views/NotFoundView.astro';
 import { splitLocale } from '../i18n/config';
-// /en/... ve /fa/... altında bulunamayan sayfa kendi dilinde gösterilir.
+// /en/..., /de/..., /ru/..., /ar/... ve /fa/... altında bulunamayan sayfa kendi dilinde gösterilir.
 ---
 <NotFoundView locale={splitLocale(Astro.url.pathname).locale}/>

@@ -4,7 +4,9 @@ import { arsaFormu } from '../src/content/arsa-formu';
 import { katKarsiligi } from '../src/content/kat-karsiligi';
 import { kentselDonusum } from '../src/content/kentsel-donusum';
 import { yatirim } from '../src/content/yatirim';
-import { dictionary } from '../src/i18n';
+import { dictionary, locales } from '../src/i18n';
+import { kariyer } from '../src/content/kariyer';
+import { legal } from '../src/content/legal';
 
 describe('ilan videosu ve sanal tur', () => {
   it('YouTube ve Vimeo adreslerini çerezsiz gömme adresine çevirir', () => {
@@ -29,8 +31,8 @@ describe('ilan videosu ve sanal tur', () => {
 });
 
 describe('yeni sayfa içerikleri', () => {
-  it('üç dilde de başlık, form ve metin var', () => {
-    for (const locale of ['tr', 'en', 'fa'] as const) {
+  it('her dilde başlık, form ve metin var', () => {
+    for (const locale of locales) {
       expect(katKarsiligi[locale].sections.length).toBeGreaterThan(0);
       expect(kentselDonusum[locale].formTitle).toBeTruthy();
       expect(yatirim[locale].notes.length).toBeGreaterThan(0);
@@ -41,5 +43,24 @@ describe('yeni sayfa içerikleri', () => {
   });
   it('ofise giden Türkçe seçenek adları tüm başvuru türlerini kapsar', () => {
     expect(Object.keys(arsaFormu.tr.options.applicationType).sort()).toEqual(['degerleme', 'katKarsiligi', 'kentselDonusum']);
+  });
+});
+
+describe('sayfa metinlerinin çevirileri', () => {
+  const shape = (value: unknown, prefix = ''): string[] => Array.isArray(value) ? [`${prefix}[${value.length}]`, ...value.flatMap((item, i) => shape(item, `${prefix}[${i}]`))] : value && typeof value === 'object' ? Object.entries(value).flatMap(([key, child]) => shape(child, prefix ? `${prefix}.${key}` : key)) : [prefix];
+  const texts = (value: unknown): string[] => typeof value === 'string' ? [value] : value && typeof value === 'object' ? Object.values(value).flatMap(texts) : [];
+  const contents = { katKarsiligi, kentselDonusum, yatirim, arsaFormu, kariyer, legal };
+  it('her dil Türkçeyle aynı yapıdadır (bölüm, madde ve alan sayısı)', () => {
+    for (const [name, content] of Object.entries(contents)) for (const locale of locales) expect([name, locale, shape(content[locale])]).toEqual([name, locale, shape(content.tr)]);
+  });
+  it('hukuki metinlerde yer tutucular her dilde aynen kalır ve Türkçe esas notu vardır', () => {
+    const holders = (locale: (typeof locales)[number]) => texts(legal[locale]).join(' ').match(/\[[^\]]+\]|PLACEHOLDER_DATE/g)?.sort();
+    for (const locale of locales) {
+      expect(holders(locale)).toEqual(holders('tr'));
+      if (locale !== 'tr') expect(legal[locale].kvkk.languageNote.length).toBeGreaterThan(20);
+    }
+  });
+  it('telefon numarası sağdan sola dillerde yön yalıtımıyla yazılır', () => {
+    for (const locale of ['ar', 'fa'] as const) expect(kariyer[locale].applyText).toContain('⁦0532 224 76 58⁩');
   });
 });

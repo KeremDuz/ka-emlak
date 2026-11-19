@@ -1,6 +1,6 @@
 # src/content
 
-Sayfa metinleri burada tutulur: üç dilde (`tr` kaynak, `en`, `fa`) aynı yapıda düz veri. JSX ve uygulama içe aktarması yoktur.
+Sayfa metinleri burada tutulur: altı dilde (`tr` kaynak, `en`, `de`, `ru`, `ar`, `fa`) aynı yapıda düz veri. `tr`, `en` ve `fa` her içerik dosyasının içinde; sonradan eklenen `de`, `ru` ve `ar` `locales/{de,ru,ar}.ts` dosyalarında (`PageContents` tipi) toplanır. JSX ve uygulama içe aktarması yoktur.
 
 - `types.ts`: ortak tipler (`Locale`, `Localized<T>`, `ContentSection` ve her dosyanın içerik tipi). `ordered: true` olan bölümlerde `bullets` sıralı adımdır, `<ol>` ile gösterin.
 - `kat-karsiligi.ts` (`katKarsiligi`) ve `kentsel-donusum.ts` (`kentselDonusum`): arsa ve bina sahiplerine yönelik sayfalar.
@@ -9,6 +9,6 @@ Sayfa metinleri burada tutulur: üç dilde (`tr` kaynak, `en`, `fa`) aynı yapı
 - `kariyer.ts` (`kariyer`): danışman alımı sayfası (`/kariyer`); başvuru telefon ve WhatsApp ile, formu yoktur.
 - `legal.ts` (`legal`): `kvkk`, `privacy`, `cookies` (çerez bildirimi metinleri `cookies.banner` içinde).
 
-Yayından önce doldurulacak yer tutucular (üç dilde de aynı yazılır, `legal.ts` içinde aranabilir): `[VERİ SORUMLUSU UNVANI]`, `[ADRES]`, `[E-POSTA]`, `[VERGİ/MERSİS NO]` ve `updated` alanındaki `PLACEHOLDER_DATE`.
+Yayından önce doldurulacak yer tutucular (her dilde aynı yazılır, `legal.ts` içinde aranabilir): `[VERİ SORUMLUSU UNVANI]`, `[ADRES]`, `[E-POSTA]`, `[VERGİ/MERSİS NO]` ve `updated` alanındaki `PLACEHOLDER_DATE`.
 
-Hukuki metinler taslaktır: yayından önce bir avukat tarafından gözden geçirilmelidir. İngilizce ve Farsça metinler çeviridir; Türkçe metin esas alınır. Farsça dizelerde telefon numarası yön yalıtım karakterleriyle (U+2066, U+2069) sarılıdır; silmeyin.
+Hukuki metinler taslaktır: yayından önce bir avukat tarafından gözden geçirilmelidir. Öteki diller çeviridir; Türkçe metin esas alınır. Farsça ve Arapça dizelerde telefon numarası yön yalıtım karakterleriyle (U+2066, U+2069) sarılıdır; silmeyin.

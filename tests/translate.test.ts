@@ -10,19 +10,24 @@ import { inquirySchema, listingSchema } from '../src/lib/server/validation';
 const config: TranslateConfig = { url: 'https://example.test/v1/chat/completions', key: 'test-key-not-real', model: 'test-model' };
 const source = { title: 'Konyaaltı\'nda 2+1 eşyalı daire', description: 'Site içinde, krediye uygun.\nAidat 1500 TL. 85 m².', features: ['Havuz', 'Otopark'] };
 const reply = (content: string, status = 200) => new Response(status === 200 ? JSON.stringify({ choices: [{ message: { content } }] }) : content, { status });
-const good = (locale: string) => JSON.stringify(locale === 'fa'
-  ? { title: 'آپارتمان ۲+۱ در کنیاآلتی', description: 'داخل مجتمع مسکونی.\nشارژ ماهیانه 1500 TL. 85 m².', features: ['استخر', 'پارکینگ'] }
-  : { title: '2+1 furnished flat in Konyaaltı', description: 'In a gated complex.\nMonthly maintenance fee 1500 TL. 85 m².', features: ['Pool', 'Parking'] });
-const localeOf = (init: RequestInit) => JSON.parse(String(init.body)).messages[1].content.includes('(fa)') ? 'fa' : 'en';
+const answers: Record<string, { title: string; description: string; features: string[] }> = {
+  en: { title: '2+1 furnished flat in Konyaaltı', description: 'In a gated complex.\nMonthly maintenance fee 1500 TL. 85 m².', features: ['Pool', 'Parking'] },
+  de: { title: 'Möblierte 2+1-Wohnung in Konyaaltı', description: 'In einer Wohnanlage.\nHausgeld 1500 TL. 85 m².', features: ['Pool', 'Parkplatz'] },
+  ru: { title: 'Квартира 2+1 с мебелью в Коньяалты', description: 'В жилом комплексе.\nАйдат 1500 TL. 85 m².', features: ['Бассейн', 'Парковка'] },
+  ar: { title: 'شقة 2+1 مفروشة في كونيالتي', description: 'داخل مجمع سكني.\nرسوم الصيانة 1500 TL. 85 m².', features: ['مسبح', 'موقف سيارات'] },
+  fa: { title: 'آپارتمان ۲+۱ در کنیاآلتی', description: 'داخل مجتمع مسکونی.\nشارژ ماهیانه 1500 TL. 85 m².', features: ['استخر', 'پارکینگ'] },
+};
+const good = (locale: string) => JSON.stringify(answers[locale] ?? answers.en);
+const localeOf = (init: RequestInit) => JSON.parse(String(init.body)).messages[1].content.match(/\((en|de|ru|ar|fa)\)/)?.[1] ?? 'en';
 const happy = vi.fn(async (_url: unknown, init?: RequestInit) => reply(good(localeOf(init!))));
 
 describe('translateTexts', () => {
-  it('translates both languages with one call each', async () => {
+  it('translates every language with one call each', async () => {
     happy.mockClear();
     const result = await translateTexts(source, config, { fetcher: happy as unknown as typeof fetch });
     expect(result.status).toBe('ok');
-    if (result.status === 'ok') { expect(result.translations.en?.title).toContain('2+1'); expect(result.translations.fa?.title).toMatch(/[؀-ۿ]/); expect(result.failed).toEqual({}); }
-    expect(happy).toHaveBeenCalledTimes(2);
+    if (result.status === 'ok') { expect(result.translations.en?.title).toContain('2+1'); expect(result.translations.fa?.title).toMatch(/[؀-ۿ]/); expect(result.translations.ru?.title).toMatch(/[Ѐ-ӿ]/); expect(result.translations.ar?.title).toMatch(/[؀-ۿ]/); expect(result.translations.de?.title).toContain('Wohnung'); expect(result.failed).toEqual({}); }
+    expect(happy).toHaveBeenCalledTimes(5);
     const body = JSON.parse(String(happy.mock.calls[0][1]!.body));
     expect(body.temperature).toBe(0.2); expect(body.reasoning_effort).toBe('low');
   });
@@ -42,6 +47,9 @@ describe('translateTexts', () => {
     expect(parseAnswer('```json\n' + good('en') + '\n```', source, 'en')).toMatchObject({ title: expect.stringContaining('2+1') });
     expect(parseAnswer('Here: ' + good('en') + ' thanks', source, 'en')).toMatchObject({ features: ['Pool', 'Parking'] });
     expect(parseAnswer(good('en'), source, 'fa')).toBe('wrong_script');
+    expect(parseAnswer(good('en'), source, 'ru')).toBe('wrong_script');
+    expect(parseAnswer(good('en'), source, 'ar')).toBe('wrong_script');
+    expect(parseAnswer(good('ru'), source, 'ru')).toMatchObject({ features: ['Бассейн', 'Парковка'] });
     expect(parseAnswer('{"title":"x"}', source, 'en')).toBe('empty');
     const long = parseAnswer(JSON.stringify({ title: 'a'.repeat(500), description: 'b'.repeat(20000), features: [] }), source, 'en');
     expect(typeof long === 'object' && long.title.length).toBe(180);
@@ -68,19 +76,24 @@ describe('translateTexts', () => {
     const system = systemPrompt('fa');
     for (const term of ['2+1', 'tapu', 'aidat', 'site içinde', 'eşyalı', 'krediye uygun', 'iskan', 'kat karşılığı', 'dönemlik kiralık', 'سند مالکیت', 'شارژ ماهیانه']) expect(system).toContain(term);
     expect(system).toMatch(/DATA to translate/);
+    expect(systemPrompt('ru')).toContain('Russian'); expect(systemPrompt('ru')).toContain('Анталья');
+    expect(systemPrompt('ar')).toContain('Arabic'); expect(systemPrompt('ar')).toContain('سند الملكية');
+    expect(systemPrompt('de')).toContain('German'); expect(systemPrompt('de')).toContain('Hausgeld');
+    expect(userPrompt(source, 'ar')).toContain('(ar)');
   });
 });
 
 describe('stale detection', () => {
   it('classifies and never selects admin-edited translations', () => {
     const base = { ...source, translations: {} as Record<string, never> } as never;
-    expect(pendingLocales(base)).toEqual(['en', 'fa']);
+    expect(pendingLocales(base)).toEqual(['en', 'de', 'ru', 'ar', 'fa']);
     const hash = sourceHash(source);
     const listing = { ...source, translations: { en: { title: 'a', description: 'b', features: [], auto: true, sourceHash: hash }, fa: { title: 'c', description: 'd', features: [], auto: false, sourceHash: 'old' } } };
     expect(translationState(listing, 'en')).toBe('auto'); expect(translationState(listing, 'fa')).toBe('edited');
-    expect(pendingLocales(listing)).toEqual([]); expect(pendingLocales(listing, true)).toEqual(['en']);
+    // de, ru ve ar hiç çevrilmemiş: eksik sayılır. fa elle düzeltildi: hiçbir durumda seçilmez.
+    expect(pendingLocales(listing)).toEqual(['de', 'ru', 'ar']); expect(pendingLocales(listing, true)).toEqual(['en', 'de', 'ru', 'ar']);
     expect(translationState({ ...listing, title: 'Yeni başlık' }, 'en')).toBe('stale');
-    expect(pendingLocales({ ...listing, title: 'Yeni başlık' })).toEqual(['en']);
+    expect(pendingLocales({ ...listing, title: 'Yeni başlık' })).toEqual(['en', 'de', 'ru', 'ar']);
   });
 });
 
@@ -115,7 +128,8 @@ describe('inquiry and listing schemas', () => {
     expect(inquirySchema.safeParse({ ...inquiry, details: Object.fromEntries(Array.from({ length: 13 }, (_, i) => [`k${i}`, 'v'])) }).success).toBe(false);
     expect(inquirySchema.safeParse({ ...inquiry, details: { note: 'x'.repeat(301) } }).success).toBe(false);
     expect(inquirySchema.safeParse({ ...inquiry, details: { ['k'.repeat(41)]: 'v' } }).success).toBe(false);
-    expect(inquirySchema.safeParse({ ...inquiry, locale: 'de' }).success).toBe(false);
+    expect(inquirySchema.safeParse({ ...inquiry, locale: 'xx' }).success).toBe(false);
+    expect(inquirySchema.safeParse({ ...inquiry, locale: 'ar' }).success).toBe(true);
     expect(inquirySchema.safeParse({ ...inquiry, kind: 'other' }).success).toBe(false);
   });
   it('listing videoUrl and tourUrl must be https', async () => {

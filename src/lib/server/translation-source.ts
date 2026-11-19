@@ -3,7 +3,7 @@ import type { Listing, TranslatedLocale } from '../types';
 // Bağımlılığı olmayan saf yardımcılar: hem sunucu hem panel aynı "çeviri güncel mi" kararını verir.
 export type TranslationSource = Pick<Listing, 'title' | 'description' | 'features'>;
 export type TranslationState = 'missing' | 'auto' | 'edited' | 'stale';
-export const translatedLocales: TranslatedLocale[] = ['en', 'fa'];
+export const translatedLocales: TranslatedLocale[] = ['en', 'de', 'ru', 'ar', 'fa'];
 
 /** Türkçe başlık + açıklama + özelliklerin kısa özeti (cyrb53). Güvenlik için değil, yalnız "metin değişti mi" içindir. */
 export function sourceHash(source: TranslationSource): string {

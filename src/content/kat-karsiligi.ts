@@ -1,4 +1,7 @@
 import type { Localized, OwnerPageContent } from './types';
+import { de } from './locales/de';
+import { ru } from './locales/ru';
+import { ar } from './locales/ar';
 
 // Farsça metinde telefon numarasının rakam grupları sağdan sola dizilmesin diye yön yalıtımı.
 const PHONE = '0532 224 76 58';
@@ -205,4 +208,8 @@ export const katKarsiligi: Localized<OwnerPageContent> = {
       'مشخصات زمین خود را بنویسید. ارزیابی رایگان است و پس از بررسی، تلفنی با شما تماس می‌گیریم.',
     cta: 'ارسال درخواست',
   },
+  // Almanca, Rusça ve Arapça metinler src/content/locales/ altındadır.
+  de: de.katKarsiligi,
+  ru: ru.katKarsiligi,
+  ar: ar.katKarsiligi,
 };

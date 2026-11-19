@@ -5,7 +5,7 @@ import { legal } from '../../../content/legal';
 import { validMeasurementId } from '../../../lib/analytics';
 import { getPublicData } from '../../../lib/server/data';
 import type { Locale } from '../../../lib/types';
-// KVKK, gizlilik ve çerez metinleri src/content/legal.ts içindedir (üç dilde taslak; yayından önce avukat gözden geçirmelidir).
+// KVKK, gizlilik ve çerez metinleri src/content/legal.ts içindedir (altı dilde taslak; yayından önce avukat gözden geçirmelidir).
 interface Props { locale: Locale; kind: 'kvkk' | 'privacy' | 'cookies'; }
 const { locale, kind } = Astro.props;
 const t = dictionary(locale);

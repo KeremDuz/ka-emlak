@@ -8,7 +8,7 @@ interface Props { listings: Listing[]; locale: Locale; t: Dictionary['card']; la
 
 /**
  * Ana sayfadaki ilan şeridi: telefonda parmakla kaydırılır, masaüstünde ok düğmeleriyle bir sayfa ilerler.
- * Kendiliğinden kaymaz (okuyan ziyaretçinin elinden kartı kaçırmamak için). Farsçada (RTL) yön tersine döner.
+ * Kendiliğinden kaymaz (okuyan ziyaretçinin elinden kartı kaçırmamak için). Farsça ve Arapçada (RTL) yön tersine döner.
  */
 export default function ListingCarousel({ listings, locale, t, label, prev, next }: Props) {
   const track = useRef<HTMLDivElement>(null);

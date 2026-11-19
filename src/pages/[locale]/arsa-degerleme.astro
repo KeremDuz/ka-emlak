@@ -1,7 +1,7 @@
 ---
 import LandValuationView from '../../components/public/views/LandValuationView.astro';
 import { routeLocale } from '../../i18n/config';
-// Yalnız /en ve /fa geçerlidir; öteki ekler (/tr, /xx) 404 sayfasına gider.
+// Yalnız Türkçe dışındaki diller (/en, /de, /ru, /ar, /fa) geçerlidir; öteki ekler (/tr, /xx) 404 sayfasına gider.
 const locale = routeLocale(Astro.params.locale);
 if (!locale) return Astro.rewrite('/404');
 ---

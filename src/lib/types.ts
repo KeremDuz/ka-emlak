@@ -5,7 +5,7 @@ export type Currency = 'TRY' | 'EUR' | 'USD';
 export type Period = 'total' | 'day' | 'week' | 'month' | 'year';
 export type Pool = 'private' | 'shared' | 'none';
 /** Sitenin dilleri. Türkçe asıl dildir; ilan metni Türkçe girilir, ötekiler çeviridir. */
-export type Locale = 'tr' | 'en' | 'fa';
+export type Locale = 'tr' | 'en' | 'de' | 'ru' | 'ar' | 'fa';
 export type TranslatedLocale = Exclude<Locale, 'tr'>;
 /** Bir ilanın çevrilen metinleri. auto: makine çevirisi (yönetici düzeltince false olur). */
 export interface ListingTranslation { title: string; description: string; features: string[]; auto: boolean; /** Çevirinin yapıldığı Türkçe metnin özeti; metin değişince çeviri "eski" sayılır. */ sourceHash?: string; }
@@ -20,7 +20,7 @@ export interface Listing {
   needsReview: boolean; latitude?: number; longitude?: number;
   /** Dönemlik (günlük/haftalık) kiralıklar için: kaç kişilik, havuz, en az kaç gece. İsteğe bağlıdır. */
   guests?: number | null; pool?: Pool; minNights?: number | null;
-  /** İngilizce ve Farsça metinler; yoksa ziyaretçiye Türkçe gösterilir. */
+  /** Çeviri metinleri (en, de, ru, ar, fa); yoksa ziyaretçiye Türkçe gösterilir. */
   translations?: Partial<Record<TranslatedLocale, ListingTranslation>>;
   /** YouTube/Vimeo tanıtım videosu ve sanal tur (ör. Matterport) adresleri; yalnız https. */
   videoUrl?: string; tourUrl?: string;

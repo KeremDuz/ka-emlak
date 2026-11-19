@@ -458,16 +458,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .lang-switch.lang-picker-menu a.active { color: var(--forest); font-weight: 750; text-decoration: none; }
 .translation-note { margin-top: 12px; color: var(--muted); font-size: .875rem; line-height: 1.5; }
 @media (max-width: 1100px) { .lang-switch a { padding: 0 6px; } }
-/* Dil değiştirici başlığa eklenince 801-1100 px arası üst çubuk taşıyordu: telefon yalnız simge olur, 960 px ve altında menü açılır liste olur. */
-@media (min-width: 801px) and (max-width: 1100px) {
+/* Altı dilde menü yazıları uzar (en uzunu Rusça). Ölçüldü: tam üst çubuk 1280 px üstünde, sıkışık çubuk (telefon yalnız simge)
+   1041-1280 px arasında tek satıra sığar (en geniş dil Rusça: 901 px); 1040 px ve altında menü açılır liste olur. Menü yazısı hiçbir genişlikte satır kırmaz. */
+.nav a { white-space: nowrap; }
+@media (min-width: 801px) and (max-width: 1280px) {
   .header-contact { width: 46px; padding: 0; justify-content: center; }
   .header-contact span { display: none; }
   .site-header { gap: 18px; }
-  /* Altı menü öğesi (Kariyer eklendi) iki satıra bölünmesin. */
   .nav { gap: 18px; }
-  .nav a { white-space: nowrap; }
 }
-@media (min-width: 801px) and (max-width: 960px) {
+@media (min-width: 801px) and (max-width: 1040px) {
   .site-header { position: relative; }
   .header-contact { margin-left: auto; }
   .nav { position: absolute; top: 100%; left: 0; right: 0; z-index: 30; display: none; flex-direction: column; align-items: stretch; gap: 0; padding: 8px 20px 16px; background: #fff; border-top: 1px solid var(--line); box-shadow: 0 18px 30px rgb(18 61 52 / .1); }
@@ -476,23 +476,25 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .nav a::after { display: none; }
   .mobile-menu-toggle { display: grid; }
   .lang-switch-bar { display: none; }
-  .lang-switch-menu { display: flex; gap: 6px; padding: 10px 0 0; }
+  .lang-switch-menu { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0 0; }
   .lang-switch-menu a { padding: 0 12px; border: 1px solid var(--line); font-size: 1rem; }
   .nav .lang-switch-menu a.active { border-color: var(--forest); }
   [dir="rtl"] .header-contact { margin-left: 0; margin-right: auto; }
 }
 @media (max-width: 800px) {
   .lang-switch-bar { display: none; }
-  .lang-switch-menu { display: flex; gap: 6px; padding: 10px 0 0; }
+  .lang-switch-menu { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0 0; }
   .lang-switch-menu a { padding: 0 12px; border: 1px solid var(--line); font-size: 1rem; border-bottom: 1px solid var(--line); }
   .nav .lang-switch-menu a:last-child { border-bottom: 1px solid var(--line); }
   .nav .lang-switch-menu a.active { border-color: var(--forest); }
 }
 
-/* ---------- Sağdan sola (Farsça) ----------
+/* ---------- Sağdan sola (Farsça ve Arapça) ----------
    Yatay yerleşimin çoğu flex/grid olduğu için dir="rtl" ile kendiliğinden yön değiştirir; burada yalnız fiziksel left/right
    kullanan kurallar, açılır liste oku, yazı tipi ve Arap yazısının bozulmaması için harf aralığı düzeltilir. Türkçe ve İngilizce bu bloktan etkilenmez. */
 [dir="rtl"] { --sans: 'Vazirmatn', 'Manrope', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; --serif: 'Vazirmatn', 'Lora', Georgia, serif; }
+/* Arapça: başlıklar Noto Naskh Arabic, gövde Noto Sans Arabic (UI UX Pro Max "Arabic Elegant" eşleşmesi). Latin harfler Manrope/Lora ile kalır. */
+html[lang="ar"] { --sans: 'Noto Sans Arabic', 'Manrope', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif; --serif: 'Noto Naskh Arabic', 'Lora', Georgia, serif; }
 /* Negatif harf aralığı Arap yazısında harflerin bitişmesini bozar. Markanın Latin harfleri aralığını korur. */
 [dir="rtl"] *, [dir="rtl"] *::before, [dir="rtl"] *::after { letter-spacing: 0; }
 [dir="rtl"] .brand-name { letter-spacing: -.045em; }

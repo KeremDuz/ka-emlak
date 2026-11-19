@@ -27,7 +27,7 @@ export const EVENT_NAMES = ['whatsapp_click', 'phone_click', 'form_submit', 'lan
 export type EventName = typeof EVENT_NAMES[number];
 
 const SLUG = /^[a-z][a-z0-9_]{0,31}$/;
-const LOCALES = new Set(['tr', 'en', 'fa']);
+const LOCALES = new Set(['tr', 'en', 'de', 'ru', 'ar', 'fa']);
 /** Her parametre anahtarı için kabul edilen değer. Kalıba uymayan değer ve listede olmayan anahtar atılır. */
 const PARAM_RULES: Record<string, (value: unknown) => boolean> = {
   placement: v => typeof v === 'string' && (PLACEMENTS as readonly string[]).includes(v),
