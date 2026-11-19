@@ -13,7 +13,7 @@ export const GET: APIRoute = async ({ locals, url, site }) => {
   // İlçe sayfaları yalnız o ilçede ilan varken listelenir.
   const districtPaths = (parent: string, filters: Record<string, string>) => catalogOptions(filterListings(data.listings, filters)).districts.map(name => `${parent}/${slugify(name)}`);
   const pages: { path: string; lastmod?: string }[] = [
-    ...['/', '/ilanlar', '/satilik', '/kiralik', '/donemlik-kiralik', '/yatirim', '/kat-karsiligi', '/kentsel-donusum', '/arsa-degerleme', '/hakkimizda', '/iletisim', '/gizlilik', '/cerezler', '/kvkk'].map(path => ({ path })),
+    ...['/', '/ilanlar', '/satilik', '/kiralik', '/donemlik-kiralik', '/yatirim', '/kat-karsiligi', '/kentsel-donusum', '/arsa-degerleme', '/hakkimizda', '/kariyer', '/iletisim', '/gizlilik', '/cerezler', '/kvkk'].map(path => ({ path })),
     ...districtPaths('/satilik', { transaction: 'sale' }).map(path => ({ path })),
     ...districtPaths('/kiralik', { transaction: 'rent', period: 'long' }).map(path => ({ path })),
     ...data.listings.map(l => ({ path: `/ilan/${l.slug}`, lastmod: (l.updatedAt || l.createdAt || '').slice(0, 10) || undefined })),

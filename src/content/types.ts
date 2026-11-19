@@ -25,6 +25,21 @@ export interface OwnerPageContent {
   cta: string;
 }
 
+/** Danışman alımı (kariyer) sayfası. */
+export interface CareerContent {
+  metaTitle: string;
+  metaDescription: string;
+  title: string;
+  intro: string;
+  sections: ContentSection[];
+  applyTitle: string;
+  applyText: string;
+  callLabel: string;
+  whatsappLabel: string;
+  /** WhatsApp'ta hazır gelen mesaj. */
+  whatsappMessage: string;
+}
+
 /** Yatırım bölümü girişi. */
 export interface InvestmentContent {
   metaTitle: string;

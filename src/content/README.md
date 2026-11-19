@@ -6,6 +6,7 @@ Sayfa metinleri burada tutulur: üç dilde (`tr` kaynak, `en`, `fa`) aynı yapı
 - `kat-karsiligi.ts` (`katKarsiligi`) ve `kentsel-donusum.ts` (`kentselDonusum`): arsa ve bina sahiplerine yönelik sayfalar.
 - `yatirim.ts` (`yatirim`): yatırım ilanları bölümünün girişi ve yabancı alıcı notları.
 - `arsa-formu.ts` (`arsaFormu`): arsa başvuru formunun etiket, yardım, doğrulama ve sonuç metinleri. `consent` içindeki `{privacy}`, `privacyLinkLabel` metnini taşıyan bağlantıyla değiştirilir.
+- `kariyer.ts` (`kariyer`): danışman alımı sayfası (`/kariyer`); başvuru telefon ve WhatsApp ile, formu yoktur.
 - `legal.ts` (`legal`): `kvkk`, `privacy`, `cookies` (çerez bildirimi metinleri `cookies.banner` içinde).
 
 Yayından önce doldurulacak yer tutucular (üç dilde de aynı yazılır, `legal.ts` içinde aranabilir): `[VERİ SORUMLUSU UNVANI]`, `[ADRES]`, `[E-POSTA]`, `[VERGİ/MERSİS NO]` ve `updated` alanındaki `PLACEHOLDER_DATE`.

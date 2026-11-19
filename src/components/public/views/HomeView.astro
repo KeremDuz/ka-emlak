@@ -98,6 +98,11 @@ const aboutText = locale === 'tr' ? settings.about || t.advisor.about : t.adviso
     </div>
   </section>
 
+  <section class="container career-band" aria-labelledby="career-heading">
+    <div><h2 id="career-heading">{t.home.careerTitle}</h2><p>{t.home.careerText}</p></div>
+    <a class="button outline" href={href('/kariyer')}>{t.home.careerAction}</a>
+  </section>
+
   <section class="container services" aria-labelledby="services-heading">
     <div class="services-head"><h2 id="services-heading">{t.services.title}</h2><p>{t.services.intro}</p></div>
     <ul class="services-grid">

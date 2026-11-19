@@ -19,11 +19,11 @@ export const tr = {
     adminPanel: 'Yönetim paneli',
     defaultAddress: 'Konyaaltı / Antalya',
   },
-  nav: { home: 'Ana sayfa', listings: 'İlanlar', seasonal: 'Dönemlik kiralık', about: 'Hakkımızda', contact: 'İletişim' },
+  nav: { home: 'Ana sayfa', listings: 'İlanlar', seasonal: 'Dönemlik kiralık', about: 'Hakkımızda', career: 'Kariyer', contact: 'İletişim' },
   footer: {
     listings: 'İlanlar', sale: 'Satılık', rent: 'Kiralık', seasonal: 'Dönemlik kiralık', exchange: 'Kat karşılığı', map: 'Haritada ilanlar',
     about: 'Hakkımızda', valuation: 'Mülk değerleme', contact: 'İletişim', hepsiemlak: 'Hepsiemlak sayfamız', contactHeading: 'İletişim',
-    katKarsiligi: 'Kat karşılığı inşaat', renewal: 'Kentsel dönüşüm', landValuation: 'Ücretsiz arsa değerleme', investment: 'Yatırımlık ilanlar',
+    katKarsiligi: 'Kat karşılığı inşaat', renewal: 'Kentsel dönüşüm', landValuation: 'Ücretsiz arsa değerleme', investment: 'Yatırımlık ilanlar', career: 'Danışman arıyoruz',
     privacy: 'Gizlilik ve aydınlatma', cookies: 'Çerez tercihleri', admin: 'Yönetici girişi', kvkk: 'KVKK aydınlatma',
   },
   consent: { title: 'Çerez tercihi', change: 'Tercihleri değiştir', learnMore: 'Gizlilik ve aydınlatma' },
@@ -53,6 +53,9 @@ export const tr = {
     ownerTitle: 'Mülkünüzü satmak ya da kiralamak mı istiyorsunuz?',
     ownerAction: 'Mülkünüzü anlatın',
     ownerLand: 'Arsanız için kat karşılığı',
+    careerTitle: 'Ekibimize gayrimenkul danışmanları arıyoruz',
+    careerText: '%50 net komisyon, ofise gelen müşteri talepleri dahil. Deneyimli ya da yeni başlayan herkes başvurabilir.',
+    careerAction: 'Ayrıntılar ve başvuru',
   },
   advisor: {
     role: 'KA EMLAK gayrimenkul danışmanı',

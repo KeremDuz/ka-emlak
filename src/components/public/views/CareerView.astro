@@ -1,0 +1,31 @@
+---
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { getPublicData } from '../../../lib/server/data';
+import { whatsappUrl } from '../../../lib/format';
+import { kariyer } from '../../../content/kariyer';
+import type { Locale } from '../../../lib/types';
+import { MessageCircle, Phone } from 'lucide-react';
+// Danışman alımı sayfası: metin src/content/kariyer.ts; başvuru telefon ya da WhatsApp ile.
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const page = kariyer[locale];
+const { settings, mode } = await getPublicData(Astro.locals);
+---
+<SiteLayout locale={locale} title={page.metaTitle} description={page.metaDescription} settings={settings} mode={mode}>
+  <section class="page-intro"><div class="container"><h1>{page.title}</h1><p>{page.intro}</p></div></section>
+  <section class="content-page container"><article class="prose">
+    {page.sections.map(section => <>
+      <h2>{section.heading}</h2>
+      {section.paragraphs.map(text => <p>{text}</p>)}
+      {section.bullets && <ul>{section.bullets.map(item => <li>{item}</li>)}</ul>}
+    </>)}
+    <h2>{page.applyTitle}</h2>
+    <p>{page.applyText}</p>
+  </article>
+    {/* Düğmeler .prose dışında: .prose a kuralı düğme yazısını yeşile boyayıp altını çiziyordu. */}
+    <div class="advisor-actions">
+      {settings.phone && <a class="button" href={`tel:${settings.phone}`} data-ga="phone_click" data-ga-placement="career"><Phone size={17}/>{page.callLabel}</a>}
+      <a class="button outline" href={whatsappUrl(settings.whatsapp, page.whatsappMessage)} target="_blank" rel="noreferrer" data-ga="whatsapp_click" data-ga-placement="career"><MessageCircle size={17}/>{page.whatsappLabel}</a>
+    </div>
+  </section>
+</SiteLayout>

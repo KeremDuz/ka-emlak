@@ -18,11 +18,11 @@ export const en: Dictionary = {
     adminPanel: 'Admin panel',
     defaultAddress: 'Konyaaltı / Antalya',
   },
-  nav: { home: 'Home', listings: 'Listings', seasonal: 'Short-term rentals', about: 'About us', contact: 'Contact' },
+  nav: { home: 'Home', listings: 'Listings', seasonal: 'Short-term rentals', about: 'About us', career: 'Careers', contact: 'Contact' },
   footer: {
     listings: 'Listings', sale: 'For sale', rent: 'For rent', seasonal: 'Short-term rentals', exchange: 'Flat-for-land', map: 'Listings on the map',
     about: 'About us', valuation: 'Property valuation', contact: 'Contact', hepsiemlak: 'Our Hepsiemlak page', contactHeading: 'Contact',
-    katKarsiligi: 'Land-for-flats construction', renewal: 'Urban renewal', landValuation: 'Free land valuation', investment: 'Investment listings',
+    katKarsiligi: 'Land-for-flats construction', renewal: 'Urban renewal', landValuation: 'Free land valuation', investment: 'Investment listings', career: 'Careers',
     privacy: 'Privacy notice', cookies: 'Cookies', admin: 'Admin sign-in', kvkk: 'Personal data notice (KVKK)',
   },
   consent: { title: 'Cookie choice', change: 'Change preferences', learnMore: 'Privacy notice' },
@@ -52,6 +52,9 @@ export const en: Dictionary = {
     ownerTitle: 'Looking to sell or let your property?',
     ownerAction: 'Tell us about your property',
     ownerLand: 'Land-for-flats for your plot',
+    careerTitle: 'We are looking for real estate consultants',
+    careerText: '50% net commission, client enquiries from the office included. Experienced or new to the sector, anyone can apply.',
+    careerAction: 'Details and how to apply',
   },
   advisor: {
     role: 'Real estate consultant, KA EMLAK',

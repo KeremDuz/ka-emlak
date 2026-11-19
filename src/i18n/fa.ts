@@ -19,11 +19,11 @@ export const fa: Dictionary = {
     adminPanel: 'پنل مدیریت',
     defaultAddress: 'کنیاآلتی / آنتالیا',
   },
-  nav: { home: 'صفحه اصلی', listings: 'آگهی‌ها', seasonal: 'اجاره کوتاه‌مدت', about: 'درباره ما', contact: 'تماس با ما' },
+  nav: { home: 'صفحه اصلی', listings: 'آگهی‌ها', seasonal: 'اجاره کوتاه‌مدت', about: 'درباره ما', career: 'استخدام', contact: 'تماس با ما' },
   footer: {
     listings: 'آگهی‌ها', sale: 'فروش', rent: 'اجاره', seasonal: 'اجاره کوتاه‌مدت', exchange: 'مشارکت در ساخت', map: 'آگهی‌ها روی نقشه',
     about: 'درباره ما', valuation: 'ارزش‌گذاری ملک', contact: 'تماس با ما', hepsiemlak: 'صفحه ما در Hepsiemlak', contactHeading: 'تماس',
-    katKarsiligi: 'مشارکت در ساخت', renewal: 'نوسازی شهری', landValuation: 'ارزیابی رایگان زمین', investment: 'آگهی‌های سرمایه‌گذاری',
+    katKarsiligi: 'مشارکت در ساخت', renewal: 'نوسازی شهری', landValuation: 'ارزیابی رایگان زمین', investment: 'آگهی‌های سرمایه‌گذاری', career: 'استخدام',
     privacy: 'حریم خصوصی', cookies: 'کوکی‌ها', admin: 'ورود مدیر', kvkk: 'اطلاعیه داده‌های شخصی (KVKK)',
   },
   consent: { title: 'انتخاب کوکی', change: 'تغییر تنظیمات', learnMore: 'حریم خصوصی' },
@@ -53,6 +53,9 @@ export const fa: Dictionary = {
     ownerTitle: 'قصد فروش یا اجاره دادن ملک خود را دارید؟',
     ownerAction: 'ملک خود را معرفی کنید',
     ownerLand: 'مشارکت در ساخت برای زمین شما',
+    careerTitle: 'برای تیم خود مشاور املاک استخدام می‌کنیم',
+    careerText: '۵۰٪ پورسانت خالص، شامل مشتریانی که به دفتر مراجعه می‌کنند. با تجربه یا تازه‌کار، همه می‌توانند درخواست دهند.',
+    careerAction: 'جزئیات و نحوه درخواست',
   },
   advisor: {
     role: 'مشاور املاک KA EMLAK',
