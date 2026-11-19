@@ -30,7 +30,7 @@ const message = listing && local ? fill(t.whatsapp.listing, { title: local.title
 const n = (value: number) => numberLabel(value, locale);
 const s = t.listing.spec;
 const specs: [string, string][] = listing ? [
-  [s.type, labels.transaction[listing.transaction]], [s.property, labels.property[listing.propertyType]], [s.gross, areaLabel(listing.grossArea, locale)],
+  [s.type, labels.transaction[listing.transaction]], [s.property, labels.property[listing.propertyType]], ...(listing.grossArea > 0 ? [[s.gross, areaLabel(listing.grossArea, locale)] as [string, string]] : []),
   ...(listing.netArea ? [[s.net, areaLabel(listing.netArea, locale)] as [string, string]] : []), ...(listing.rooms ? [[s.rooms, listing.rooms] as [string, string]] : []), ...(listing.bathrooms ? [[s.baths, n(listing.bathrooms)] as [string, string]] : []),
   ...(listing.floor ? [[s.floor, listing.floor] as [string, string]] : []), ...(listing.buildingAge ? [[s.age, listing.buildingAge] as [string, string]] : []),
   ...(isSeasonal(listing) ? [...(listing.guests ? [[s.guests, fill(s.guestsValue, { n: n(listing.guests) })] as [string, string]] : []), ...(listing.pool ? [[s.pool, labels.pool[listing.pool]] as [string, string]] : []), ...(listing.minNights ? [[s.minStay, fill(s.nights, { n: n(listing.minNights) })] as [string, string]] : [])] : []),

@@ -3,7 +3,6 @@ import { propertyLabels, transactionLabels } from './format';
 
 export const antalyaDistricts = ['Akseki', 'Aksu', 'Alanya', 'Demre', 'Döşemealtı', 'Elmalı', 'Finike', 'Gazipaşa', 'Gündoğmuş', 'İbradı', 'Kaş', 'Kemer', 'Kepez', 'Konyaaltı', 'Korkuteli', 'Kumluca', 'Manavgat', 'Muratpaşa', 'Serik'];
 /** Oda sayısı yalnız konutlarda zorunludur; ofis, dükkan, depo ve binada isteğe bağlıdır. */
-export const roomsRequired = (type: Listing['propertyType']) => type === 'apartment' || type === 'villa';
 export const roomOptions = ['1+0', '1+1', '2+1', '3+1', '4+1', '4+2', '5+1', '5+2', '6+1', '6+2', '7+'];
 
 type TitleSource = Pick<Listing, 'transaction' | 'propertyType' | 'rooms' | 'grossArea' | 'district' | 'neighborhood'>;

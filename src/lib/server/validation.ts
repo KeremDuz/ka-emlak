@@ -2,7 +2,6 @@ import { MAX_FEATURES, MAX_PHOTOS } from '../limits';
 import { z } from 'zod';
 import type { Listing, OfficeSettings } from '../types';
 import { HttpError } from './http';
-import { roomsRequired } from '../listing-helpers';
 
 const text = (max: number) => z.string().max(max);
 const safeUrl = z.string().max(1500).refine(value => !value || value.startsWith('/') && !value.startsWith('//') || /^https:\/\//i.test(value), 'Güvenli bir adres girin.');
@@ -29,9 +28,9 @@ export const inquirySchema =z.object({ name: z.string().trim().min(2).max(100), 
 export const editable = (value: unknown): Listing => listingSchema.parse(value);
 export const office = (value: unknown): OfficeSettings => settingsSchema.parse(value);
 export function assertPublishable(listing: Listing) {
-  const missing = [listing.title.trim().length<8 && 'en az 8 karakter başlık', !listing.city.trim() && 'il', !listing.district.trim() && 'ilçe', listing.grossArea <= 0 && 'brüt alan', listing.description.trim().length<30 && 'en az 30 karakter açıklama', !listing.photos.length && 'en az bir fotoğraf', roomsRequired(listing.propertyType)&&!listing.rooms.trim()&&'oda bilgisi'].filter(Boolean);
+  const missing = [listing.title.trim().length<8 && 'en az 8 karakter başlık', !listing.city.trim() && 'il', !listing.district.trim() && 'ilçe', listing.description.trim().length<30 && 'en az 30 karakter açıklama', !listing.photos.length && 'en az bir fotoğraf'].filter(Boolean);
   if (missing.length) throw new HttpError(422, `Yayınlamak için ${missing.join(', ')} ekleyin.`, 'PUBLISH_VALIDATION', missing);
-  if(listing.netArea!==null&&listing.netArea>listing.grossArea)throw new HttpError(422,'Net alan brüt alandan büyük olamaz.','PUBLISH_VALIDATION');
+  if(listing.netArea!==null&&listing.grossArea>0&&listing.netArea>listing.grossArea)throw new HttpError(422,'Net alan brüt alandan büyük olamaz.','PUBLISH_VALIDATION');
   if(listing.needsReview)throw new HttpError(422,'Yayınlamadan önce ilan bilgilerini kontrol ettiğinizi onaylayın.','REVIEW_REQUIRED');
 }
 export function imageKind(data: Uint8Array): 'image/jpeg' | 'image/png' | 'image/webp' | null {

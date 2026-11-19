@@ -32,10 +32,13 @@ describe('hepsiemlak import file', () => {
       expect(() => assertPublishable({ ...listing, needsReview: false }), listing.id).not.toThrow();
     }
   });
-  it('requires rooms only for homes', () => {
+  it('publishes without rooms or area when the office did not give them', () => {
     const shop = { ...data.listings.find(item => item.propertyType === 'commercial')!, needsReview: false };
     expect(shop.rooms).toBe('');
     expect(() => assertPublishable(shop)).not.toThrow();
-    expect(() => assertPublishable({ ...shop, propertyType: 'apartment' })).toThrow();
+    expect(() => assertPublishable({ ...shop, propertyType: 'apartment' })).not.toThrow();
+    expect(() => assertPublishable({ ...shop, propertyType: 'villa', grossArea: 0 })).not.toThrow();
+    expect(() => assertPublishable({ ...shop, grossArea: 0, netArea: 50 })).not.toThrow();
+    expect(() => assertPublishable({ ...shop, grossArea: 40, netArea: 50 })).toThrow();
   });
 });

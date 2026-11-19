@@ -26,7 +26,7 @@ export default function PropertyCard({ listing, priority = false, locale, t }: {
         <div className="property-details">
           {listing.rooms && <span><BedDouble size={17} aria-hidden="true" /><span className="sr-only">{t.rooms}</span><bdi>{listing.rooms}</bdi></span>}
           {isSeasonal(listing) && !!listing.guests && <span><Users size={17} aria-hidden="true" />{fill(t.guests, { n: numberLabel(listing.guests, locale) })}</span>}
-          <span><Ruler size={16} aria-hidden="true" />{areaLabel(listing.grossArea, locale)}</span>
+          {listing.grossArea > 0 && <span><Ruler size={16} aria-hidden="true" />{areaLabel(listing.grossArea, locale)}</span>}
           {listing.bathrooms !== null && listing.bathrooms > 0 && <span><Bath size={17} aria-hidden="true" />{fill(t.baths, { n: numberLabel(listing.bathrooms, locale) })}</span>}
         </div>
       </div>
