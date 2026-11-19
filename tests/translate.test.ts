@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Repository } from '../src/lib/server/repository';
 import { ensureTranslations, parseAnswer, systemPrompt, translateTexts, translationConfig, userPrompt, type TranslateConfig } from '../src/lib/server/translate';
-import { pendingLocales, sourceHash, translationState } from '../src/lib/server/translation-source';
+import { pendingLocales, sameAsSource, sourceHash, translationState } from '../src/lib/server/translation-source';
 import { inquirySchema, listingSchema } from '../src/lib/server/validation';
 
 const config: TranslateConfig = { url: 'https://example.test/v1/chat/completions', key: 'test-key-not-real', model: 'test-model' };
@@ -31,6 +31,12 @@ describe('translateTexts', () => {
     const body = JSON.parse(String(happy.mock.calls[0][1]!.body));
     expect(body.temperature).toBe(0.2); expect(body.reasoning_effort).toBe('low');
   });
+  it('asks once more when the answer is left in Turkish', async () => {
+    const fetcher = vi.fn(async (_url: unknown, init?: RequestInit) => JSON.parse(String(init!.body)).messages.length > 2 ? reply(good('de')) : reply(JSON.stringify(source)));
+    const result = await translateTexts(source, config, { fetcher: fetcher as unknown as typeof fetch, locales: ['de'] });
+    expect(result.status === 'ok' && result.translations.de?.title).toContain('Wohnung');
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
   it('reports not_configured without calling anything', async () => {
     const fetcher = vi.fn();
     expect(await translateTexts(source, null, { fetcher: fetcher as unknown as typeof fetch })).toEqual({ status: 'not_configured' });
@@ -51,6 +57,12 @@ describe('translateTexts', () => {
     expect(parseAnswer(good('en'), source, 'ar')).toBe('wrong_script');
     // Türkçe metni olduğu gibi geri veren yanıt çeviri sayılmaz.
     expect(parseAnswer(JSON.stringify(source), source, 'de')).toBe('untranslated');
+    // Yalnız başlığı çevirip açıklamayı Türkçe bırakan yanıt da reddedilir.
+    expect(parseAnswer(JSON.stringify({ ...answers.de, description: source.description }), source, 'de')).toBe('untranslated');
+    const longSource = { ...source, description: 'Konyaaltı Liman Mahallesi’nde kiralık dükkan\nKapalı alan 250 metrekare ve bahçe\nAna caddeye yakın, kolay ulaşım\nYeni ve bakımlı bina, otopark var' };
+    const partly = { title: 'Laden', description: 'Laden zu vermieten in Konyaaltı Liman\nKapalı alan 250 metrekare ve bahçe\nAna caddeye yakın, kolay ulaşım\nYeni ve bakımlı bina, otopark var', features: [] };
+    expect(parseAnswer(JSON.stringify(partly), longSource, 'de')).toBe('untranslated');
+    expect(sameAsSource({ title: 'Laden', description: 'Laden zu vermieten\nNeues Gebäude' }, longSource)).toBe(false);
     expect(parseAnswer(good('ru'), source, 'ru')).toMatchObject({ features: ['Бассейн', 'Парковка'] });
     expect(parseAnswer('{"title":"x"}', source, 'en')).toBe('empty');
     const long = parseAnswer(JSON.stringify({ title: 'a'.repeat(500), description: 'b'.repeat(20000), features: [] }), source, 'en');

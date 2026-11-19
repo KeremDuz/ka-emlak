@@ -138,7 +138,13 @@ async function translateOne(source: TranslationSource, locale: TranslatedLocale,
       await new Promise(resolve => setTimeout(resolve, options.retryDelayMs ?? 800));
       attempt = await callProvider(config, messages, fetcher, Math.max(1, primaryEnd - Date.now()));
     }
-    if ('content' in attempt) return parseAnswer(attempt.content, source, locale);
+    if ('content' in attempt) {
+      const parsed = parseAnswer(attempt.content, source, locale);
+      // Model metni (ya da açıklamayı) Türkçe bıraktıysa bir kez açıkça uyarılarak yeniden istenir.
+      if (parsed !== 'untranslated' || primaryEnd - Date.now() < 5000) return parsed;
+      const again = await callProvider(config, [...messages, { role: 'assistant', content: attempt.content }, { role: 'user', content: `Your answer left Turkish text untranslated. Translate the whole listing, every line of the description included, into ${languages[locale]}. Answer with the JSON object only.` }], fetcher, Math.max(1, primaryEnd - Date.now()));
+      return 'content' in again ? parseAnswer(again.content, source, locale) : parsed;
+    }
     reason = attempt.error;
   }
   // Sağlayıcı yanıt vermezse (ör. bölge kısıtı, kota) Worker'a bağlıysa Workers AI ile bir kez denenir.

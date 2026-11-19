@@ -17,9 +17,17 @@ export function sourceHash(source: TranslationSource): string {
   h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return (h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0');
 }
-/** Çeviri, Türkçe başlık ve açıklamanın aynısı mı (yani hiç çevrilmemiş mi). */
+/**
+ * Çeviri aslında çevrilmemiş mi: açıklama Türkçenin aynısı, ya da açıklamanın uzun satırlarının çoğu Türkçeden aynen kopyalanmış
+ * (model bazen yalnız başlığı çevirip açıklamayı Türkçe bıraktı ya da Türkçeyi Kiril harfle yazdı). Açıklama boşsa başlığa bakılır.
+ */
 export function sameAsSource(translation: Pick<TranslationSource, 'title' | 'description'>, source: TranslationSource): boolean {
-  return translation.title.trim() === source.title.trim() && translation.description.trim() === source.description.trim();
+  const description = source.description.trim(), translated = translation.description.trim();
+  if (!description) return translation.title.trim() === source.title.trim();
+  if (translated === description) return true;
+  const lines = description.split('\n').map(line => line.trim()).filter(line => line.length >= 20);
+  const copied = lines.filter(line => translated.includes(line)).length;
+  return copied >= 3 && copied / lines.length >= 0.5;
 }
 export function translationState(listing: TranslationSource & Pick<Listing, 'translations'>, locale: TranslatedLocale): TranslationState {
   const translation = listing.translations?.[locale];
