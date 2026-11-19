@@ -126,10 +126,11 @@ export async function callProvider(config: TranslateConfig, messages: { role: st
 }
 async function translateOne(source: TranslationSource, locale: TranslatedLocale, config: TranslateConfig, options: TranslateOptions): Promise<Translated | string> {
   const messages = [{ role: 'system', content: systemPrompt(locale) }, { role: 'user', content: userPrompt(source, locale) }];
-  const deadline = Date.now() + (options.timeoutMs ?? 25_000); const fetcher = options.fetcher ?? fetch;
+  // Uzun ilanlarda (≈1000+ karakter) Almanca ve Rusça çeviri Gemini'de 20 saniyeyi aşabiliyor; 25 saniyelik sınırda hep zaman aşımına düşüyordu.
+  const deadline = Date.now() + (options.timeoutMs ?? 45_000); const fetcher = options.fetcher ?? fetch;
   let reason = 'config';
   // Yedek (Workers AI) varsa ona süre bırakılır; asıl sağlayıcı takılırsa çeviri yine de yapılabilsin.
-  const primaryEnd = options.ai ? deadline - 8000 : deadline;
+  const primaryEnd = options.ai ? deadline - 12_000 : deadline;
   if (secureUrl(config.url)) {
     let attempt = await callProvider(config, messages, fetcher, Math.max(1, primaryEnd - Date.now()));
     // 429 ve 5xx çoğunlukla geçicidir: süre kaldıysa bir kez daha denenir.
