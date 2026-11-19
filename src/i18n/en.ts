@@ -74,7 +74,7 @@ export const en: Dictionary = {
     ],
   },
   search: {
-    aria: 'Listing type', seasonalTab: 'Short-term', district: 'District', allDistricts: 'All districts', type: 'Type', allTypes: 'All types',
+    aria: 'Listing type', seasonalTab: 'Short-term', renewalTab: 'Urban renewal', renewalText: 'Do you own a flat in an old or unsafe building? We value the flats and bring the owners together with a contractor.', renewalCta: 'Get your building assessed', district: 'District', allDistricts: 'All districts', type: 'Type', allTypes: 'All types',
     max: 'Maximum', any: 'No limit', upTo: 'Up to {n} TL', submit: 'Show listings',
   },
   card: { photoCount: 'Number of photos: ', rooms: 'Rooms: ', guests: 'Sleeps {n}', baths: '{n} bath' },

@@ -74,7 +74,7 @@ export const de: Dictionary = {
     ],
   },
   search: {
-    aria: 'Angebotsart', seasonalTab: 'Ferienmiete', district: 'Stadtteil', allDistricts: 'Alle Stadtteile', type: 'Objektart', allTypes: 'Alle Objektarten',
+    aria: 'Angebotsart', seasonalTab: 'Ferienmiete', renewalTab: 'Stadterneuerung', renewalText: 'Sie besitzen eine Wohnung in einem alten oder unsicheren Gebäude? Wir ermitteln den Wert der Wohnungen und bringen die Eigentümer mit einem Bauunternehmer zusammen.', renewalCta: 'Gebäude bewerten lassen', district: 'Stadtteil', allDistricts: 'Alle Stadtteile', type: 'Objektart', allTypes: 'Alle Objektarten',
     max: 'Höchstpreis', any: 'Egal', upTo: 'Bis {n} TL', submit: 'Inserate anzeigen',
   },
   card: { photoCount: 'Anzahl der Fotos: ', rooms: 'Zimmer: ', guests: '{n} Personen', baths: '{n} Bad' },

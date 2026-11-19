@@ -75,7 +75,7 @@ export const tr = {
     ],
   },
   search: {
-    aria: 'İlan türü', seasonalTab: 'Dönemlik', district: 'Bölge', allDistricts: 'Tüm bölgeler', type: 'Tür', allTypes: 'Tüm türler',
+    aria: 'İlan türü', seasonalTab: 'Dönemlik', renewalTab: 'Kentsel dönüşüm', renewalText: 'Eski ya da riskli bir binada daireniz mi var? Dairelerin değerini çıkarır, kat maliklerini müteahhitle görüştürürüz.', renewalCta: 'Binamı değerlendirin', district: 'Bölge', allDistricts: 'Tüm bölgeler', type: 'Tür', allTypes: 'Tüm türler',
     max: 'En çok', any: 'Fark etmez', upTo: '{n} TL’ye kadar', submit: 'İlanları göster',
   },
   card: { photoCount: 'Fotoğraf sayısı: ', rooms: 'Oda: ', guests: '{n} kişi', baths: '{n} banyo' },

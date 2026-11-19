@@ -75,7 +75,7 @@ export const fa: Dictionary = {
     ],
   },
   search: {
-    aria: 'نوع آگهی', seasonalTab: 'کوتاه‌مدت', district: 'منطقه', allDistricts: 'همه مناطق', type: 'نوع ملک', allTypes: 'همه انواع',
+    aria: 'نوع آگهی', seasonalTab: 'کوتاه‌مدت', renewalTab: 'نوسازی شهری', renewalText: 'در ساختمانی قدیمی یا ناایمن آپارتمان دارید؟ ارزش واحدها را برآورد می‌کنیم و مالکان را با سازنده آشنا می‌کنیم.', renewalCta: 'ارزیابی ساختمان', district: 'منطقه', allDistricts: 'همه مناطق', type: 'نوع ملک', allTypes: 'همه انواع',
     max: 'حداکثر قیمت', any: 'فرقی نمی‌کند', upTo: 'تا {n} لیر', submit: 'نمایش آگهی‌ها',
   },
   card: { photoCount: 'تعداد عکس: ', rooms: 'اتاق: ', guests: '{n} نفر', baths: '{n} حمام' },

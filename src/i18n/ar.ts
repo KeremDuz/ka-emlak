@@ -75,7 +75,7 @@ export const ar: Dictionary = {
     ],
   },
   search: {
-    aria: 'نوع الإعلان', seasonalTab: 'قصير المدة', district: 'المنطقة', allDistricts: 'كل المناطق', type: 'النوع', allTypes: 'كل الأنواع',
+    aria: 'نوع الإعلان', seasonalTab: 'قصير المدة', renewalTab: 'التجديد العمراني', renewalText: 'هل تملك شقة في مبنى قديم أو غير آمن؟ نقيّم الشقق ونجمع المالكين مع شركة المقاولات.', renewalCta: 'اطلب تقييم المبنى', district: 'المنطقة', allDistricts: 'كل المناطق', type: 'النوع', allTypes: 'كل الأنواع',
     max: 'السعر الأقصى', any: 'لا يهم', upTo: 'حتى {n} ليرة', submit: 'عرض الإعلانات',
   },
   card: { photoCount: 'عدد الصور: ', rooms: 'الغرف: ', guests: 'عدد الضيوف: {n}', baths: 'الحمّامات: {n}' },

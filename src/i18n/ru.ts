@@ -75,7 +75,7 @@ export const ru: Dictionary = {
     ],
   },
   search: {
-    aria: 'Тип объявления', seasonalTab: 'Посуточно', district: 'Район', allDistricts: 'Все районы', type: 'Тип', allTypes: 'Все типы',
+    aria: 'Тип объявления', seasonalTab: 'Посуточно', renewalTab: 'Реновация', renewalText: 'У вас квартира в старом или аварийном доме? Мы оценим квартиры и сведём собственников с застройщиком.', renewalCta: 'Оценить дом', district: 'Район', allDistricts: 'Все районы', type: 'Тип', allTypes: 'Все типы',
     max: 'Цена до', any: 'Не важно', upTo: 'До {n} TL', submit: 'Показать объявления',
   },
   card: { photoCount: 'Количество фото: ', rooms: 'Комнаты: ', guests: 'Гостей: {n}', baths: 'Санузлов: {n}' },
