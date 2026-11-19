@@ -17,10 +17,16 @@ export function sourceHash(source: TranslationSource): string {
   h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return (h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0');
 }
+/** Çeviri, Türkçe başlık ve açıklamanın aynısı mı (yani hiç çevrilmemiş mi). */
+export function sameAsSource(translation: Pick<TranslationSource, 'title' | 'description'>, source: TranslationSource): boolean {
+  return translation.title.trim() === source.title.trim() && translation.description.trim() === source.description.trim();
+}
 export function translationState(listing: TranslationSource & Pick<Listing, 'translations'>, locale: TranslatedLocale): TranslationState {
   const translation = listing.translations?.[locale];
   if (!translation) return 'missing';
   if (!translation.auto) return 'edited';
+  // Model bazen metni çevirmeden Türkçe geri verdi; böyle kaydedilmiş otomatik çeviri yeniden çevrilir.
+  if (sameAsSource(translation, listing)) return 'stale';
   return translation.sourceHash === sourceHash(listing) ? 'auto' : 'stale';
 }
 /** Çevrilmesi gereken diller. Yöneticinin düzelttiği çeviri (auto: false) hiçbir durumda listeye girmez. */

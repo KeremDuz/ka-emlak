@@ -49,6 +49,8 @@ describe('translateTexts', () => {
     expect(parseAnswer(good('en'), source, 'fa')).toBe('wrong_script');
     expect(parseAnswer(good('en'), source, 'ru')).toBe('wrong_script');
     expect(parseAnswer(good('en'), source, 'ar')).toBe('wrong_script');
+    // Türkçe metni olduğu gibi geri veren yanıt çeviri sayılmaz.
+    expect(parseAnswer(JSON.stringify(source), source, 'de')).toBe('untranslated');
     expect(parseAnswer(good('ru'), source, 'ru')).toMatchObject({ features: ['Бассейн', 'Парковка'] });
     expect(parseAnswer('{"title":"x"}', source, 'en')).toBe('empty');
     const long = parseAnswer(JSON.stringify({ title: 'a'.repeat(500), description: 'b'.repeat(20000), features: [] }), source, 'en');
@@ -94,6 +96,9 @@ describe('stale detection', () => {
     expect(pendingLocales(listing)).toEqual(['de', 'ru', 'ar']); expect(pendingLocales(listing, true)).toEqual(['en', 'de', 'ru', 'ar']);
     expect(translationState({ ...listing, title: 'Yeni başlık' }, 'en')).toBe('stale');
     expect(pendingLocales({ ...listing, title: 'Yeni başlık' })).toEqual(['en', 'de', 'ru', 'ar']);
+    // Daha önce Türkçe olarak kaydedilmiş otomatik çeviri yeniden çevrilir; elle düzeltilen yine dokunulmaz.
+    const copied = { ...listing, translations: { ...listing.translations, en: { ...source, auto: true, sourceHash: hash } } };
+    expect(translationState(copied, 'en')).toBe('stale'); expect(pendingLocales(copied)).toContain('en');
   });
 });
 

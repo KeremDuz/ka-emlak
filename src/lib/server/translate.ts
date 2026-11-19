@@ -4,7 +4,7 @@ import { setting, type ServerLocals } from './env';
 import { HttpError } from './http';
 import { MAX_FEATURES } from '../limits';
 import type { Repository } from './repository';
-import { pendingLocales, sourceHash, translatedLocales, type TranslationSource } from './translation-source';
+import { pendingLocales, sameAsSource, sourceHash, translatedLocales, type TranslationSource } from './translation-source';
 
 export interface TranslateConfig { url: string; key: string; model: string; }
 /** Workers AI bağlaması (isteğe bağlı yedek); yalnız kullandığımız kadarını tanımlar. */
@@ -97,6 +97,7 @@ export function parseAnswer(content: string, source: TranslationSource, locale: 
   const features = parsed.data.features.map(item => clamp(item, 100)).filter(Boolean).slice(0, MAX_FEATURES);
   if (!title || source.description.trim() && !description) return 'empty';
   if (scripts[locale] && !scripts[locale]!.test(title + description)) return 'wrong_script';
+  if (sameAsSource({ title, description }, source)) return 'untranslated';
   return { title, description, features };
 }
 
